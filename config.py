@@ -49,21 +49,21 @@ catalog = load_data(catalog_filename)
 image = load_data(image_filename)
 xc = DataCollection([catalog,image])
 ### link positional information
-#xc.add_link(LinkSame(catalog.id['RAJ2000'], image.id['Right Ascension']))
-#xc.add_link(LinkSame(catalog.id['DEJ2000'], image.id['Declination']))
+xc.add_link(LinkSame(catalog.id['RAJ2000'], image.id['Right Ascension']))
+xc.add_link(LinkSame(catalog.id['DEJ2000'], image.id['Declination']))
 
 ####Create subset based on filament mask
-#ra_state = (image.id['Right Ascension'] > 44) & (image.id['Right Ascension'] < 46)
-#subset_group = xc.new_subset_group('Subset 1', ra_state)
-#subset_group.style.color = '#FF0000'
+ra_state = (image.id['Right Ascension'] > 44) & (image.id['Right Ascension'] < 46)
+subset_group = xc.new_subset_group('Subset 1', ra_state)
+subset_group.style.color = '#FF0000'
 
-#de_state = image.id['Declination'] > 60
-#subset_group1 = xc.new_subset_group('Subset 2', de_state)
-#subset_group1.style.color = '#00FF00'
+de_state = image.id['Declination'] > 60
+subset_group1 = xc.new_subset_group('Subset 2', de_state)
+subset_group1.style.color = '#00FF00'
 
-#j_state = catalog.id['Jmag'] > 14
-#subset_group2 = xc.new_subset_group('Jmag Selection', j_state)
-#subset_group2.style.color = '#00FF00'
+j_state = catalog.id['Jmag'] > 14
+subset_group2 = xc.new_subset_group('Jmag Selection', j_state)
+subset_group2.style.color = '#00FF00'
 
 
 @viewer_tool
