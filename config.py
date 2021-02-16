@@ -1,9 +1,8 @@
 import os
 import time
 import numpy as np
-import matplotlib
 import sys
-matplotlib.use('Qt5Agg')
+import pandas as pd
 from matplotlib import pyplot as plt
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QTreeWidget, QTreeWidgetItem, QAbstractItemView, QPushButton
 from glue.config import qt_client
@@ -39,6 +38,7 @@ from PyQt5.QtGui import *
 from glue.config import auto_refresh
 auto_refresh(True)
 import glue.core.data_collection
+from glue import custom_viewer
 
 
 image_filename = '/Users/jk317/Glue/w5.fits'
@@ -67,12 +67,12 @@ subset_group2.style.color = '#00FF00'
 
 
 @viewer_tool
-class convertNotation(Tool):
+class convertNotation(CheckableTool):
 	icon = '/Users/jk317/Glue/icons/glue_calculate.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
-	status_tip = 'Click to convert'
+	status_tip = 'Click to toggle notation'
 	shortcut = 'N'
 
 	def __init__(self,viewer):
@@ -98,6 +98,7 @@ class convertNotation(Tool):
 			self.isSci = True
 			# Build string to format in scientific notation
 			string = "%." + str(self.num_sigs) + 'E'
+
 
 
 		for i in range(0, len(self.data_frame)):
@@ -134,8 +135,8 @@ class convertNotation(Tool):
 
 
 @viewer_tool
-class exportButton(Tool):
-	icon = '/Users/jk317/Glue/icons/glue_calculate.png'
+class ExportButton(Tool):
+	icon = '/Users/jk317/Glue/icons/export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -154,7 +155,7 @@ class exportButton(Tool):
 		pass
 
 @viewer_tool
-class HomeButton(CheckableTool):
+class HomeButton(Tool):
 
 	icon = 'glue_home'
 	tool_id = 'home_tool'
@@ -164,13 +165,10 @@ class HomeButton(CheckableTool):
 	shortcut = 'H'
 
 	def __init__(self, viewer):
-		super(CheckableTool, self).__init__(viewer)
+		self.viewer = viewer
 
 	def activate(self):
-		pass
-
-	def deactivate(self):
-		pass
+		self.viewer.nestedtree.collapseAll()
 
 	def close(self):
 		pass
@@ -233,7 +231,7 @@ class CalculateButton(Tool):
 
 	def activate(self):
 		print("Calculate button activate")
-		self.viewer.pressedEventFour()
+		self.viewer.pressedEventCalculate()
 		print(self.viewer.layers[0].layer)
 
 	def close(self):
@@ -257,8 +255,6 @@ class SortButton(CheckableTool):
 		# ifSortingEnabled(), disable, otherwise, enable
 		self.viewer.nestedtree.setSortingEnabled(True)
 
-		# self.viewer.convertNotation()
-
 	def deactivate(self):
 		self.viewer.nestedtree.setSortingEnabled(False)
 		# pass
@@ -266,76 +262,27 @@ class SortButton(CheckableTool):
 	def close(self):
 		pass
 
-# class TreeSortButton(Tool):
-
-#     icon = '/Users/Dan/Documents/glue/icons/glue_sort.png'
-#     tool_id = 'sort_tool'
-#     action_text = 'Sort'
-#     tool_tip = 'Click side icons to sort'
-#     status_tip = 'Click side icons to sort'
-#     shortcut = 'S'
-
-#     def __init__(self, viewer):
-#         super(CheckableTool, self).__init__(viewer)
-
-#     def activate(self):
-#         # self.nestedtree.setSortingEnabled(True)
-#         pass
-
-#     def deactivate(self):
-#         # ignore /////nestedtree.setColumnHidden(6, True)
-#         pass
-
-#     def close(self):
-#         pass
 
 class StatsViewerState(ViewerState):
 
 
 	expandAll = CallbackProperty(False, docstring='The button which expands or collapses all items')
-	# sort_by = CallbackProperty(False, docstring='sets notation')
 	decPlaces = CallbackProperty()
 
 	numNotation = CallbackProperty(False, docstring='The button which changes number notation')
-	# sort_type_button = SelectionCallbackProperty(docstring='The button which switches between tree sort types')
-	# notation_bool = SelectionCallbackProperty(docstring='The attribute which determines if we are in Scientific or Decimal notation')
-	# sig_num_att = SelectionCallbackProperty(docstring='The attribute which tells us the number of sig figs after the decimal')
-	# x_att = SelectionCallbackProperty(docstring='The attribute to use on the x-axis')
-	# y_att = SelectionCallbackProperty(docstring='The attribute to use on the y-axis')
 
 	def __init__(self, *args, **kwargs):
 		super(StatsViewerState, self).__init__(*args, **kwargs)
 		self.expandAll = False
-		# self.component_mode = False
 		self.numNotation = True
-		# self.dec_places = 3
+
 
 	def expand_all(self):
 		self.expandAll = not self.expandAll
-		# print(self.layers[0].layer)
-
-		# print(self.layers)
-
 
 
 	def change_notation(self):
 		self.numNotation = not self.numNotation
-
-	# def random_func(self):
-	# 	pass
-
-	# def sort_by(self):
-
-	# 	print("sort button clicked")
-
-	# def dec_places(self):
-	# 	self.dec_places = self.dec_places + 1
-
-	# # def
-	# def set_notation(self, bool):
-
-	# 	print("set notation button clicked")
-
 
 
 class StatsViewerStateWidget(QWidget):
@@ -349,10 +296,6 @@ class StatsViewerStateWidget(QWidget):
 
 		self.viewer_state = viewer_state
 		self._connections = autoconnect_callbacks_to_qt(self.viewer_state, self.ui)
-		# self.ui.decimal_spinner.valueChanged.connect(self.state.decPlaces)
-		# self.ui.pushButton.click.connect(self.viewer.expandAll(True))
-		# self.ui.button_expand_all.click.connect(self.expand_all())
-	# 	self.ui.button_change_notation.click.connect(self.changeText())
 
 
 class StatsDataViewer(DataViewer):
@@ -360,9 +303,7 @@ class StatsDataViewer(DataViewer):
 	LABEL = 'Statistics viewer'
 	_state_cls = StatsViewerState
 	_options_cls = StatsViewerStateWidget
-	# _layer_style_widget_cls = TutorialLayerStateWidget
-	# _data_artist_cls = TutorialLayerArtist
-	# _subset_artist_cls = TutorialLayerArtist
+
 
 	_toolbar_cls = BasicToolbar
 	tools = ['home_tool', 'move_tool', 'calc_tool', 'sort_tool', 'notation_tool','export_tool'] #  'expand_tool'
@@ -371,11 +312,12 @@ class StatsDataViewer(DataViewer):
 
 	def __init__(self, *args, **kwargs):
 		super(StatsDataViewer, self).__init__(*args, **kwargs)
+
 		# dc = DataCollection()
 		self.no_update = True
+		self.calculatedList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
 
 		self.headings = ('Name', 'Mean', 'Median', 'Minimum', 'Maximum', 'Sum')
-		#dc = dc
 
 		# Set up dicts for row indices
 		self.subset_dict = dict()
@@ -389,24 +331,11 @@ class StatsDataViewer(DataViewer):
 		self.nestedtree = QTreeWidget(self)
 		self.nestedtree.setSelectionMode(QAbstractItemView.NoSelection)
 
-		#self.nestedtree
-		#self.nestedtree.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
 		self.nestedtree.setColumnCount(6)
 		# self.nestedtree.setColumnHidden(6, True)
-		self.nestedtree.setColumnWidth(0, 175)
+		self.nestedtree.setColumnWidth(0, 250)
 		self.nestedtree.header().setSortIndicator(1, 0)
-
-		# items = []
-		# for i in range(9):
-		#     items.append(QTreeWidgetItem(self.nestedtree)) #self.headings[i]
-			#print(items[i])
-			#items[i].setText(0, self.headings[i])
-		#for i in range(9):
-		#
-		# items[0].setText(0, 'Subset')
-		# items[1].setText(0, 'Dataset')
-		# items[2].setText(0, ' ' + str(self.nestedtree.currentColumn()))
 
 		self.isSci = True
 		self.num_sigs = 3
@@ -418,26 +347,7 @@ class StatsDataViewer(DataViewer):
 		QTreeWidget.setHeaderLabels(self.nestedtree, self.headings)
 		self.axes = plt.subplot(1, 1, 1)
 		self.setCentralWidget(self.nestedtree)
-		#w5 = QTreeWidgetItem(items[0], "w5")
-		#items[0].addChild
-			##self.sort_by_subsets(self, xc.invisibleRootItem())
 
-		# # Save the subset names
-		# self.sub_names = []
-		# for i in range(len(xc.subset_groups)):
-		#     self.sub_names.append(xc.subset_groups[i].label)
-
-		# # Save the dataset names
-		# self.data_names = xc.labels
-
-		# # Save the component names
-		# self.all_comp_names = []
-		# component_names = []
-		# for i in range(0, len(xc)):
-		#     for j in range(0, len(xc[i].components)):
-		#         component_names.append(xc[i].components[j].label)
-		#     self.all_comp_names.append(component_names)
-		#     component_names = []
 
 		# # Set component_mode to false, default is subset mode
 		self.component_mode = False
@@ -449,68 +359,36 @@ class StatsDataViewer(DataViewer):
 
 		# Sort by subsets as a default
 		self.sortBySubsets()
-		# self.sortByComponents()
-		print("ha")
-		# self.fakeItem = QTreeWidgetItem(self.nestedtree)
 
-		# self.fakeButton = QPushButton(self.nestedtree)
-
-		# self.fakeItem.addWidget(QPushButton("xxxTESTxyx"))
 
 		# Set up dict for caching
 		self.cache_stash = dict()
 
-		# self.myPressedEvent()
 
-		# self.runDataStats(1, 2)
-
-		# self.pressedEventTwo()
 		self.nestedtree.clearSelection()
 
-		# self.nestedtree.invisibleRootItem().child(0).child(0).sortChildren(1, 0)
-		# # Allow the widget to listen for messages
-		# xc.hub.subscribe(self, SubsetUpdateMessage, handler=self.receive_message)
-		# xc.hub.subscribe(self, DataMessage, handler=self.messageReceived)
-		# xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
-		# xc.hub.subscribe(self, DataCollectionMessage, handler=self.messageReceived)
-		# xc.hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.messageReceived)
-		# xc.hub.subscribe(self, NumericalDataChangedMessage, handler=self.messageReceived)
 
 		self.state.add_callback('expandAll', self.expandAll)
 		# self.state.add_callback('sort_by', self.convertNotation)
 		self.state.add_callback('decPlaces', self.decPlaces)
 		self.state.add_callback('numNotation', self.convertNotation)
 
-		# self.add_data()
-		print(self.state.layers) # [0].layer
-		# print(self._options_cls.layers)
-		# print(self.state.layers[0])
+		print(self.state.layers)
+
 		print(self.layers)
-		# print(self.viewer.layers)
-		# print(self._state_cls.layers[0].layer)
+
 
 		self.data__ = self.dataList()
 		print(self.data__)
 
+	def initialize_toolbar(self):
+		super(StatsDataViewer, self).initialize_toolbar()
+		BasicToolbar.setContextMenuPolicy(self,Qt.PreventContextMenu)
 
-		#for i in range(0, 6):
-		#    self.nestedtree.resizeColumnToContents(i)
 
-		#self.nestedtree.itemClicked
-		#https://stackoverflow.com/questions/16712420/qt-event-listener-for-tree-widget-item-click
-
-		#self.nestedtree.setStyleSheet("QTreeWidget::item { border-bottom: 1px solid black;}")
 	def myPressedEvent(self, currentQModelIndex):
 		pass
 
-	# def add_data(self, data):
-	# 	print("data")
-	# 	# if self.component_mode:
-	# 	# 	self.sortByComponents()
-	# 	# else:
-	# 	# 	self.sortBySubsets()
-	# 	xc.append(data)
-	# 	return True
 
 	def expandAll(self, bool):
 
@@ -530,11 +408,9 @@ class StatsDataViewer(DataViewer):
 		self.selected_indices = self.nestedtree.selectionModel().selectedRows()
 
 		print(self.selected_indices)
-		print("000001")
 
 		newly_selected = np.setdiff1d(self.selected_indices, self.past_selected)
 
-		print("xaxaxaxa")
 
 		for index in range (0, len(newly_selected)):
 
@@ -574,14 +450,11 @@ class StatsDataViewer(DataViewer):
 			print(new_data[0])
 			print(new_data[1])
 			print(new_data[2])
-			# self.nestedtree.itemFromIndex(newly_selected[0]).setData(0, 0, new_data[0][0])
 			for col_index in range (0, len(new_data)):
 				if (col_index > 0):
 					print("xxxxxx")
 					print(new_data[col_index])
 					self.nestedtree.itemFromIndex(newly_selected[index]).setData(col_index, 0, new_data[col_index])
-
-			# self.nestedtree.itemFromIndex(newly_selected[index]).setData(2, 0, 100)
 
 		newly_dropped = np.setdiff1d(self.past_selected, self.selected_indices)
 
@@ -631,14 +504,8 @@ class StatsDataViewer(DataViewer):
 		# Update the past selected indices
 		self.past_selected = self.selected_indices
 
-		# model = pandasModel(self.data_frame, dc)
 
-		# self.table.setModel(model)
-
-		# self.table.setSortingEnabled(True)
-		# self.table.setShowGrid(False)
-
-	def pressedEventFour(self):
+	def pressedEventCalculate(self):
 		'''
 		Every time the selection in the treeview changes:
 		if it is newly selected, add it to the table
@@ -646,7 +513,7 @@ class StatsDataViewer(DataViewer):
 		'''
 
 		# Get the indexes of all the selected components
-		self.selected_indices = [] #self.nestedtree.selectionModel().selectedRows()
+		self.selected_indices = []
 
 		print(self.selected_indices)
 		print("000002")
@@ -736,65 +603,13 @@ class StatsDataViewer(DataViewer):
 			print(new_data[2])
 			# self.nestedtree.itemFromIndex(newly_selected[0]).setData(0, 0, new_data[0][0])
 			for col_index in range (0, len(new_data)):
-				if (col_index > 0):
+				self.calculatedList = np.append(self.calculatedList, new_data[col_index])
+				if (col_index > 2):
 					print("xxxxxx")
 					print(new_data[col_index])
-					self.nestedtree.itemFromIndex(newly_selected[index]).setData(col_index, 0, new_data[col_index])
+					self.nestedtree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
 
-			# self.nestedtree.itemFromIndex(newly_selected[index]).setData(2, 0, 100)
-		# newly_dropped = np.setdiff1d(self.past_selected, self.selected_indices)
-		# for index in range (0, len(newly_dropped)):
 
-		# 	# Check which view mode the tree is in to get the correct indices
-		# 	if not self.component_mode:
-		# 		data_i = newly_dropped[index].parent().row()
-		# 		comp_i = newly_dropped[index].row()
-		# 		subset_i = newly_dropped[index].parent().parent().row()
-
-		# 	else:
-		# 		data_i = newly_dropped[index].parent().parent().row()
-		# 		comp_i = newly_dropped[index].parent().row()
-		# 		subset_i = newly_dropped[index].row() - 1
-
-		# 	is_subset = newly_dropped[index].parent().parent().parent().row() == 1 or (self.component_mode and subset_i != -1)
-
-		# 	if is_subset:
-		# 		try:
-		# 			# Get the indices that match the component, dataset, and subset requirements
-		# 			idx_c = np.where(self.data_frame['Component'] == xc[data_i].components[comp_i].label)
-		# 			idx_d = np.where(self.data_frame['Dataset'] == xc[data_i].label)
-		# 			idx_s = np.where(self.data_frame['Subset'] == xc[data_i].subsets[subset_i].label)
-		# 			idx1 = np.intersect1d(idx_c, idx_d)
-		# 			idx2 = np.intersect1d(idx1, idx_s)
-
-		# 			self.data_frame = self.data_frame.drop(idx2)
-		# 		except:
-		# 			pass
-
-		# 	else:
-		# 		try:
-		# 		# Find the index in the table of the unchecked element, if it's in the table
-
-		# 			# Find the matching component and dataset indices and intersect them to get the unique index
-		# 			idx_c = np.where(self.data_frame['Component'] == xc[data_i].components[comp_i].label)
-		# 			idx_d = np.where(self.data_frame['Dataset'] == xc[data_i].label)
-		# 			idx_s = np.where(self.data_frame['Subset'] == '--')
-		# 			idx1 = np.intersect1d(idx_c, idx_d)
-		# 			idx2 = np.intersect1d(idx1, idx_s)
-
-		# 			# self.data_frame = self.data_frame.drop(idx2)
-		# 		except:
-		# 			pass
-
-		# # Update the past selected indices
-		# self.past_selected = self.selected_indices
-
-		# model = pandasModel(self.data_frame, dc)
-
-		# self.table.setModel(model)
-
-		# self.table.setSortingEnabled(True)
-		# self.table.setShowGrid(False)
 
 	def itemMasterList(self):
 
@@ -850,9 +665,12 @@ class StatsDataViewer(DataViewer):
 
 		file_name, fltr = compat.getsavefilename(caption="Choose an output filename")
 		try:
-			self.data_frame.to_csv(str(file_name), index=False)
+			df = pd.DataFrame(self.calculatedList)
+			df.to_csv(str(file_name), header=None ,index=None)
+			print("asdfasdf")
+			print(df)
 		except:
-			print("hahah this failed ")
+			print("Export failed ")
 
 	def convertNotation(self, bool):
 		'''
@@ -886,7 +704,7 @@ class StatsDataViewer(DataViewer):
 
 		# recalculate with new notation,
 		# data is cached already so it should be quick
-		self.pressedEventFour()
+		self.pressedEventCalculate()
 
 		# uncheck everything
 		for qtwitem in item_List:
@@ -931,7 +749,7 @@ class StatsDataViewer(DataViewer):
 
 		# recalculate with new notation,
 		# data is cached already so it should be quick
-		self.pressedEventFour()
+		self.pressedEventCalculate()
 
 		# uncheck everything
 		for qtwitem in uncheck_list:
@@ -991,20 +809,20 @@ class StatsDataViewer(DataViewer):
 		print("xxyyzz")
 		print(string)
 
-		mean_val = string % column_data[1]
+		mean_val = string % column_data[3]
 		print(mean_val)
 		print("mean_val ^^")
-		median_val = string % column_data[2]
-		min_val = string % column_data[3]
-		max_val = string % column_data[4]
-		sum_val = string % column_data[5]
+		median_val = string % column_data[4]
+		min_val = string % column_data[5]
+		max_val = string % column_data[6]
+		sum_val = string % column_data[7]
 
 
 		# DAN - I'm choosing to get rid of the df (DataFrame) since we no longer have two tables, only one
 		# I'm instead making this retrn the column_data and putting it directly into the table.
 
 		# Create the column data array and append it to the data frame
-		column_data = (cache_key, mean_val, median_val, min_val, max_val, sum_val)
+		column_data = (subset_label, data_label, comp_label, mean_val, median_val, min_val, max_val, sum_val)
 		# column_df = pd.DataFrame(column_data, columns=self.headings)
 		# # self.data_frame = self.data_frame.append(column_df, ignore_index=True)
 		return column_data
@@ -1029,7 +847,7 @@ class StatsDataViewer(DataViewer):
 		max_val = xc[data_i].compute_statistic('maximum', xc[data_i].components[comp_i])
 		sum_val = xc[data_i].compute_statistic('sum', xc[data_i].components[comp_i])
 
-		column_data = (cache_key, mean_val, median_val, min_val, max_val, sum_val)
+		column_data = (subset_label, data_label, comp_label, mean_val, median_val, min_val, max_val, sum_val)
 
 		self.cache_stash[cache_key] = column_data
 
@@ -1057,10 +875,6 @@ class StatsDataViewer(DataViewer):
 		else:
 			column_data = self.newSubsetStats(subset_i, data_i, comp_i)
 
-		# Save the data in self.data_accurate
-		# column_df = pd.DataFrame(column_data, columns=self.headings)
-		# self.data_accurate = self.data_accurate.append(column_df, ignore_index=True)
-
 		if self.isSci:
 			# Format in scientific notation
 			string = "%." + str(self.num_sigs) + 'E'
@@ -1068,18 +882,16 @@ class StatsDataViewer(DataViewer):
 			# Format in standard notation
 			string = "%." + str(self.num_sigs) + 'F'
 
-		mean_val = string % column_data[1]
+		mean_val = string % column_data[3]
 		print(mean_val)
 		print("mean_val ^")
-		median_val = string % column_data[2]
-		min_val = string % column_data[3]
-		max_val = string % column_data[4]
-		sum_val = string % column_data[5]
+		median_val = string % column_data[4]
+		min_val = string % column_data[5]
+		max_val = string % column_data[6]
+		sum_val = string % column_data[7]
 
 		# Create the column data array and append it to the data frame
-		column_data = (cache_key, mean_val, median_val, min_val, max_val, sum_val)
-		# column_df = pd.DataFrame(column_data, columns=self.headings)
-		# self.data_frame = self.data_frame.append(column_df, ignore_index=True)
+		column_data = (subset_label, data_label, comp_label, mean_val, median_val, min_val, max_val, sum_val)
 		return column_data
 
 	def newSubsetStats(self, subset_i, data_i, comp_i):
@@ -1097,7 +909,7 @@ class StatsDataViewer(DataViewer):
 		max_val = xc[data_i].compute_statistic('maximum', xc[data_i].subsets[subset_i].components[comp_i], subset_state=xc.subset_groups[subset_i].subset_state)
 		sum_val = xc[data_i].compute_statistic('sum', xc[data_i].subsets[subset_i].components[comp_i], subset_state=xc.subset_groups[subset_i].subset_state)
 
-		column_data = (cache_key, mean_val, median_val, min_val, max_val, sum_val)
+		column_data = (subset_label, data_label, comp_label, mean_val, median_val, min_val, max_val, sum_val)
 
 		self.cache_stash[cache_key] = column_data
 
@@ -1142,9 +954,6 @@ class StatsDataViewer(DataViewer):
 		# Clear the tree
 		self.nestedtree.clear()
 
-		# # Set Expand/collapse button to "expand all"
-		# self.expand_data.setText("Expand all data and subsets")
-
 		#Allow the user to select multiple rows at a time
 		self.selection_model = QAbstractItemView.MultiSelection
 		self.nestedtree.setSelectionMode(self.selection_model)
@@ -1161,26 +970,16 @@ class StatsDataViewer(DataViewer):
 		selection_model.selectionChanged.connect(self.myPressedEvent)
 
 
-
-
 	def generateSubsetView(self):
 		self.component_mode = False
 		self.model_subsets = QStandardItemModel()
 		self.model_subsets.setHorizontalHeaderLabels([''])
 
-		#self.nestedtree.setModel(self.model_subsets)
-		# self.nestedtree.setUniformRowHeights(True)
-
-
-		# populate the tree
-		# Make all the datasets be parents, and make it so they are not selectable
-					# parent_data = QStandardItem('{}'.format('Data')) # QStandardItem
 		dataItem =  QTreeWidgetItem(self.nestedtree)
 		dataItem.setData(0, 0, '{}'.format('Data'))
 		# dataItem.setExpanded(True)
 		dataItem.setCheckState(0, 0)
-		# dataItem.setEditable(False)
-		# dataItem.setSelectable(False)
+
 
 		for i in range(0, len(xc)):
 
@@ -1188,9 +987,6 @@ class StatsDataViewer(DataViewer):
 			parentItem.setCheckState(0, 0)
 			parentItem.setData(0, 0, '{}'.format(xc.labels[i]))
 			parentItem.setIcon(0, helpers.layer_icon(xc[i]))
-			# parentItem.setExpanded(True)
-			# parentItem.setEditable(False)
-			# parentItem.setSelectable(False)
 
 			# Make all the data components be children, nested under their parent
 			for j in range(0,len(xc[i].components)):
@@ -1199,36 +995,18 @@ class StatsDataViewer(DataViewer):
 				childItem.setCheckState(0, 0)
 				childItem.setData(0, 0, '{}'.format(str(xc[i].components[j])))
 				childItem.setIcon(0, helpers.layer_icon(xc[i]))
-				# childItem.setEditable(False)
-				# childItem.setSelected(True)
-
 
 				# Add to the subset_dict
 				key = xc[i].label + xc[i].components[j].label + "All data-" + xc[i].label
-				#self.subset_dict[key] = child.index()
 
-				#parent.appendRow(child)
 
 				self.num_rows = self.num_rows + 1
 
-			#parent_data.appendRow(parent)
-			# moves to below line, parent.setSelectable(False)
 
-
-		# # Add the parents with their children to the QStandardItemModel
-		# self.model_subsets.appendRow(parent_data)
-
-		# parent_subset = QStandardItem('{}'.format('Subsets'))
-		# parent_subset.setEditable(False)
-		# parent_subset.setSelectable(False)
 
 		subsetItem = QTreeWidgetItem(self.nestedtree)
 		subsetItem.setData(0, 0, '{}'.format('Subsets'))
 		subsetItem.setCheckState(0, 0)
-
-		# subsetItem.setCheckState(0, 0)
-
-		# Set up the subsets as Subsets > choose subset > choose data set > choose component
 
 		for j in range(0, len(xc.subset_groups)):
 
@@ -1236,26 +1014,14 @@ class StatsDataViewer(DataViewer):
 			grandparent.setData(0, 0, '{}'.format(xc.subset_groups[j].label))
 			grandparent.setIcon(0, helpers.layer_icon(xc.subset_groups[j]))
 			grandparent.setCheckState(0, 0)
-			# grandparent.setCheckState(0, 0)
-			# grandparent.setEditable(False)
-			# grandparent.setSelectable(False)
 
 			for i in range(0, len(xc)):
 
 				parent = QTreeWidgetItem(grandparent)
 				parent.setData(0, 0, '{}'.format(xc.subset_groups[j].label) + ' (' + '{}'.format(xc[i].label) + ')')
-				# parent.setCheckState(0, 0)
-				# Set up the circles
+
 				parent.setIcon(0, helpers.layer_icon(xc.subset_groups[j]))
 				parent.setCheckState(0, 0)
-				# parent.setEditable(False)
-				# parent.setSelectable(False)
-
-				# try:
-				#     xc[i].compute_statistic('mean', xc[i].subsets[j].components[0], subset_state=xc[i].subsets[j].subset_state)
-
-				# except:
-				#     parent.setForeground(QtGui.QBrush(Qt.gray))
 
 
 				for k in range(0, len(xc[i].components)):
@@ -1265,42 +1031,10 @@ class StatsDataViewer(DataViewer):
 					# child.setEditable(False)
 					child.setIcon(0, helpers.layer_icon(xc.subset_groups[j]))
 					child.setCheckState(0, 0)
-					# child.setCheckState(0, 0)
-					# child.setSelected(True)
-					# # Update the dict to keep track of row indices
-					# key = xc[i].label + xc[i].components[k].label + xc[i].subsets[j].label
-					# self.subset_dict[key] = child.index()
 
-					# parent.appendRow(child)
 					self.num_rows = self.num_rows + 1
 
-					# # Make gray and unselectable components that aren't defined for a subset
-					# try:
-					#     xc[i].compute_statistic('mean', xc[i].subsets[j].components[k], subset_state=xc[i].subsets[j].subset_state)
 
-					# except:
-					#     child.setEditable(False)
-					#     child.setSelectable(False)
-					#     child.setForeground(QtGui.QBrush(Qt.gray))
-
-		#         grandparent.appendRow(parent)
-		#     parent_subset.appendRow(grandparent)
-		# self.model_subsets.appendRow(parent_subset)
-
-		# Fill out the dict now that the indices are connected to the QStandardItemModel
-
-		# Full datasets
-		# for i in range(0, parent_data.rowCount()):
-		#     for j in range(0, parent_data.child(i).rowCount()):
-		#         key = "All data (" + parent_data.child(i).text() + ")"+ parent_data.child(i).child(j).text()
-		#         self.subset_dict[key] = parent_data.child(i).child(j).index()
-
-		# # Subsets
-		# for i in range(0, parent_subset.rowCount()):
-		#     for j in range(0, parent_subset.child(i).rowCount()):
-		#         for k in range(0, parent_subset.child(i).child(j).rowCount()):
-		#             key = parent_subset.child(i).child(j).text() + parent_subset.child(i).child(j).child(k).text()
-		#             self.subset_dict[key] = parent_subset.child(i).child(j).child(k).index()
 
 		self.nestedtree.setUniformRowHeights(True)
 
@@ -1319,73 +1053,34 @@ class StatsDataViewer(DataViewer):
 		# Clear the data_accurate
 		self.data_accurate = pd.DataFrame(columns=self.headings)
 
-		# # Save the selected rows from the subset view if applicable
-		# try:
-		#     selected = dict()
-
-		#     for i in range(0, len(self.selected_indices)):
-		#         item = self.model_subsets.itemFromIndex(self.selected_indices[i])
-		#         if item.parent().parent().text() == "Data":
-		#             key =  "All data (" + item.parent().text() + ")" + item.text()
-		#             selected[key] = item.index()
-		#         else:
-		#             key = item.parent().text() + item.text()
-		#             selected[key] = item.index()
-		# except:
-		#     pass
-
 		# Clear the selection
 		self.nestedtree.clearSelection()
 		self.nestedtree.clear()
 
-		# Set Expand/collapse button to "expand all"
-		# self.expand_data.setText("Expand all data and subsets")
 
 		self.selection_model = QAbstractItemView.MultiSelection
 		self.nestedtree.setSelectionMode(self.selection_model)
 
-		# See if the model already exists and doesn't need to be updated
-
-		# if self.no_update and not self.updateComponentSort:
-		#     try:
-		#         self.nestedtree.setModel(self.model_components)
-		#     except:
-		#         self.generateComponentView()
-		# else:
-		#     self.generateComponentView()
 
 		self.generateComponentView()
 
 		self.nestedtree.setUniformRowHeights(True)
 
 
-
 	def generateComponentView(self):
 		self.component_mode = True
-	#     self.model_components = QStandardItemModel()
-	#     self.model_components.setHorizontalHeaderLabels([''])
-
-	#     self.treeview.setModel(self.model_components)
-	#     self.treeview.setUniformRowHeights(True)
-
-		# Populate the tree
-		# Make all the datasets be parents, and make it so they are not selectable
 
 		for i in range(0,len(xc)):
-	#         grandparent = QStandardItem('{}'.format(xc.labels[i]))
+
 			grandparent = QTreeWidgetItem(self.nestedtree)
 			grandparent.setData(0, 0, '{}'.format(xc.labels[i]))
 			grandparent.setIcon(0, helpers.layer_icon(xc[i]))
 			grandparent.setCheckState(0, 0)
-	#         grandparent.setEditable(False)
-	#         grandparent.setSelectable(False)
 
-			# Make all the data components be children, nested under their parent
 			for k in range(0,len(xc[i].components)):
 				parent = QTreeWidgetItem(grandparent)
 				parent.setData(0, 0, '{}'.format(str(xc[i].components[k])))
 				parent.setCheckState(0, 0)
-
 
 				child = QTreeWidgetItem(parent)
 				child.setData(0, 0, '{}'.format('All data (' + xc.labels[i] + ')'))
@@ -1400,6 +1095,7 @@ class StatsDataViewer(DataViewer):
 					# child.setEditable(False)
 					childtwo.setIcon(0, helpers.layer_icon(xc.subset_groups[j]))
 					childtwo.setCheckState(0, 0)
+
 
 					self.num_rows = self.num_rows + 1
 
