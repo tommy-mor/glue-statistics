@@ -43,7 +43,7 @@ from glue import custom_viewer
 
 @viewer_tool
 class convertNotation(CheckableTool):
-	icon = '/Users/jk317/Glue/icons/glue_calculate.png'
+	icon = '/icons/glue_calculate.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -111,7 +111,7 @@ class convertNotation(CheckableTool):
 
 @viewer_tool
 class ExportButton(Tool):
-	icon = '/Users/jk317/Glue/icons/export.png'
+	icon = '/icons/glue_export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -151,7 +151,7 @@ class HomeButton(Tool):
 @viewer_tool
 class TreeButton(Tool):
 
-	icon = '/Users/jk317/Glue/icons/glue_hierarchy.png'
+	icon = '/icons/glue_hierarchy.png'
 	tool_id = 'move_tool'
 	action_text = 'move'
 	tool_tip = 'Drag to move'
@@ -173,7 +173,7 @@ class TreeButton(Tool):
 @viewer_tool
 class ExpandButton(Tool):
 
-	icon = '/Users/jk317/Glue/icons/glue_expand.png'
+	icon = '/glue_expand.png'
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -194,7 +194,7 @@ class ExpandButton(Tool):
 @viewer_tool
 class CalculateButton(Tool):
 
-	icon = '/Users/jk317/Glue/icons/glue_calculate.png'
+	icon = '/icons/glue_calculate.png'
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -215,7 +215,7 @@ class CalculateButton(Tool):
 @viewer_tool
 class SortButton(CheckableTool):
 
-	icon = '/Users/jk317/Glue/icons/glue_sort.png'
+	icon = '/icons/glue_sort.png'
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
