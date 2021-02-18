@@ -53,11 +53,21 @@ class StatsDataViewer(DataViewer, HubListener):
 
 
 
-	def __init__(self, *args, **kwargs):
+	def __init__(self, dc):
 
-		super(StatsDataViewer, self).__init__(*args, **kwargs)
-
-
+		#super(StatsDataViewer, self).__init__(*args, **kwargs)
+		QWidget.__init__(self)
+        	HubListener.__init__(self)  	
+		
+		self.xc = dc
+		
+		self.xc.hub.subscribe(self, DataMessage, handler=self.messageReceived)
+        	self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)  
+		self.xc.hub.subscribe(self, DataCollectionMessage, handler=self.messageReceived)
+		self.xc.hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.messageReceived)
+       		self.xc.hub.subscribe(self, NumericalDataChangedMessage, handler=self.messageReceived)
+		
+		
 		# dc = DataCollection()
 		self.no_update = True
 		self.calculatedList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
@@ -141,6 +151,9 @@ class StatsDataViewer(DataViewer, HubListener):
 
 		for qtwitem in item_List:
 			qtwitem.setExpanded(bool)
+			
+	def messageReceived(self, message):
+        	self.no_update = False
 
 	def pressedEventTwo(self):
 		'''
