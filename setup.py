@@ -2,6 +2,7 @@ from __future__ import print_function
 from setuptools import setup, find_packages
 
 entry_points = """
+[StatsDataViewer=StatsDataViewer:setup]
 StatsDataViewer=StatsDataViewer:setup
 """
 
@@ -11,7 +12,7 @@ with open('README.rst') as infile:
 with open('version.py') as infile:
     exec(infile.read())
 
-setup(name='myplugin',
+setup(name='StatsDataViewer',
       version=__version__,
       description='My example plugin',
       long_description=LONG_DESCRIPTION,
