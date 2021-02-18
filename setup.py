@@ -2,7 +2,7 @@ from __future__ import print_function
 from setuptools import setup, find_packages
 
 entry_points = """
-[StatsDataViewer=StatsDataViewer:setup]
+[glue.plugins]
 StatsDataViewer=StatsDataViewer:setup
 """
 
