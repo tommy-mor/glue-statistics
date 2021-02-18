@@ -8,7 +8,7 @@ StatsDataViewer=StatsDataViewer:setup
 with open('README.rst') as infile:
     LONG_DESCRIPTION = infile.read()
 
-with open('StatsDataViewer/version.py') as infile:
+with open('version.py') as infile:
     exec(infile.read())
 
 setup(name='myplugin',
