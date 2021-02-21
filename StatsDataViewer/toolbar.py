@@ -43,7 +43,7 @@ from glue import custom_viewer
 
 @viewer_tool
 class convertNotation(CheckableTool):
-	icon = '/icons/glue_calculate.png'
+	icon = '/icons/glue_scientific_notation.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
