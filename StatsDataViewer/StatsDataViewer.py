@@ -1,10 +1,7 @@
-
 import os
-import time
 import numpy as np
 import sys
 import pandas as pd
-from matplotlib import pyplot as plt
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QTreeWidget, QTreeWidgetItem, QAbstractItemView, QPushButton
 from glue.config import qt_client
 from glue.core.data_combo_helper import ComponentIDComboHelper
@@ -20,24 +17,16 @@ from glue.viewers.common.layer_artist import LayerArtist
 from glue.viewers.common.state import ViewerState, LayerState
 from glue.viewers.common.qt.data_viewer import DataViewer
 from glue.viewers.common.qt.toolbar import BasicToolbar
-from glue.viewers.image.qt import ImageViewer
 from glue.utils.qt import load_ui
 from decimal import getcontext, Decimal
 from glue.core import DataCollection, Hub, HubListener, Data, coordinates
-from glue.core.link_helpers import LinkSame
-from glue.core.message import DataMessage, DataCollectionMessage, SubsetMessage, SubsetUpdateMessage, \
-	LayerArtistUpdatedMessage, NumericalDataChangedMessage, DataUpdateMessage
-import pandas as pd
-from pandas import DataFrame
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from glue.core.message import DataMessage, DataCollectionMessage, SubsetMessage, SubsetCreateMessage, SubsetUpdateMessage, \
+	LayerArtistUpdatedMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage
+from PyQt5.QtGui import QStandardItemModel
+from PyQt5.QtWidgets import QAction
 from glue.icons.qt import helpers
-from PyQt5 import QtCore, QtWidgets, QtGui
 from qtpy import compat
-from PyQt5.QtGui import *
-from glue.config import auto_refresh
-auto_refresh(True)
-import glue.core.data_collection
-from glue import custom_viewer
+
 
 
 @viewer_tool
