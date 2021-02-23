@@ -40,10 +40,9 @@ from glue import custom_viewer
 
 
 
-
 @viewer_tool
-class convertNotation(CheckableTool):
-	icon = '/icons/glue_scientific_notation.png'
+class convertNotation(Tool):
+	icon = '/Users/jk317/Glue/icons/glue_decimal.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -53,57 +52,14 @@ class convertNotation(CheckableTool):
 	def __init__(self,viewer):
 		self.viewer = viewer
 
+	def menu_actions(self):
+		self.decimalPoints = QAction("Decimal Points")
+		return [self.decimalPoints]
+
 	def activate(self):
-		print("Convert button activate")
-		data_labels = self.data_frame['Dataset']
-		comp_labels = self.data_frame['Component']
-		subset_labels = self.data_frame['Subset']
-
-		mean_vals = []
-		median_vals = []
-		min_vals = []
-		max_vals = []
-		sum_vals = []
-
-		if self.stan_notation.isChecked():
-			self.isSci = False
-			# Build string to format in standard notation
-			string = "%." + str(self.num_sigs) + 'F'
-		else:
-			self.isSci = True
-			# Build string to format in scientific notation
-			string = "%." + str(self.num_sigs) + 'E'
-
-
-
-		for i in range(0, len(self.data_frame)):
-			# Traverse through the dataframe and get the names of the component, dataset, and subset
-			component = self.data_frame['Component'][i]
-			dataset = self.data_frame['Dataset'][i]
-			subset = self.data_frame['Subset'][i]
-
-			# Pull the correct index of the data in data_accurate
-			idx_c = np.where(component == self.data_accurate['Component'])
-			idx_d = np.where(dataset == self.data_accurate['Dataset'])
-			idx_s = np.where(subset == self.data_accurate['Subset'])
-			idx1 = np.intersect1d(idx_c, idx_d)
-			idx2 = np.intersect1d(idx1, idx_s)[0]
-
-			# Format the data in data_accurate
-			mean_vals.append(string % Decimal(self.data_accurate['Mean'][idx2]))
-			median_vals.append(string % Decimal(self.data_accurate['Median'][idx2]))
-			min_vals.append(string % Decimal(self.data_accurate['Minimum'][idx2]))
-			max_vals.append(string % Decimal(self.data_accurate['Maximum'][idx2]))
-			sum_vals.append(string % Decimal(self.data_accurate['Sum'][idx2]))
-
-		# Build the column_data and update the data_frame
-		column_data = np.asarray([subset_labels, data_labels, comp_labels, mean_vals, median_vals, min_vals, max_vals, sum_vals]).transpose()
-		self.data_frame = pd.DataFrame(column_data, columns=self.headings)
-		model = pandasModel(self.data_frame, xc)
-		self.table.setModel(model)
-		self.table.setSortingEnabled(True)
-		self.table.setShowGrid(False)
-
+		self.icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
+		#print("Convert button activate")
+		self.viewer.pressedEventConvertNotation(not self.viewer.isSci)
 
 	def close(self):
 		pass
