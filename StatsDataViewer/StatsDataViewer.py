@@ -29,6 +29,7 @@ from qtpy import compat
 
 
 
+
 @viewer_tool
 class convertNotation(Tool):
 	icon = '/Users/jk317/Glue/icons/glue_decimal.png'
@@ -53,10 +54,9 @@ class convertNotation(Tool):
 	def close(self):
 		pass
 
-
 @viewer_tool
 class ExportButton(Tool):
-	icon = '/icons/glue_export.png'
+	icon = '/Users/jk317/Glue/icons/export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -67,7 +67,7 @@ class ExportButton(Tool):
 		self.viewer = viewer
 
 	def activate(self):
-		print("Export button activate")
+		#print("Export button activate")
 		self.viewer.pressedEventExport()
 		#print(self.viewer.layers[0].layer)
 
@@ -96,7 +96,7 @@ class HomeButton(Tool):
 @viewer_tool
 class TreeButton(Tool):
 
-	icon = '/icons/glue_hierarchy.png'
+	icon = '/Users/jk317/Glue/icons/glue_hierarchy.png'
 	tool_id = 'move_tool'
 	action_text = 'move'
 	tool_tip = 'Drag to move'
@@ -118,7 +118,7 @@ class TreeButton(Tool):
 @viewer_tool
 class ExpandButton(Tool):
 
-	icon = '/glue_expand.png'
+	icon = '/Users/jk317/Glue/icons/glue_expand.png'
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -139,7 +139,7 @@ class ExpandButton(Tool):
 @viewer_tool
 class CalculateButton(Tool):
 
-	icon = '/icons/glue_calculate.png'
+	icon = '/Users/jk317/Glue/icons/glue_calculate.png'
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -150,9 +150,9 @@ class CalculateButton(Tool):
 		self.viewer = viewer
 
 	def activate(self):
-		print("Calculate button activate")
+		#print("Calculate button activate")
 		self.viewer.pressedEventCalculate()
-		print(self.viewer.layers[0].layer)
+		#print(self.viewer.layers[0].layer)
 
 	def close(self):
 		pass
@@ -160,7 +160,7 @@ class CalculateButton(Tool):
 @viewer_tool
 class SortButton(CheckableTool):
 
-	icon = '/icons/glue_sort.png'
+	icon = '/Users/jk317/Glue/icons/glue_sort.png'
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
@@ -182,14 +182,8 @@ class SortButton(CheckableTool):
 	def close(self):
 		pass
 
-	
+
 class StatsViewerState(ViewerState):
-
-
-	expandAll = CallbackProperty(False, docstring='The button which expands or collapses all items')
-	decPlaces = CallbackProperty()
-
-	numNotation = CallbackProperty(False, docstring='The button which changes number notation')
 
 	def __init__(self, *args, **kwargs):
 		super(StatsViewerState, self).__init__(*args, **kwargs)
@@ -218,6 +212,7 @@ class StatsViewerStateWidget(QWidget):
 		self._connections = autoconnect_callbacks_to_qt(self.viewer_state, self.ui)
 
 
+
 class StatsDataViewer(DataViewer, HubListener):
 
 	LABEL = 'Statistics viewer'
@@ -238,12 +233,12 @@ class StatsDataViewer(DataViewer, HubListener):
 
 
 		self.xc.hub.subscribe(self, DataMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, SubsetCreateMessage, handler=self.messageReceived)
-		self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
+		self.xc.hub.subscribe(self, SubsetCreateMessage, handler=self.messageReceived)
+		#self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
 		self.xc.hub.subscribe(self, DataAddComponentMessage, handler=self.messageReceived)
 		self.xc.hub.subscribe(self, DataCollectionMessage, handler=self.messageReceived)
 		#self.xc.hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, NumericalDataChangedMessage, handler=self.messageReceived)
+		self.xc.hub.subscribe(self, NumericalDataChangedMessage, handler=self.messageReceived)
 
 		self.no_update = True
 		self.calculatedList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
