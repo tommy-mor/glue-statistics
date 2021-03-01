@@ -234,7 +234,7 @@ class StatsDataViewer(DataViewer, HubListener):
 
 		self.xc.hub.subscribe(self, DataMessage, handler=self.messageReceived)
 		self.xc.hub.subscribe(self, SubsetCreateMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
+		self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
 		self.xc.hub.subscribe(self, DataAddComponentMessage, handler=self.messageReceived)
 		self.xc.hub.subscribe(self, DataCollectionMessage, handler=self.messageReceived)
 		#self.xc.hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.messageReceived)
