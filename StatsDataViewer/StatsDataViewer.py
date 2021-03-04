@@ -34,7 +34,7 @@ from qtpy import compat
 
 @viewer_tool
 class convertNotation(Tool):
-	icon = '/icons/glue_scientific_notation.png'
+	icon = '/glue_scientific_notation.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -58,7 +58,7 @@ class convertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
-	icon = '/icons/glue_export.png'
+	icon = '/glue_export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -98,7 +98,7 @@ class HomeButton(Tool):
 @viewer_tool
 class TreeButton(Tool):
 
-	icon = '/icons/glue_hierarchy.png'
+	icon = '/glue_hierarchy.png'
 	tool_id = 'move_tool'
 	action_text = 'move'
 	tool_tip = 'Drag to move'
@@ -120,7 +120,7 @@ class TreeButton(Tool):
 @viewer_tool
 class ExpandButton(Tool):
 
-	icon = '/icons/glue_expand.png'
+	icon = '/glue_expand.png'
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -141,7 +141,7 @@ class ExpandButton(Tool):
 @viewer_tool
 class CalculateButton(Tool):
 
-	icon = '/icons/glue_calculate.png'
+	icon = '/glue_calculate.png'
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -162,7 +162,7 @@ class CalculateButton(Tool):
 @viewer_tool
 class SortButton(CheckableTool):
 
-	icon = '/icons/glue_sort.png'
+	icon = '/glue_sort.png'
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
