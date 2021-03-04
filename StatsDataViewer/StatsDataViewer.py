@@ -21,7 +21,8 @@ from glue.utils.qt import load_ui
 from decimal import getcontext, Decimal
 from glue.core import DataCollection, Hub, HubListener, Data, coordinates
 from glue.core.message import DataMessage, DataCollectionMessage, SubsetMessage, SubsetCreateMessage, SubsetUpdateMessage, \
-	LayerArtistUpdatedMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage
+	LayerArtistUpdatedMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage, DataRemoveComponentMessage, DataCollectionDeleteMessage,\
+	SubsetDeleteMessage, EditSubsetMessage
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import QAction
 from glue.icons.qt import helpers
@@ -30,9 +31,10 @@ from qtpy import compat
 
 
 
+
 @viewer_tool
 class convertNotation(Tool):
-	icon = '/Users/jk317/Glue/icons/glue_decimal.png'
+	icon = '/icons/glue_scientific_notation.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -56,7 +58,7 @@ class convertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
-	icon = '/Users/jk317/Glue/icons/export.png'
+	icon = '/icons/glue_export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -96,7 +98,7 @@ class HomeButton(Tool):
 @viewer_tool
 class TreeButton(Tool):
 
-	icon = '/Users/jk317/Glue/icons/glue_hierarchy.png'
+	icon = '/icons/glue_hierarchy.png'
 	tool_id = 'move_tool'
 	action_text = 'move'
 	tool_tip = 'Drag to move'
@@ -118,7 +120,7 @@ class TreeButton(Tool):
 @viewer_tool
 class ExpandButton(Tool):
 
-	icon = '/Users/jk317/Glue/icons/glue_expand.png'
+	icon = '/icons/glue_expand.png'
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -139,7 +141,7 @@ class ExpandButton(Tool):
 @viewer_tool
 class CalculateButton(Tool):
 
-	icon = '/Users/jk317/Glue/icons/glue_calculate.png'
+	icon = '/icons/glue_calculate.png'
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -160,7 +162,7 @@ class CalculateButton(Tool):
 @viewer_tool
 class SortButton(CheckableTool):
 
-	icon = '/Users/jk317/Glue/icons/glue_sort.png'
+	icon = '/icons/glue_sort.png'
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
@@ -213,7 +215,7 @@ class StatsViewerStateWidget(QWidget):
 
 
 
-class StatsDataViewer(DataViewer, HubListener):
+class StatsDataViewer(DataViewer):
 
 	LABEL = 'Statistics viewer'
 	_state_cls = StatsViewerState
@@ -228,17 +230,19 @@ class StatsDataViewer(DataViewer, HubListener):
 	def __init__(self, *args, **kwargs):
 
 		super(StatsDataViewer, self).__init__(*args, **kwargs)
-		HubListener.__init__(self)
+		#HubListener.__init__(self)
 		self.xc = self.session.data_collection# dc = DataCollection()
 
 
-		self.xc.hub.subscribe(self, DataMessage, handler=self.messageReceived)
-		self.xc.hub.subscribe(self, SubsetCreateMessage, handler=self.messageReceived)
-		self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
-		self.xc.hub.subscribe(self, DataAddComponentMessage, handler=self.messageReceived)
-		self.xc.hub.subscribe(self, DataCollectionMessage, handler=self.messageReceived)
+		#self.xc.hub.subscribe(self, DataMessage, handler=self.messageReceived)
+		#self.xc.hub.subscribe(self, SubsetCreateMessage, handler=self.messageReceived)
+		#self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
+		#self.xc.hub.subscribe(self, DataAddComponentMessage, handler=self.messageReceived)
+		#self.xc.hub.subscribe(self, DataCollectionMessage, handler=self.newDataAddedMessage)
+		#self.xc.hub.subscribe(self, DataRemoveComponentMessage, handler=self.dataRemovedMessage)
+		#self.xc.hub.subscribe(self, SubsetUpdateMessage, handler=self.messageReceived)
 		#self.xc.hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.messageReceived)
-		self.xc.hub.subscribe(self, NumericalDataChangedMessage, handler=self.messageReceived)
+		#self.xc.hub.subscribe(self, NumericalDataChangedMessage, handler=self.messageReceived)
 
 		self.no_update = True
 		self.calculatedList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
@@ -258,15 +262,10 @@ class StatsDataViewer(DataViewer, HubListener):
 		# # Change has been made in the other
 		self.updateSubsetSort = False
 		self.updateComponentSort = False
-		self.drawTree()
-
-
-
-	def drawTree(self):
-
+		self.selected_indices = []
 		# Set up tree widget item
 		self.nestedtree = QTreeWidget(self)
-		self.nestedtree.setSelectionMode(QAbstractItemView.NoSelection)
+		self.nestedtree.setSelectionMode(QAbstractItemView.MultiSelection)
 
 
 		self.nestedtree.setColumnCount(6)
@@ -279,18 +278,180 @@ class StatsDataViewer(DataViewer, HubListener):
 		QTreeWidget.setHeaderLabels(self.nestedtree, self.headings)
 		#self.axes = plt.subplot(1, 1, 1)
 		self.setCentralWidget(self.nestedtree)
+
+		self.nestedtree.itemClicked.connect(self.check_status)
 		# Set up dicts for row indices
 		self.subset_dict = dict()
 		self.component_dict = dict()
 
 		self.selected_dict = dict()
-		self.selected_indices = []
-
 
 		# Sort by subsets as a default
 		self.sortBySubsets()
 
+		#keeps track of how much data and subsets are loaded in
+		self.dc_count = 0
+		self.subset_count = 0
 
+	def register_to_hub(self, hub):
+		super(StatsDataViewer, self).register_to_hub(hub)
+
+		hub.subscribe(self, DataCollectionMessage, handler=self.newDataAddedMessage)
+		hub.subscribe(self, DataCollectionDeleteMessage, handler=self.dataDeleteMessage)
+		hub.subscribe(self, SubsetCreateMessage, handler=self.subsetCreatedMessage)
+		hub.subscribe(self, SubsetDeleteMessage, handler=self.subsetDeleteMessage)
+		hub.subscribe(self, DataMessage, handler=self.dataMessage)
+		hub.subscribe(self, SubsetUpdateMessage, handler=self.subsetMessage)
+		hub.subscribe(self, EditSubsetMessage, handler=self.editSubsetMessage)
+		#hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.layerArtistUpdatedMessage)
+		#hub.subscribe(self, DataRemoveComponentMessage, handler=self.dataRemovedMessage)
+		#hub.subscribe(self, DataUpdateMessage, handler=self.dataRemovedMessage)
+
+
+	def check_status(self, item , col):
+
+		#if the viewer is in subset mode
+		if not self.component_mode:
+
+			if item.checkState(0):
+				print("checked")
+				#dataset = self.nestedtree.invisibleRootItem().child(0)
+				#if the data branch is selected, check everything under data branch
+				self.check_status_helper(2, item)
+
+			else:
+				print("unchecked")
+				self.check_status_helper(0, item) # 0 means to uncheck NOTE: This is different then checkState. 0 for checkState means it is checked
+
+
+	def check_status_helper(self, state, dataset):
+
+		dataset_count = dataset.childCount()
+		for x in range(dataset_count):
+			attribute_count = dataset.child(x).childCount()
+			dataset.child(x).setCheckState(0,state)
+
+			for y in range(attribute_count):
+				sub_attribute_count = dataset.child(x).child(y).childCount()
+				dataset.child(x).child(y).setCheckState(0,state)
+
+				#Only the subset section of the tree should be able to reach here
+				for z in range(sub_attribute_count):
+					dataset.child(x).child(y).child(z).setCheckState(0,state)
+
+
+	def subsetMessage(self, message):
+		print("detected change in subset attributes")
+
+	def dataMessage(self, message):
+		print("detected change in data attributes")
+		#print(message.sender)
+		#print(message.sender.partition('\n')[0])
+
+
+		#root = self.nestedtree.invisibleRootItem()
+		#data_branch = root.child(temp)
+
+
+	def editSubsetMessage(self, message):
+		print("detected subset edit")
+
+	def newDataAddedMessage(self, message):
+		print("detected new data added")
+		self.dc_count += 1
+
+
+		parentItem = QTreeWidgetItem(self.dataItem)
+		parentItem.setCheckState(0, 0)
+		i = self.dc_count
+		parentItem.setData(0, 0, '{}'.format(self.xc.labels[i]))
+		parentItem.setIcon(0, helpers.layer_icon(self.xc[i]))
+
+		# Make all the data components be children, nested under their parent
+		for j in range(0,len(self.xc[i].components)):
+
+			childItem = QTreeWidgetItem(parentItem)
+			childItem.setCheckState(0, 0)
+			childItem.setData(0, 0, '{}'.format(str(self.xc[i].components[j])))
+			childItem.setIcon(0, helpers.layer_icon(self.xc[i]))
+
+			# Add to the subset_dict
+			key = self.xc[i].label + self.xc[i].components[j].label + "All data-" + self.xc[i].label
+
+
+			self.num_rows = self.num_rows + 1
+
+	def subsetCreatedMessage(self,message):
+		print("detected new subset creation")
+		j = self.subset_count
+
+		grandparent = QTreeWidgetItem(self.subsetItem)
+		grandparent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label))
+		grandparent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
+		grandparent.setCheckState(0, 0)
+
+		for i in range(0, len(self.xc)):
+
+			parent = QTreeWidgetItem(grandparent)
+			parent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label) + ' (' + '{}'.format(self.xc[i].label) + ')')
+
+			parent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
+			parent.setCheckState(0, 0)
+
+
+			for k in range(0, len(self.xc[i].components)):
+
+				child = QTreeWidgetItem(parent)
+				child.setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
+				child.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
+				child.setCheckState(0, 0)
+
+				self.num_rows = self.num_rows + 1
+		self.subset_count += 1
+
+	def dataDeleteMessage(self,message):
+		print("detected data removal")
+		print(message)
+		self.deleteHelper('dataset')
+		self.dc_count -= 1
+
+	def subsetDeleteMessage(self, message):
+		print("detected subset deletion")
+		self.deleteHelper('subset')
+		self.subset_count -= 1
+
+	def deleteHelper(self, deletedType):
+		temp = -1
+		if deletedType == 'dataset':
+			temp = 0
+		if deletedType == 'subset':
+			temp = 1
+
+		if temp == -1:
+			print("invalid delete code")
+
+		root = self.nestedtree.invisibleRootItem()
+		#data branch of tree
+		data_branch = root.child(temp)
+		#counts the number of each dataset
+		child_count = data_branch.childCount()
+		current_list = np.array([])
+		past_list = np.array([])
+		#creates a list of the values in the outdated tree
+		for i in range(child_count):
+			past_list = np.append(past_list, data_branch.child(i).data(0,0))
+		#creates a list of the current values in the data_collection
+		for ds in self.xc:
+			current_list = np.append(current_list, ds.label)
+		print(current_list)
+		print(past_list)
+		print(np.setdiff1d(past_list, current_list)[0])
+		toBeRemoved = np.setdiff1d(past_list, current_list)[0]
+		toBeRemovedQItem = ''
+		for i in range(child_count):
+			if data_branch.child(i).data(0,0) == toBeRemoved:
+				toBeRemovedQItem = data_branch.child(i)
+		data_branch.removeChild(toBeRemovedQItem)
 
 	def initialize_toolbar(self):
 		super(StatsDataViewer, self).initialize_toolbar()
@@ -306,14 +467,8 @@ class StatsDataViewer(DataViewer, HubListener):
 		for qtwitem in item_List:
 			qtwitem.setExpanded(bool)
 
-	def messageReceived(self, message):
-		self.no_update = False
-		#self.past_itemMasterList = self.itemMasterList()
-		#self.expandAll(True)
-		self.drawTree()
-		print("asdfasdfasdfasdf")
-		#print(item_List)
-		print("stuff recalculated")
+	def reconfigureTree(self):
+		print("reconfiguring tree")
 
 	def pressedEventCalculate(self):
 		'''
@@ -322,7 +477,6 @@ class StatsDataViewer(DataViewer, HubListener):
 		if it is newly deselected, remove it from the table
 		'''
 
-		# Get the indexes of all the selected components
 		self.selected_indices = []
 
 		#print(self.selected_indices)
@@ -371,7 +525,7 @@ class StatsDataViewer(DataViewer, HubListener):
 		newly_selected = np.setdiff1d(self.selected_indices, self.past_selected)
 		#print(self.selected_indices)
 		#print("xaxaxaxa")
-
+		#print(self.selected_indices[0])
 		for index in range (0, len(newly_selected)):
 
 			# Check which view mode the tree is in to get the correct indices
@@ -415,7 +569,6 @@ class StatsDataViewer(DataViewer, HubListener):
 			for col_index in range (0, len(new_data)):
 				self.calculatedList = np.append(self.calculatedList, new_data[col_index])
 				if (col_index > 2):
-					#print("xxxxxx")
 					#print(new_data[col_index])
 					self.nestedtree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
 
@@ -468,7 +621,6 @@ class StatsDataViewer(DataViewer, HubListener):
 
 		return item_Master_List
 
-
 	def pressedEventExport(self):
 
 		file_name, fltr = compat.getsavefilename(caption="Choose an output filename")
@@ -513,14 +665,6 @@ class StatsDataViewer(DataViewer, HubListener):
 		# recalculate with new notation,
 		# data is cached already so it should be quick
 		self.pressedEventCalculate()
-
-		### uncheck everything
-		#for qtwitem in item_List:
-		#	qtwitem.setCheckState(0, 0)
-
-		### recheck checked list items
-		#for qtwitem in checked_list:
-		#	qtwitem.setCheckState(0, 2)
 
 	def decPlaces(self, intDecimal):
 		'''
@@ -760,23 +904,23 @@ class StatsDataViewer(DataViewer, HubListener):
 
 		# Make the table update whenever the selection in the tree is changed
 		selection_model = QItemSelectionModel(self.model_subsets)
-		self.nestedtree.setSelectionModel(selection_model)
+		#self.nestedtree.setSelectionModel(selection_model)
 		selection_model.selectionChanged.connect(self.myPressedEvent)
 
 	def generateSubsetView(self):
-		self.component_mode = False
+		#self.component_mode = False
 		self.model_subsets = QStandardItemModel()
 		self.model_subsets.setHorizontalHeaderLabels([''])
 
-		dataItem =  QTreeWidgetItem(self.nestedtree)
-		dataItem.setData(0, 0, '{}'.format('Data'))
+		self.dataItem =  QTreeWidgetItem(self.nestedtree)
+		self.dataItem.setData(0, 0, '{}'.format('Data'))
 		# dataItem.setExpanded(True)
-		dataItem.setCheckState(0, 0)
+		self.dataItem.setCheckState(0, 0)
 
 
 		for i in range(0, len(self.xc)):
 
-			parentItem = QTreeWidgetItem(dataItem)
+			parentItem = QTreeWidgetItem(self.dataItem)
 			parentItem.setCheckState(0, 0)
 			parentItem.setData(0, 0, '{}'.format(self.xc.labels[i]))
 			parentItem.setIcon(0, helpers.layer_icon(self.xc[i]))
@@ -797,13 +941,13 @@ class StatsDataViewer(DataViewer, HubListener):
 
 
 
-		subsetItem = QTreeWidgetItem(self.nestedtree)
-		subsetItem.setData(0, 0, '{}'.format('Subsets'))
-		subsetItem.setCheckState(0, 0)
+		self.subsetItem = QTreeWidgetItem(self.nestedtree)
+		self.subsetItem.setData(0, 0, '{}'.format('Subsets'))
+		self.subsetItem.setCheckState(0, 0)
 
 		for j in range(0, len(self.xc.subset_groups)):
 
-			grandparent = QTreeWidgetItem(subsetItem)
+			grandparent = QTreeWidgetItem(self.subsetItem)
 			grandparent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label))
 			grandparent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 			grandparent.setCheckState(0, 0)
