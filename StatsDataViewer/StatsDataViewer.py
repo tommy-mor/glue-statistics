@@ -49,7 +49,7 @@ class convertNotation(Tool):
 		return [self.decimalPoints]
 
 	def activate(self):
-		self.icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
+		#self.icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
 		#print("Convert button activate")
 		self.viewer.pressedEventConvertNotation(not self.viewer.isSci)
 
