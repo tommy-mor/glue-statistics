@@ -24,9 +24,10 @@ from glue.core.message import DataMessage, DataCollectionMessage, SubsetMessage,
 	LayerArtistUpdatedMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage, DataRemoveComponentMessage, DataCollectionDeleteMessage,\
 	SubsetDeleteMessage, EditSubsetMessage
 from PyQt5.QtGui import QStandardItemModel
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import QAction
 from glue.icons.qt import helpers
-from qtpy import compat
+from qtpy import compat, QtWidgets
 
 
 
