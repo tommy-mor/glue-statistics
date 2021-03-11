@@ -101,7 +101,7 @@ class TreeButton(Tool):
 
 	#icon = '/StatsDataViewer/glue_hierarchy.png'
 	tool_id = 'move_tool'
-	action_text = 'move'
+	action_text = 'Toggle View'
 	tool_tip = 'Drag to move'
 	status_tip = 'Drag to move'
 	shortcut = 'M'
