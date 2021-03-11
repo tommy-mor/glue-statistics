@@ -223,7 +223,7 @@ class StatsDataViewer(DataViewer):
 
 
 	_toolbar_cls = BasicToolbar
-	tools = ['home_tool', 'move_tool', 'calc_tool', 'sort_tool', 'notation_tool', 'decimal_place', 'export_tool'] #  'expand_tool'
+	tools = ['home_tool', 'move_tool', 'calc_tool', 'sort_tool', 'notation_tool', 'export_tool'] #  'expand_tool'
 
 
 
