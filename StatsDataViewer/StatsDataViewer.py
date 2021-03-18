@@ -33,7 +33,7 @@ from qtpy import compat, QtWidgets
 
 @viewer_tool
 class Refresh(Tool):
-	icon = '/Users/jk317/Glue/icons/glue_refresh.png'
+	#icon = '/Users/jk317/Glue/icons/glue_refresh.png'
 	tool_id = 'refresh'
 	action_text = 'Refresh'
 
