@@ -31,7 +31,16 @@ from qtpy import compat, QtWidgets
 
 
 
+@viewer_tool
+class Refresh(Tool):
+	icon = '/Users/jk317/Glue/icons/glue_refresh.png'
+	tool_id = 'refresh'
+	action_text = 'Refresh'
 
+	def __init__(self,viewer):
+		self.viewer = viewer
+	def activate(self):
+		self.viewer.refresh()
 
 @viewer_tool
 class convertNotation(Tool):
