@@ -93,7 +93,7 @@ class HomeButton(Tool):
 
 	#icon = '/StatsDataViewer/glue_home'
 	tool_id = 'home_tool'
-	action_text = 'Return to Home'
+	action_text = 'Home'
 	tool_tip = 'Click to return to home'
 	status_tip = 'Click to return to home'
 	shortcut = 'H'
