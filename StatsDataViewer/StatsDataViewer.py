@@ -31,8 +31,8 @@ from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 auto_refresh(True)
 REFRESH_ICON = os.path.join(os.path.dirname(__file__), 'glue_refresh')
-RECORD_STOP_ICON = os.path.join(os.path.dirname(__file__), 'glue_record_stop.png')
-ROTATE_ICON = os.path.join(os.path.dirname(__file__), 'glue_rotate.png')
+#RECORD_STOP_ICON = os.path.join(os.path.dirname(__file__), 'glue_record_stop.png')
+#ROTATE_ICON = os.path.join(os.path.dirname(__file__), 'glue_rotate.png')
 
 
 @viewer_tool
