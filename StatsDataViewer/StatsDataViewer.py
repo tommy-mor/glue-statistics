@@ -30,7 +30,7 @@ from glue.icons.qt import helpers
 from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 auto_refresh(True)
-REFRESH_ICON = os.getcwd()[3:]
+REFRESH_ICON = os.path.join(os.path.dirname(os.getcwd()), 'glue_refresh.png')
 #REFRESH_ICON = os.path.join(os.path.dirname(__file__), 'glue_refresh')
 #RECORD_STOP_ICON = os.path.join(os.path.dirname(__file__), 'glue_record_stop.png')
 #ROTATE_ICON = os.path.join(os.path.dirname(__file__), 'glue_rotate.png')
@@ -39,7 +39,7 @@ REFRESH_ICON = os.getcwd()[3:]
 @viewer_tool
 class Refresh(Tool):
 
-	icon = REFRESH_ICON + 'glue_refresh'
+	icon = REFRESH_ICON
 	tool_id = 'refresh'
 	action_text = 'Refresh for linked data'
 
