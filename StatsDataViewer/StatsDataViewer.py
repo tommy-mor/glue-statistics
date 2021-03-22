@@ -30,12 +30,15 @@ from glue.icons.qt import helpers
 from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 auto_refresh(True)
+REFRESH_ICON = os.path.join(os.path.dirname(__file__), 'glue_refresh')
+RECORD_STOP_ICON = os.path.join(os.path.dirname(__file__), 'glue_record_stop.png')
+ROTATE_ICON = os.path.join(os.path.dirname(__file__), 'glue_rotate.png')
 
 
 @viewer_tool
 class Refresh(Tool):
 
-	icon = 'glue_refresh'
+	icon = REFRESH_ICON
 	tool_id = 'refresh'
 	action_text = 'Refresh for linked data'
 
@@ -46,7 +49,7 @@ class Refresh(Tool):
 
 @viewer_tool
 class SelectDecimalPoints(Tool):
-	icon = 'glue_scientific_notation.png'
+	icon = REFRESH_ICON #'glue_scientific_notation.png'
 	tool_id = 'decimal_place'
 	action_text = 'Convert'
 
@@ -69,7 +72,7 @@ class SelectDecimalPoints(Tool):
 
 @viewer_tool
 class ConvertNotation(Tool):
-	icon = 'glue_scientific_notation.png'
+	icon = REFRESH_ICON #'glue_scientific_notation.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -89,7 +92,7 @@ class ConvertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
-	icon = 'glue_export.png'
+	icon = REFRESH_ICON #'glue_export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -109,7 +112,7 @@ class ExportButton(Tool):
 
 @viewer_tool
 class HomeButton(Tool):
-	icon = 'glue_home'
+	icon = REFRESH_ICON #'glue_home'
 	tool_id = 'home_tool'
 	action_text = 'Return to Home'
 	tool_tip = 'Click to return to home'
@@ -130,7 +133,7 @@ class HomeButton(Tool):
 
 @viewer_tool
 class TreeButton(Tool):
-	icon = 'glue_hierarchy.png'
+	icon = REFRESH_ICON #'glue_hierarchy.png'
 	tool_id = 'move_tool'
 	action_text = 'switch view'
 	tool_tip = 'toggle view'
@@ -149,7 +152,7 @@ class TreeButton(Tool):
 
 @viewer_tool
 class ExpandButton(Tool):
-	icon = 'glue_expand.png'
+	icon = REFRESH_ICON #'glue_expand.png'
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -169,7 +172,7 @@ class ExpandButton(Tool):
 
 @viewer_tool
 class CalculateButton(Tool):
-	icon = 'glue_calculate.png'
+	icon = REFRESH_ICON #'glue_calculate.png'
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -189,7 +192,7 @@ class CalculateButton(Tool):
 
 @viewer_tool
 class SortButton(CheckableTool):
-	icon = 'glue_sort.png'
+	icon = REFRESH_ICON #'glue_sort.png'
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
