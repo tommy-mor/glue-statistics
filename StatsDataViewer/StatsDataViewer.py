@@ -382,17 +382,81 @@ class StatsDataViewer(DataViewer):
 		hub.subscribe(self, SubsetDeleteMessage, handler=self.subsetDeleteMessage)
 		hub.subscribe(self, DataUpdateMessage, handler=self.dataUpdateMessage)
 		hub.subscribe(self, SubsetUpdateMessage, handler=self.subsetUpdateMessage)
-		#hub.subscribe(self, ExternallyDerivableComponentsChangedMessage, handler= self.linkedMessage)
-		#hub.subscribe(self, EditSubsetMessage, handler=self.editSubsetMessage)
+		hub.subscribe(self, EditSubsetMessage, handler=self.editSubsetMessage)
 		#hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.layerArtistUpdatedMessage)
 		#hub.subscribe(self, DataRemoveComponentMessage, handler=self.dataRemovedMessage)
 		#hub.subscribe(self, DataUpdateMessage, handler=self.editSubsetMessage)
 		#hub.subscribe(self, DataCollectionActiveChange, handler=self.editSubsetMessage)
 		#DataCollectionActiveChange
 
-	def linkedMessage(self, message):
-		print("detected link")
-		print(message)
+	def editSubsetMessage(self, message):
+		#print("edit detected")
+		editedSubset = ''
+		#the sender._edit_subset is a list that has only one element, but use for loop just in case
+		#print(message.sender._edit_subset)
+		for x in message.sender._edit_subset:
+			editedSubset = x.label
+
+		#print("subset name: " + str(editedSubset))
+		if not editedSubset == '':
+			#update the subset view
+			list = []
+			subset_branch = self.subsetTree.invisibleRootItem().child(1)
+			#j = ''
+			#grandparent = ''
+			for subset_i in range (0, subset_branch.childCount()):
+				subset_group = subset_branch.child(subset_i)
+				if subset_branch.child(subset_i).data(0,0) == editedSubset:
+					for data in range(0,subset_group.childCount()):
+						for component in range(0,subset_group.child(data).childCount()):
+							item = self.subsetTree.indexFromItem(subset_branch.child(subset_i).child(data).child(component))
+							print(subset_group.child(data).child(component).data(0,0))
+							print(self.subsetTree.itemFromIndex(item).data(1,0))
+							print(self.subsetTree.itemFromIndex(item).data(2,0))
+							if self.subsetTree.itemFromIndex(item).data(1,0) == None:
+								print("empty")
+								break # nothing is calculated, automatically updated
+							elif subset_group.data(0,0) == editedSubset and self.subsetTree.itemFromIndex(item).data(1,0) != None:
+								print("remove values")
+								#item = self.subsetTree.indexFromItem(subset_branch.child(subset_i).child(data).child(component))
+
+								data_i = item.parent().row()
+								comp_i = item.row()
+								subset_i = item.parent().parent().row()
+
+								subset_label = self.xc[data_i].subsets[subset_i].label
+								data_label = self.xc[data_i].label
+								comp_label = self.xc[data_i].components[comp_i].label # add to the name array to build the table
+								# Build the cache key
+								cache_key = subset_label + data_label + comp_label
+
+								self.cache_stash.pop(cache_key)
+								for col in range(0,7):
+									 self.subsetTree.itemFromIndex(item).setData(col,0,None)
+								#subset_group.child(component).setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
+								#subset_group.child(component).setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
+								#subset_group.child(component).setCheckState(0, 0)
+								#return #subset has been updated, no need to keep searching
+								#j = subset_i
+								#index = self.subsetTree.indexFromItem(subset_branch.child(subset_i))
+								#grandparent = self.subsetTree.itemFromIndex(index)
+
+			#if j=='' or grandparent=='':
+			#	return
+			'''else:
+				for i in range(0, len(self.xc)):
+					parent = QTreeWidgetItem(grandparent)
+					parent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label) + ' (' + '{}'.format(self.xc[i].label) + ')')
+					parent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
+					parent.setCheckState(0, 0)
+					for k in range(0, len(self.xc[i].components)):
+						if subset_branch.child(subset_i).data(0,0) == editedSubset:
+							child = QTreeWidgetItem(parent)
+							child.setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
+							child.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
+							child.setCheckState(0, 0)
+
+			'''
 
 	def check_status(self, item , col):
 
@@ -648,9 +712,6 @@ class StatsDataViewer(DataViewer):
 							new_label = str(subset_branch.child(i).child(x).data(0,0)).replace(str(old_name),str(new_name))
 							subset_branch.child(i).child(x).setData(0,0,new_label)'''
 
-	def editSubsetMessage(self, message):
-		print("TESTESTESTEST")
-
 	def newDataAddedMessage(self, message):
 		print("detected new data added")
 		#self.dc_count += 1
@@ -723,7 +784,7 @@ class StatsDataViewer(DataViewer):
 		index1 = str(message).index("Subset: ") + len("Subset: ")
 		index2 = str(message).index(" (data: ")
 		current_subset = str(message)[index1:index2]
-		print(current_subset)
+		#print(current_subset)
 
 		#For subset view
 
