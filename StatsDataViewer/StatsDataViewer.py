@@ -34,7 +34,7 @@ auto_refresh(True)
 cwd = os.getcwd()
 @viewer_tool
 class Refresh(Tool):
-	icon =  cwd + '\glue_refresh.png'
+	icon =  cwd + '\glue_refresh.png'[1:]
 	tool_id = 'refresh'
 	action_text = 'Refresh for linked data'
 
