@@ -20,14 +20,16 @@ from glue.viewers.common.qt.toolbar import BasicToolbar
 from glue.utils.qt import load_ui
 from decimal import getcontext, Decimal
 from glue.core import DataCollection, Hub, HubListener, Data, coordinates
-from glue.core.message import DataMessage, DataCollectionMessage, SubsetMessage, SubsetCreateMessage, SubsetUpdateMessage, \
+from glue.core.message import  DataMessage, DataCollectionMessage, SubsetMessage, SubsetCreateMessage, SubsetUpdateMessage, \
 	LayerArtistUpdatedMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage, DataRemoveComponentMessage, DataCollectionDeleteMessage,\
-	SubsetDeleteMessage, EditSubsetMessage
+	SubsetDeleteMessage, EditSubsetMessage, DataCollectionActiveChange
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QTabWidget
 from glue.icons.qt import helpers
 from qtpy import compat, QtWidgets
+from glue.config import auto_refresh
+auto_refresh(True)
 
 
 
