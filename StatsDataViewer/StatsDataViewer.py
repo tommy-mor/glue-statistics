@@ -31,9 +31,10 @@ from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 auto_refresh(True)
 
-cwd = os.getcwd()
+
 @viewer_tool
 class Refresh(Tool):
+	cwd = os.getcwd()
 	icon =  cwd + '\glue_refresh.png'[1:]
 	tool_id = 'refresh'
 	action_text = 'Refresh for linked data'
@@ -45,6 +46,7 @@ class Refresh(Tool):
 
 @viewer_tool
 class SelectDecimalPoints(Tool):
+	cwd = os.getcwd()
 	icon = cwd + '\glue_scientific_notation.png'[1:]
 	tool_id = 'decimal_place'
 	action_text = 'Convert'
@@ -68,6 +70,7 @@ class SelectDecimalPoints(Tool):
 
 @viewer_tool
 class ConvertNotation(Tool):
+	cwd = os.getcwd()
 	icon = cwd + '\glue_scientific_notation.png'[1:]
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
@@ -88,6 +91,7 @@ class ConvertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
+	cwd = os.getcwd()
 	icon = cwd + '\glue_export.png'[1:]
 	tool_id = 'export_tool'
 	action_text = 'Export'
@@ -108,7 +112,7 @@ class ExportButton(Tool):
 
 @viewer_tool
 class HomeButton(Tool):
-
+	cwd = os.getcwd()
 	icon = cwd + '\glue_home'[1:]
 	tool_id = 'home_tool'
 	action_text = 'Return to Home'
@@ -130,7 +134,7 @@ class HomeButton(Tool):
 
 @viewer_tool
 class TreeButton(Tool):
-
+	cwd = os.getcwd()
 	icon = cwd + '\glue_hierarchy.png'[1:]
 	tool_id = 'move_tool'
 	action_text = 'switch view'
@@ -150,7 +154,7 @@ class TreeButton(Tool):
 
 @viewer_tool
 class ExpandButton(Tool):
-
+	cwd = os.getcwd()
 	icon = cwd + '\glue_expand.png'[1:]
 	tool_id = 'expand_tool'
 	action_text = 'expand'
@@ -171,7 +175,7 @@ class ExpandButton(Tool):
 
 @viewer_tool
 class CalculateButton(Tool):
-
+	cwd = os.getcwd()
 	icon = cwd + '\glue_calculate.png'[1:]
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
@@ -192,7 +196,7 @@ class CalculateButton(Tool):
 
 @viewer_tool
 class SortButton(CheckableTool):
-
+	cwd = os.getcwd()
 	icon = cwd + '\glue_sort.png'[1:]
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
