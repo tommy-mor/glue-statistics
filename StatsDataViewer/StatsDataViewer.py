@@ -45,7 +45,7 @@ class Refresh(Tool):
 
 @viewer_tool
 class SelectDecimalPoints(Tool):
-	icon = '\glue_scientific_notation.png'
+	icon = cwd + '\glue_scientific_notation.png'[1:]
 	tool_id = 'decimal_place'
 	action_text = 'Convert'
 
@@ -68,7 +68,7 @@ class SelectDecimalPoints(Tool):
 
 @viewer_tool
 class ConvertNotation(Tool):
-	icon = '\glue_scientific_notation.png'
+	icon = cwd + '\glue_scientific_notation.png'[1:]
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -88,7 +88,7 @@ class ConvertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
-	icon = '\glue_export.png'
+	icon = cwd + '\glue_export.png'[1:]
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -109,7 +109,7 @@ class ExportButton(Tool):
 @viewer_tool
 class HomeButton(Tool):
 
-	icon = '\glue_home'
+	icon = cwd + '\glue_home'[1:]
 	tool_id = 'home_tool'
 	action_text = 'Return to Home'
 	tool_tip = 'Click to return to home'
@@ -131,7 +131,7 @@ class HomeButton(Tool):
 @viewer_tool
 class TreeButton(Tool):
 
-	icon = '\glue_hierarchy.png'
+	icon = cwd + '\glue_hierarchy.png'[1:]
 	tool_id = 'move_tool'
 	action_text = 'switch view'
 	tool_tip = 'toggle view'
@@ -151,7 +151,7 @@ class TreeButton(Tool):
 @viewer_tool
 class ExpandButton(Tool):
 
-	icon = '\glue_expand.png'
+	icon = cwd + '\glue_expand.png'[1:]
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -172,7 +172,7 @@ class ExpandButton(Tool):
 @viewer_tool
 class CalculateButton(Tool):
 
-	icon = '\glue_calculate.png'
+	icon = cwd + '\glue_calculate.png'[1:]
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -193,7 +193,7 @@ class CalculateButton(Tool):
 @viewer_tool
 class SortButton(CheckableTool):
 
-	icon = '\glue_sort.png'
+	icon = cwd + '\glue_sort.png'[1:]
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
