@@ -32,12 +32,11 @@ from glue.config import auto_refresh
 auto_refresh(True)
 
 
-
 @viewer_tool
 class Refresh(Tool):
-	#icon = '/Users/jk317/Glue/icons/glue_refresh.png'
+	icon = 'glue_refresh.png'
 	tool_id = 'refresh'
-	action_text = 'Refresh'
+	action_text = 'Refresh for linked data'
 
 	def __init__(self,viewer):
 		self.viewer = viewer
@@ -45,8 +44,31 @@ class Refresh(Tool):
 		self.viewer.refresh()
 
 @viewer_tool
-class convertNotation(Tool):
-	#icon = '/StatsDataViewer/glue_scientific_notation.png'
+class SelectDecimalPoints(Tool):
+	icon = 'glue_scientific_notation.png'
+	tool_id = 'decimal_place'
+	action_text = 'Convert'
+
+	def __init__(self,viewer):
+		self.viewer = viewer
+
+	def menu_actions(self):
+		result = []
+		a = QtWidgets.QAction("Decimal Points", None)
+		a.triggered.connect(self.test)
+		result.append(a)
+		a = QtWidgets.QAction("Points", None)
+		a.triggered.connect(self.test)
+		result.append(a)
+		return result
+	def test(self):
+		print("test")
+#	def activate(self):
+	#	self.viewer.test2()
+
+@viewer_tool
+class ConvertNotation(Tool):
+	icon = 'glue_scientific_notation.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -55,10 +77,6 @@ class convertNotation(Tool):
 
 	def __init__(self,viewer):
 		self.viewer = viewer
-
-	def menu_actions(self):
-		self.decimalPoints = QAction("Decimal Points")
-		return [self.decimalPoints]
 
 	def activate(self):
 		#self.icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
@@ -70,7 +88,7 @@ class convertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
-	#icon = '/StatsDataViewer/glue_export.png'
+	icon = 'glue_export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -91,9 +109,9 @@ class ExportButton(Tool):
 @viewer_tool
 class HomeButton(Tool):
 
-	#icon = '/StatsDataViewer/glue_home'
+	icon = 'glue_home'
 	tool_id = 'home_tool'
-	action_text = 'Home'
+	action_text = 'Return to Home'
 	tool_tip = 'Click to return to home'
 	status_tip = 'Click to return to home'
 	shortcut = 'H'
@@ -102,7 +120,10 @@ class HomeButton(Tool):
 		self.viewer = viewer
 
 	def activate(self):
-		self.viewer.nestedtree.collapseAll()
+		if self.viewer.tabs.currentIndex() == 0:
+			self.viewer.subsetTree.collapseAll()
+		elif self.viewer.tabs.currentIndex() == 1:
+			self.viewer.componentTree.collapseAll()
 
 	def close(self):
 		pass
@@ -110,21 +131,19 @@ class HomeButton(Tool):
 @viewer_tool
 class TreeButton(Tool):
 
-	#icon = '/StatsDataViewer/glue_hierarchy.png'
+	icon = 'glue_hierarchy.png'
 	tool_id = 'move_tool'
-	action_text = 'Toggle View'
-	tool_tip = 'Drag to move'
-	status_tip = 'Drag to move'
+	action_text = 'switch view'
+	tool_tip = 'toggle view'
+	status_tip = 'toggle view'
 	shortcut = 'M'
 
 	def __init__(self, viewer):
 		self.viewer = viewer
 
 	def activate(self):
-		if self.viewer.component_mode:
-			self.viewer.sortBySubsets()
-		else:
-			self.viewer.sortByComponents()
+		self.viewer.sortByComponents()
+		self.viewer.component_mode = True
 
 	def close(self):
 		pass
@@ -132,7 +151,7 @@ class TreeButton(Tool):
 @viewer_tool
 class ExpandButton(Tool):
 
-	#icon = '/StatsDataViewer/glue_expand.png'
+	icon = 'glue_expand.png'
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -153,7 +172,7 @@ class ExpandButton(Tool):
 @viewer_tool
 class CalculateButton(Tool):
 
-	#icon = '/StatsDataViewer/glue_calculate.png'
+	icon = 'glue_calculate.png'
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -165,7 +184,7 @@ class CalculateButton(Tool):
 
 	def activate(self):
 		#print("Calculate button activate")
-		self.viewer.pressedEventCalculate()
+		self.viewer.pressedEventCalculate(False)
 		#print(self.viewer.layers[0].layer)
 
 	def close(self):
@@ -174,7 +193,7 @@ class CalculateButton(Tool):
 @viewer_tool
 class SortButton(CheckableTool):
 
-	#icon = '/StatsDataViewer/glue_sort.png'
+	icon = 'glue_sort.png'
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
@@ -224,7 +243,6 @@ class StatsViewerStateWidget(QWidget):
 
 		self.viewer_state = viewer_state
 		self._connections = autoconnect_callbacks_to_qt(self.viewer_state, self.ui)
-
 
 
 class StatsDataViewer(DataViewer):
