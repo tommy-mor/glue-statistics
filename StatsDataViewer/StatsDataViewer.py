@@ -30,18 +30,13 @@ from glue.icons.qt import helpers
 from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 auto_refresh(True)
-#REFRESH_ICON = os.path.join(os.path.dirname(os.getcwd()), 'glue_refresh.png')
-#REFRESH_ICON = os.path.join(os.path.dirname(__file__), 'glue_refresh')
-#RECORD_STOP_ICON = os.path.join(os.path.dirname(__file__), 'glue_record_stop.png')
-#ROTATE_ICON = os.path.join(os.path.dirname(__file__), 'glue_rotate.png')
 
 
 @viewer_tool
 class Refresh(Tool):
-
-	#icon = REFRESH_ICON
+	#icon = '/Users/jk317/Glue/icons/glue_refresh.png'
 	tool_id = 'refresh'
-	action_text = 'Refresh'
+	action_text = 'Refresh for linked data'
 
 	def __init__(self,viewer):
 		self.viewer = viewer
@@ -50,7 +45,7 @@ class Refresh(Tool):
 
 @viewer_tool
 class SelectDecimalPoints(Tool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_scientific_notation.png'
+	#icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
 	tool_id = 'decimal_place'
 	action_text = 'Convert'
 
@@ -73,7 +68,7 @@ class SelectDecimalPoints(Tool):
 
 @viewer_tool
 class ConvertNotation(Tool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_scientific_notation.png'
+	#icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -93,7 +88,7 @@ class ConvertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_export.png'
+	#icon = '/Users/jk317/Glue/icons/glue_export.png'
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -113,9 +108,10 @@ class ExportButton(Tool):
 
 @viewer_tool
 class HomeButton(Tool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_home'
+
+	#icon = 'glue_home'
 	tool_id = 'home_tool'
-	action_text = 'Home'
+	action_text = 'Return to Home'
 	tool_tip = 'Click to return to home'
 	status_tip = 'Click to return to home'
 	shortcut = 'H'
@@ -134,7 +130,8 @@ class HomeButton(Tool):
 
 @viewer_tool
 class TreeButton(Tool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_hierarchy.png'
+
+	#icon = '/Users/jk317/Glue/icons/glue_hierarchy.png'
 	tool_id = 'move_tool'
 	action_text = 'switch view'
 	tool_tip = 'toggle view'
@@ -153,7 +150,8 @@ class TreeButton(Tool):
 
 @viewer_tool
 class ExpandButton(Tool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_expand.png'
+
+	#icon = '/Users/jk317/Glue/icons/glue_expand.png'
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -173,7 +171,8 @@ class ExpandButton(Tool):
 
 @viewer_tool
 class CalculateButton(Tool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_calculate.png'
+
+	#icon = '/Users/jk317/Glue/icons/glue_calculate.png'
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -193,7 +192,8 @@ class CalculateButton(Tool):
 
 @viewer_tool
 class SortButton(CheckableTool):
-	#icon = REFRESH_ICON + 'glue_refresh' #'glue_sort.png'
+
+	#icon = '/Users/jk317/Glue/icons/glue_sort.png'
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
@@ -206,9 +206,9 @@ class SortButton(CheckableTool):
 
 	def activate(self):
 		# ifSortingEnabled(), disable, otherwise, enable
-		if self.viewer.tabs.currentIndex() == 0:
+		if self.tabs.currentIndex() == 0:
 			self.viewer.sortedTree.setSortingEnabled(True)
-		elif self.vewer.tabs.currentIndex() == 1:
+		elif self.tabs.currentIndex() == 1:
 			self.viewer.componentTree.setSortingEnabled(True)
 
 	def deactivate(self):
@@ -454,32 +454,31 @@ class StatsDataViewer(DataViewer):
 								cache_key = subset_label + data_label + comp_label
 
 								self.cache_stash.pop(cache_key)
-								for col in range(0,7):
+								for col in range(1,6):
 									 self.subsetTree.itemFromIndex(item).setData(col,0,None)
-								#subset_group.child(component).setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
-								#subset_group.child(component).setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
-								#subset_group.child(component).setCheckState(0, 0)
-								#return #subset has been updated, no need to keep searching
-								#j = subset_i
-								#index = self.subsetTree.indexFromItem(subset_branch.child(subset_i))
-								#grandparent = self.subsetTree.itemFromIndex(index)
 
-			#if j=='' or grandparent=='':
-			#	return
-			'''else:
-				for i in range(0, len(self.xc)):
-					parent = QTreeWidgetItem(grandparent)
-					parent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label) + ' (' + '{}'.format(self.xc[i].label) + ')')
-					parent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
-					parent.setCheckState(0, 0)
-					for k in range(0, len(self.xc[i].components)):
-						if subset_branch.child(subset_i).data(0,0) == editedSubset:
-							child = QTreeWidgetItem(parent)
-							child.setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
-							child.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
-							child.setCheckState(0, 0)
+			#update the component view
+			ct = self.componentTree.invisibleRootItem()
+			for d in range(0,ct.childCount()):
+				for c in range(0, ct.child(d).childCount()):
+					for s in range(0, ct.child(d).child(c).childCount()):
+						item = self.componentTree.indexFromItem(self.componentTree.invisibleRootItem().child(d).child(c).child(s))
+						if self.componentTree.itemFromIndex(item).data(1,0) == None:
+							break
+						elif ct.child(d).child(c).child(s).data(0,0) == editedSubset and self.componentTree.itemFromIndex(item).data(1,0) != None:
+							data_i = item.parent().parent().row()
+							comp_i = item.parent().row()
+							subset_i = item.row() - 1
 
-			'''
+							subset_label = self.xc[data_i].subsets[subset_i].label
+							data_label = self.xc[data_i].label
+							comp_label = self.xc[data_i].components[comp_i].label
+
+							# Build the cache key
+							cache_key = subset_label + data_label + comp_label
+							self.cache_stash.pop(cache_key)
+							for col in range(1,6):
+								 self.componentTree.itemFromIndex(item).setData(col,0,None)
 
 	def check_status(self, item , col):
 
@@ -886,61 +885,7 @@ class StatsDataViewer(DataViewer):
 			#print("dc count:" + str(self.dc_count))
 
 			#if new sub-subset needs to be added
-		'''
-		if current_subset in self.subset_dict and self.subset_dict.get(current_subset) != self.dc_count:
-			print("adding additional subset groups")
-			list = []
-			subset_branch = self.nestedtree.invisibleRootItem().child(1)
 
-			#get the current datasets represented in the current subset
-			for i in range(0, subset_branch.childCount()):
-				subset = subset_branch.child(i)
-				if subset.data(0,0) == current_subset:
-					for x in range(0, subset.childCount()):
-						list.append(subset.child(x))
-
-			#find the current subset
-			temp_subset = ''
-			for i in range(0, len(self.xc.subset_groups)):
-				if self.xc.subset_groups[i].label == current_subset:
-					temp_subset = self.xc.subset_groups[i]
-			print(len(temp_subset.components))
-
-			#find dataset not represented in nestedtree and add
-			for x in range(0, len(temp_subset)):
-				unaddedData = self.xc.subset_groups[i]
-				if not unaddedData.label in list:
-					j = self.xc.subset_groups
-
-					parent = QTreeWidgetItem(grandparent)
-					parent.setData(0, 0, '{}'.format(unadded.label) + ' (' + '{}'.format(self.xc[i].label) + ')')
-					parent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
-					parent.setCheckState(0, 0)
-
-					disableSubset = False
-					temp = False
-					for k in range(0, len(self.xc[i].components)):
-						child = QTreeWidgetItem(parent)
-						child.setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
-						child.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
-						child.setCheckState(0, 0)
-
-						if (not disableSubset) and (not temp):
-							try:
-								 self.xc[i].compute_statistic('minimum', self.xc[i].subsets[j].components[k], subset_state=self.xc.subset_groups[j].subset_state)
-								 #self.xc[i].compute_statistic('minimum', self.dc[i].subsets[j].components[k], subset_state=self.dc[i].subsets[j].subset_state)
-								 temp = True
-							except:
-								#child.setData(0, Qt.CheckStateRole, QVariant())
-								disableSubset = True
-						if disableSubset:
-							child.setData(0, Qt.CheckStateRole, QVariant())
-							child.setForeground(0,QtGui.QBrush(Qt.gray))
-
-						self.num_rows = self.num_rows + 1
-
-
-			'''
 
 	def dataDeleteMessage(self,message):
 		print("detected data removal")
@@ -1020,7 +965,7 @@ class StatsDataViewer(DataViewer):
 				self.subset_dict.pop(str(toBeRemoved))
 
 	def initialize_toolbar(self):
-		super(StatsDataViewer,self).initialize_toolbar()
+		super(StatsDataViewer, self).initialize_toolbar()
 		BasicToolbar.setContextMenuPolicy(self,Qt.PreventContextMenu)
 
 	def myPressedEvent(self, currentQModelIndex):
@@ -1153,17 +1098,57 @@ class StatsDataViewer(DataViewer):
 					elif self.tabs.currentIndex() == 1:
 						self.componentTree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
 
-	def pressedEventExport(self):
+	def getCurrentCalculated(self):
+		currentCalculated = -1
+		if self.tabs.currentIndex() == 0:
+			currentCalculated = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
+			#data
+			st = self.subsetTree.invisibleRootItem().child(0)
+			for x in range(0,st.childCount()):
+				for y in range(0, st.child(x).childCount()):
+					item = self.subsetTree.indexFromItem(st.child(x).child(y))
+					if self.subsetTree.itemFromIndex(item).data(3,0) != None:
+						currentCalculated = np.append(currentCalculated, '--') # no subset
+						currentCalculated = np.append(currentCalculated, st.child(x).data(0,0)) # dataset
+						for t in range(0, 6):
+							currentCalculated = np.append(currentCalculated, self.subsetTree.itemFromIndex(item).data(t,0))
+			#subset
+			st = self.subsetTree.invisibleRootItem().child(1)
+			for x in range(0,st.childCount()):
+				for y in range(0, st.child(x).childCount()):
+					for z in range(0,st.child(x).child(y).childCount()):
+						item = self.subsetTree.indexFromItem(st.child(x).child(y).child(z))
+						if self.subsetTree.itemFromIndex(item).data(3,0) != None:
+							currentCalculated = np.append(currentCalculated, st.child(x).child(y).data(0,0)) #subset(data) name
+							temp = str(st.child(x).child(y).data(0,0))
+							index1 = temp.index("(")+1
+							index2 = temp.index(")")
+							dataset_name = temp[index1:index2]
+							currentCalculated = np.append(currentCalculated, dataset_name) #dataset name
+							for t in range(0, 6):
+								currentCalculated = np.append(currentCalculated, self.subsetTree.itemFromIndex(item).data(t,0))
 
+		elif self.tabs.currentIndex() == 1:
+			currentCalculated = np.array(["Dataset,Component,Subset,Mean,Median,Minimum,Maximum,Sum"])
+			ct = self.componentTree.invisibleRootItem()
+			for x in range(0,ct.childCount()):
+				for y in range(0, ct.child(x).childCount()):
+					for z in range(0,ct.child(x).child(y).childCount()):
+						item = self.componentTree.indexFromItem(ct.child(x).child(y).child(z))
+						if self.componentTree.itemFromIndex(item).data(3,0) != None:
+							currentCalculated = np.append(currentCalculated, ct.child(x).data(0,0)) #dataset
+							currentCalculated = np.append(currentCalculated, ct.child(x).child(y).data(0,0)) #component
+							for t in range(0, 6):
+								currentCalculated = np.append(currentCalculated, self.componentTree.itemFromIndex(item).data(t,0))
+
+		return currentCalculated
+
+	def pressedEventExport(self):
+		df = self.getCurrentCalculated()
 		file_name, fltr = compat.getsavefilename(caption="Choose an output filename")
 		try:
-			if self.tabs.currentIndex() == 0:
-				df = pd.DataFrame(self.calculatedSubsetViewList)
-				df.to_csv(str(file_name), header=None ,index=None)
-			elif self.tabs.currentIndex() == 1:
-				print(self.calculatedComponentViewList)
-				df = pd.DataFrame(self.calculatedComponentViewList)
-				df.to_csv(str(file_name), header=None ,index=None)
+			df = pd.DataFrame(df)
+			df.to_csv(str(file_name), header=None ,index=None)
 		except:
 			print("Export failed ")
 
