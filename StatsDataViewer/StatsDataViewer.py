@@ -1019,9 +1019,9 @@ class StatsDataViewer(DataViewer):
 				#self.subset_set.remove(str(toBeRemoved))
 				self.subset_dict.pop(str(toBeRemoved))
 
-	def initialize_toolbar(self):
-		super(self, StatsDataViewer, None).initialize_toolbar()
-		BasicToolbar.setContextMenuPolicy(self,Qt.PreventContextMenu)
+	#def initialize_toolbar(self):
+	#	super(self, StatsDataViewer, None).initialize_toolbar()
+	#	BasicToolbar.setContextMenuPolicy(self,Qt.PreventContextMenu)
 
 	def myPressedEvent(self, currentQModelIndex):
 		pass
