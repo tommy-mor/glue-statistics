@@ -191,7 +191,7 @@ class CalculateButton(Tool):
 		pass
 
 @viewer_tool
-class SortButton(CheckableTool):
+class SortButton(Tool):
 
 	#icon = '/Users/jk317/Glue/icons/glue_sort.png'
 	tool_id = 'sort_tool'
@@ -201,8 +201,8 @@ class SortButton(CheckableTool):
 	shortcut = 'S'
 
 	def __init__(self, viewer):
-		super(CheckableTool, self).__init__(viewer)
-		# self.viewer = viewer
+		#super(Tool, self).__init__(viewer)
+		 self.viewer = viewer
 
 	def activate(self):
 		# ifSortingEnabled(), disable, otherwise, enable
@@ -212,8 +212,10 @@ class SortButton(CheckableTool):
 			self.viewer.componentTree.setSortingEnabled(True)
 
 	def deactivate(self):
-		self.viewer.nestedtree.setSortingEnabled(False)
-		# pass
+		if self.viewer.tabs.currentIndex() == 0:
+			self.viewer.subsetTree.setSortingEnabled(False)
+		elif self.viewer.tabs.currentIndex() == 1:
+			self.viewer.componentTree.setSortingEnabled(False)
 
 	def close(self):
 		pass
