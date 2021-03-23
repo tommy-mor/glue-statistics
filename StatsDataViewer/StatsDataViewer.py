@@ -1020,7 +1020,7 @@ class StatsDataViewer(DataViewer):
 				self.subset_dict.pop(str(toBeRemoved))
 
 	def initialize_toolbar(self):
-		super(self, StatsDataViewer, None).initialize_toolbar()
+		super(StatsDataViewer,self).initialize_toolbar()
 		BasicToolbar.setContextMenuPolicy(self,Qt.PreventContextMenu)
 
 	def myPressedEvent(self, currentQModelIndex):
