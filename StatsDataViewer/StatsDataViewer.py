@@ -41,7 +41,7 @@ class Refresh(Tool):
 
 	#icon = REFRESH_ICON
 	tool_id = 'refresh'
-	action_text = 'Refresh for linked data'
+	action_text = 'Refresh'
 
 	def __init__(self,viewer):
 		self.viewer = viewer
@@ -115,7 +115,7 @@ class ExportButton(Tool):
 class HomeButton(Tool):
 	#icon = REFRESH_ICON + 'glue_refresh' #'glue_home'
 	tool_id = 'home_tool'
-	action_text = 'Return to Home'
+	action_text = 'Home'
 	tool_tip = 'Click to return to home'
 	status_tip = 'Click to return to home'
 	shortcut = 'H'
