@@ -40,7 +40,7 @@ auto_refresh(True)
 class Refresh(Tool):
 
 	#icon = REFRESH_ICON
-	tool_id = 'Refresh'
+	tool_id = 'refresh'
 	action_text = 'Refresh for linked data'
 
 	def __init__(self,viewer):
