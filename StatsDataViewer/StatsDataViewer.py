@@ -206,7 +206,10 @@ class SortButton(CheckableTool):
 
 	def activate(self):
 		# ifSortingEnabled(), disable, otherwise, enable
-		self.viewer.nestedtree.setSortingEnabled(True)
+		if self.tabs.currentIndex() == 0:
+			self.viewer.sortedTree.setSortingEnabled(True)
+		elif self.tabs.currentIndex() == 1:
+			self.viewer.componentTree.setSortingEnabled(True)
 
 	def deactivate(self):
 		self.viewer.nestedtree.setSortingEnabled(False)
