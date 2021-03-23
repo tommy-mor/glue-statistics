@@ -36,7 +36,7 @@ auto_refresh(True)
 class Refresh(Tool):
 	#icon = '/Users/jk317/Glue/icons/glue_refresh.png'
 	tool_id = 'refresh'
-	action_text = 'Refresh for linked data'
+	action_text = 'Refresh'
 
 	def __init__(self,viewer):
 		self.viewer = viewer
@@ -111,7 +111,7 @@ class HomeButton(Tool):
 
 	#icon = 'glue_home'
 	tool_id = 'home_tool'
-	action_text = 'Return to Home'
+	action_text = 'Home'
 	tool_tip = 'Click to return to home'
 	status_tip = 'Click to return to home'
 	shortcut = 'H'
