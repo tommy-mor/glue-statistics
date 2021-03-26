@@ -31,6 +31,7 @@ from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 auto_refresh(True)
 
+from StatsDataViewer import REFRESH_LOGO
 
 @viewer_tool
 class Refresh(Tool):
