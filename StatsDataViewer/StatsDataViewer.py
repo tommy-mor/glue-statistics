@@ -31,11 +31,11 @@ from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 auto_refresh(True)
 
-from StatsDataViewer import REFRESH_LOGO
+from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO
 
 @viewer_tool
 class Refresh(Tool):
-	#icon = '/Users/jk317/Glue/icons/glue_refresh.png'
+	icon = REFRESH_LOGO
 	tool_id = 'refresh'
 	action_text = 'Refresh'
 
@@ -69,7 +69,7 @@ class SelectDecimalPoints(Tool):
 
 @viewer_tool
 class ConvertNotation(Tool):
-	#icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
+	icon = NOTATION_LOGO
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
 	tool_tip = 'Click icon to toggle Scientific noation or decimal'
@@ -89,7 +89,7 @@ class ConvertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
-	#icon = '/Users/jk317/Glue/icons/glue_export.png'
+	icon = EXPORT_LOGO
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -110,7 +110,7 @@ class ExportButton(Tool):
 @viewer_tool
 class HomeButton(Tool):
 
-	#icon = 'glue_home'
+	icon = 'glue_home'
 	tool_id = 'home_tool'
 	action_text = 'Home'
 	tool_tip = 'Click to return to home'
@@ -173,7 +173,7 @@ class ExpandButton(Tool):
 @viewer_tool
 class CalculateButton(Tool):
 
-	#icon = '/Users/jk317/Glue/icons/glue_calculate.png'
+	icon = CALCULATE_LOGO
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
 	tool_tip = 'Click side icons to calculate'
@@ -194,7 +194,7 @@ class CalculateButton(Tool):
 @viewer_tool
 class SortButton(Tool):
 
-	#icon = '/Users/jk317/Glue/icons/glue_sort.png'
+	icon = SORT_LOGO
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
 	tool_tip = 'Click side icons to sort'
