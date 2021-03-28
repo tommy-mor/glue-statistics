@@ -35,6 +35,25 @@ from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_
 
 @viewer_tool
 class Refresh(Tool):
+	"""
+	A class used to represent the refresh button on the toolbar
+	----------
+	Attributes
+	----------
+	icon : str
+	a formatted string that points to the icon png file location
+	tool_id : str
+	the id of the refresh tool used to add to toolbar
+	action_text : str
+	brief description of the tool's function
+	-------
+	Methods
+	-------
+	__init__(self,viewer):
+		connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
+   	"""
 	icon = REFRESH_LOGO
 	tool_id = 'refresh'
 	action_text = 'Refresh'
@@ -69,6 +88,33 @@ class SelectDecimalPoints(Tool):
 
 @viewer_tool
 class ConvertNotation(Tool):
+	"""
+	A class used to convert calculated values on the viewer to decimal or
+	scientific notation
+	----------
+	Attributes
+	----------
+	icon : str
+	a formatted string that points to the icon png file location
+	tool_id : str
+	the id of the refresh tool used to add to toolbar
+	action_text : str
+	brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+	Methods
+	-------
+	__init__(self,viewer):
+		connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
+
+	"""
 	icon = NOTATION_LOGO
 	tool_id = 'notation_tool'
 	action_text = 'Convert'
@@ -89,6 +135,32 @@ class ConvertNotation(Tool):
 
 @viewer_tool
 class ExportButton(Tool):
+	"""
+	A class used to export calculated values of the active viewer
+	----------
+	Attributes
+	----------
+	icon : str
+	a formatted string that points to the icon png file location
+	tool_id : str
+	the id of the refresh tool used to add to toolbar
+	action_text : str
+	brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+	Methods
+	-------
+	__init__(self,viewer):
+		connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
+
+	"""
 	icon = EXPORT_LOGO
 	tool_id = 'export_tool'
 	action_text = 'Export'
@@ -109,7 +181,32 @@ class ExportButton(Tool):
 
 @viewer_tool
 class HomeButton(Tool):
+	"""
+	A class used to shrink every tree item of the active viewer
+	----------
+	Attributes
+	----------
+	icon : str
+	a formatted string that points to the icon png file location
+	tool_id : str
+	the id of the refresh tool used to add to toolbar
+	action_text : str
+	brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+	Methods
+	-------
+	__init__(self,viewer):
+		connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
 
+	"""
 	icon = 'glue_home'
 	tool_id = 'home_tool'
 	action_text = 'Home'
@@ -172,7 +269,32 @@ class ExpandButton(Tool):
 
 @viewer_tool
 class CalculateButton(Tool):
+	"""
+	A class used to calculate values that are checked on the viewer
+	----------
+	Attributes
+	----------
+	icon : str
+	a formatted string that points to the icon png file location
+	tool_id : str
+	the id of the refresh tool used to add to toolbar
+	action_text : str
+	brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+	Methods
+	-------
+	__init__(self,viewer):
+		connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
 
+	"""
 	icon = CALCULATE_LOGO
 	tool_id = 'calc_tool'
 	action_text = 'Calculate'
@@ -193,7 +315,32 @@ class CalculateButton(Tool):
 
 @viewer_tool
 class SortButton(Tool):
+	"""
+	A class used to sort calculated values 
+	----------
+	Attributes
+	----------
+	icon : str
+	a formatted string that points to the icon png file location
+	tool_id : str
+	the id of the refresh tool used to add to toolbar
+	action_text : str
+	brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+	Methods
+	-------
+	__init__(self,viewer):
+		connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
 
+	"""
 	icon = SORT_LOGO
 	tool_id = 'sort_tool'
 	action_text = 'Sort'
@@ -206,17 +353,16 @@ class SortButton(Tool):
 		 self.viewer = viewer
 
 	def activate(self):
-		# ifSortingEnabled(), disable, otherwise, enable
 		if self.viewer.tabs.currentIndex() == 0:
-			self.viewer.subsetTree.setSortingEnabled(True)
+			if self.viewer.subsetTree.isSortingEnabled():
+				self.viewer.subsetTree.setSortingEnabled(False)
+			else:
+				self.viewer.subsetTree.setSortingEnabled(True)
 		elif self.viewer.tabs.currentIndex() == 1:
-			self.viewer.componentTree.setSortingEnabled(True)
-
-	def deactivate(self):
-		if self.viewer.tabs.currentIndex() == 0:
-			self.viewer.subsetTree.setSortingEnabled(False)
-		elif self.viewer.tabs.currentIndex() == 1:
-			self.viewer.componentTree.setSortingEnabled(False)
+			if self.viewer.componentTree.isSortingEnabled():
+				self.viewer.componentTree.setSortingEnabled(False)
+			else:
+				self.viewer.componentTree.setSortingEnabled(True)
 
 	def close(self):
 		pass
@@ -250,9 +396,26 @@ class StatsViewerStateWidget(QWidget):
 		self.viewer_state = viewer_state
 		self._connections = autoconnect_callbacks_to_qt(self.viewer_state, self.ui)
 
-
 class StatsDataViewer(DataViewer):
-
+	"""
+    A class used to display and make the StatsDataViewer functional
+    ----------
+    Attributes
+    ----------
+    LABEL : str
+        name of viewer that shows up on the Glue viewer menu
+    _state_cls : ViewerState
+        ViewerState object of the StatsDataViewer
+    _options_cls : ViewerStateWidget
+        ViewerStateWidge of the StatsDataViewer
+	_toolbar_cls: Toolbar
+		The toolbar of the StatsDataViewer
+	tools: array
+		array of tool ids shown on the StatsDataViewer toolbar
+	shortcut: char
+		character that can toggle the tool from keyboard
+	----------
+    """
 	LABEL = 'Statistics viewer'
 	_state_cls = StatsViewerState
 	_options_cls = StatsViewerStateWidget
@@ -262,27 +425,16 @@ class StatsDataViewer(DataViewer):
 	tools = ['home_tool', 'refresh', 'calc_tool', 'sort_tool', 'notation_tool', 'export_tool'] #  'expand_tool'
 
 
-
 	def __init__(self, *args, **kwargs):
-
+		'''
+		initializes the StatsDataViewer
+		'''
 		super(StatsDataViewer, self).__init__(*args, **kwargs)
-		#HubListener.__init__(self)
-		self.xc = self.session.data_collection# dc = DataCollection()
 
-
-		#self.xc.hub.subscribe(self, DataMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, SubsetCreateMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, SubsetMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, DataAddComponentMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, DataCollectionMessage, handler=self.newDataAddedMessage)
-		#self.xc.hub.subscribe(self, DataRemoveComponentMessage, handler=self.dataRemovedMessage)
-		#self.xc.hub.subscribe(self, SubsetUpdateMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.messageReceived)
-		#self.xc.hub.subscribe(self, NumericalDataChangedMessage, handler=self.messageReceived)
-
+		self.xc = self.session.data_collection # xc is dc, or the DataCollection DO NOT USE dc VARIABLE! It will mess up the IPython Terminal as it already uses a dc refrence
 		self.no_update = True
-		self.calculatedSubsetViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
-		self.calculatedComponentViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
+		#self.calculatedSubsetViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
+		#self.calculatedComponentViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
 
 		self.headings = ('Name', 'Mean', 'Median', 'Minimum', 'Maximum', 'Sum')
 		# Set up dict for caching
@@ -320,6 +472,7 @@ class StatsDataViewer(DataViewer):
 		QTreeWidget.setHeaderLabels(self.componentTree, self.headings)
 		self.sortByComponents()
 
+		#set up the tabs for each of the two tree views
 		self.tabs = QTabWidget()
 		self.tabs1 = self.subsetTree
 		self.tabs2  = self.componentTree
@@ -338,6 +491,7 @@ class StatsDataViewer(DataViewer):
 		self.dc_count = len(self.xc)
 		self.subset_count = len(self.xc.subset_groups)
 
+		#store the data and subsets, if any in the viewer at creation
 		self.data_names = self.xc.labels
 		self.subset_names = self.subsetNames()
 
@@ -347,6 +501,11 @@ class StatsDataViewer(DataViewer):
 		self.subsetViewExportCache = set()
 
 	def refresh(self):
+		'''
+		action connected to Refresh Tool, enables subsets that were previously
+		uncalculable to be calculated once linked
+		'''
+
 		if self.tabs.currentIndex() == 0:
 			# get list of grayed out subset components
 			list = []
@@ -400,8 +559,13 @@ class StatsDataViewer(DataViewer):
 					pass
 
 	def register_to_hub(self, hub):
-		super(StatsDataViewer, self).register_to_hub(hub)
+		'''
+		connects the StatsDataViewer to Messages that listen for changes to
+		the viewer
 
+		@param hub: takes in a HubListener object that can be connected with a Message for listening for changes
+		'''
+		super(StatsDataViewer, self).register_to_hub(hub)
 		hub.subscribe(self, DataCollectionMessage, handler=self.newDataAddedMessage)
 		hub.subscribe(self, DataCollectionDeleteMessage, handler=self.dataDeleteMessage)
 		hub.subscribe(self, SubsetCreateMessage, handler=self.subsetCreatedMessage)
@@ -409,13 +573,14 @@ class StatsDataViewer(DataViewer):
 		hub.subscribe(self, DataUpdateMessage, handler=self.dataUpdateMessage)
 		hub.subscribe(self, SubsetUpdateMessage, handler=self.subsetUpdateMessage)
 		hub.subscribe(self, EditSubsetMessage, handler=self.editSubsetMessage)
-		#hub.subscribe(self, LayerArtistUpdatedMessage, handler=self.layerArtistUpdatedMessage)
-		#hub.subscribe(self, DataRemoveComponentMessage, handler=self.dataRemovedMessage)
-		#hub.subscribe(self, DataUpdateMessage, handler=self.editSubsetMessage)
-		#hub.subscribe(self, DataCollectionActiveChange, handler=self.editSubsetMessage)
-		#DataCollectionActiveChange
 
 	def editSubsetMessage(self, message):
+		'''
+		Clears calculated subsets of edited subsets in the viewer so they
+		can be recalculated
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
 		#print("edit detected")
 		editedSubset = ''
 		#the sender._edit_subset is a list that has only one element, but use for loop just in case
@@ -484,9 +649,13 @@ class StatsDataViewer(DataViewer):
 								 self.componentTree.itemFromIndex(item).setData(col,0,None)
 
 	def check_status(self, item , col):
+		'''
+		Enables hierachial box checks and unchecks
 
-		#if the viewer is in subset mode
-		#if self.tabs.currentIndex() == 0:
+		@param item: QTreewidgetItem that has been checked/unchecked
+		@param col: Column number of the action
+		'''
+
 		if item.checkState(0):
 			#print("checked")
 			#if the data branch is selected, check everything under data branch
@@ -497,7 +666,12 @@ class StatsDataViewer(DataViewer):
 			self.check_status_helper(0, item)
 
 	def check_status_helper(self, state, dataset):
+		'''
+		Helper method for check_status(self, item , col)
 
+		@param state: Number representing whether the action was check/uncheck
+		@param dataset: QTreewidgetItem that has been checked/unchecked
+		'''
 		dataset_count = dataset.childCount()
 		for x in range(dataset_count):
 			attribute_count = dataset.child(x).childCount()
@@ -515,14 +689,20 @@ class StatsDataViewer(DataViewer):
 						dataset.child(x).child(y).child(z).setCheckState(0,state)
 
 	def subsetNames(self):
+		'''
+		returns the current list of subsets in the glue session
+		'''
 		new_names = []
 		for x in self.xc.subset_groups:
 			new_names.append(x.label)
 		return np.array(new_names)
 
 	def subsetUpdateMessage(self, message):
-		#print("subsetupdate")
-		#print(message)
+		'''
+		Updates the attributes of the edited subset (glue's left side panel info - names and color)
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
 
 		index1 = str(message).index("Subset: ") + len("Subset: ")
 		index2 = str(message).index(" (data: ")
@@ -540,6 +720,13 @@ class StatsDataViewer(DataViewer):
 		self.subset_names = self.subsetNames()
 
 	def componentViewSubsetUpdateHelper(self, viewType, old_name, new_name):
+		'''
+		Updates the component view if a subset atrribute is changed
+
+		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
+		@param old_name: old name of the edited subset
+		@param new_name: new name of the edited subset
+		'''
 		#for subset view
 		subset_branch = viewType
 		child_count = subset_branch.childCount()
@@ -581,6 +768,13 @@ class StatsDataViewer(DataViewer):
 							break
 
 	def subsetViewSubsetUpdateHelper(self, viewType, old_name, new_name):
+		'''
+		Updates the subset view if a subset atrribute is changed
+
+		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
+		@param old_name: old name of the edited subset
+		@param new_name: new name of the edited subset
+		'''
 		#for subset view
 		subset_branch = viewType
 		child_count = subset_branch.childCount()
@@ -615,6 +809,11 @@ class StatsDataViewer(DataViewer):
 							subset_branch.child(i).child(x).setData(0,0,new_label)
 
 	def dataUpdateMessage(self, message):
+		'''
+		Updates the attributes of the edited dataset (glue's left side panel info - names and color)
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
 		#print(message)
 
 		# For subset view
@@ -629,19 +828,26 @@ class StatsDataViewer(DataViewer):
 		#update both views
 		self.subsetViewDataUpdateHelper(self.subsetTree.invisibleRootItem().child(0), old_name, new_name)
 		self.componentViewDataUpdateHelper(self.componentTree.invisibleRootItem(), old_name, new_name)
-		print(new_names)
-		print(self.data_names)
-		print(old_name)
+		#print(new_names)
+		#print(self.data_names)
+		#print(old_name)
 
 		self.data_names = self.xc.labels
 
 	def subsetViewDataUpdateHelper(self, viewType, old_name, new_name):
+		'''
+		Updates the subset view if a data atrribute is changed
+
+		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
+		@param old_name: old name of the edited subset
+		@param new_name: new name of the edited subset
+		'''
 		data_branch = viewType
 		child_count = data_branch.childCount()
 		#print("aaa")
 		if len(old_name) == 0:
 			#the name has not changed, so changed color
-			print("bbb")
+			#print("bbb")
 			old_name = "name is the same"
 			for i in range(child_count):
 				data_branch.child(i).setIcon(0, helpers.layer_icon(self.xc[i]))
@@ -650,7 +856,7 @@ class StatsDataViewer(DataViewer):
 					data_branch.child(i).child(x).setIcon(0, helpers.layer_icon(self.xc[i]))
 		else:
 			#update the dataset name in the statsviewer
-			print('aaa')
+			#print('aaa')
 			old_name = old_name[0]
 			print(old_name)
 			for i in range(child_count):
@@ -673,12 +879,19 @@ class StatsDataViewer(DataViewer):
 							subset_branch.child(i).child(x).setData(0,0,new_label)
 
 	def componentViewDataUpdateHelper(self, viewType, old_name, new_name):
+		'''
+		Updates the component view if a data atrribute is changed
+
+		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
+		@param old_name: old name of the edited subset
+		@param new_name: new name of the edited subset
+		'''
 		data_branch = viewType
 		child_count = data_branch.childCount()
 		#print("aaa")
 		if len(old_name) == 0:
 			#the name has not changed, so changed color
-			print("bbb")
+			#print("bbb")
 			old_name = "name is the same"
 
 			referenceTree = self.subsetTree.invisibleRootItem().child(0)
@@ -687,7 +900,7 @@ class StatsDataViewer(DataViewer):
 				if referenceTree.child(i).data(0,0) == new_name:
 					indexOfSubset = i
 					break
-			print(indexOfSubset)
+			#print(indexOfSubset)
 			#for i in range(child_count): # data
 			#	component_count = data_branch.child(i)
 			#	if data_branch.child(i).data(0,0) == new_name:
@@ -738,9 +951,12 @@ class StatsDataViewer(DataViewer):
 							subset_branch.child(i).child(x).setData(0,0,new_label)'''
 
 	def newDataAddedMessage(self, message):
-		print("detected new data added")
-		#self.dc_count += 1
-		#print(message)
+		'''
+		Adds a new dataset to the viewer
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
+		#print("detected new data added")
 
 		'''For subset view'''
 		parentItem = QTreeWidgetItem(self.dataItem)
@@ -803,7 +1019,13 @@ class StatsDataViewer(DataViewer):
 		self.data_names = self.xc.labels
 
 	def subsetCreatedMessage(self, message):
-		print("detected new subset creation")
+		'''
+		Adds a new subset to the viewer
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
+
+		#print("detected new subset creation")
 		#print(message)
 
 		index1 = str(message).index("Subset: ") + len("Subset: ")
@@ -891,18 +1113,33 @@ class StatsDataViewer(DataViewer):
 
 
 	def dataDeleteMessage(self,message):
+		'''
+		Removes deleted dataset from the viewer
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
 		print("detected data removal")
 		print(message)
 		self.deleteHelper('dataset')
 		self.dc_count -= 1
 
 	def subsetDeleteMessage(self, message):
-		print("detected subset deletion")
+		'''
+		Removes deleted subset from the viewer
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
+		#print("detected subset deletion")
 		self.deleteHelper('subset')
 		self.subset_count -= 1
 
 	def deleteHelper(self, deletedType):
-		print(deletedType)
+		'''
+		Helper method for dataDeleteMessage(self,message) and subsetDeleteMessage(self, message)
+
+		@param message: Message given by the event, contains details about how it was triggered
+		'''
+		#print(deletedType)
 		current_list = np.array([])
 		past_list = np.array([])
 		temp = -1
@@ -968,6 +1205,9 @@ class StatsDataViewer(DataViewer):
 				self.subset_dict.pop(str(toBeRemoved))
 
 	def initialize_toolbar(self):
+		'''
+		Initializes the the toolbar: add any further customizations here
+		'''
 		super(StatsDataViewer, self).initialize_toolbar()
 		BasicToolbar.setContextMenuPolicy(self,Qt.PreventContextMenu)
 
@@ -982,6 +1222,10 @@ class StatsDataViewer(DataViewer):
 			qtwitem.setExpanded(bool)
 
 	def pressedEventCalculate(self, sciFi):
+
+		'''
+		Calculates stats for the rows that are checked
+		'''
 		'''
 		Every time the selection in the treeview changes:
 		if it is newly selected, add it to the table
@@ -1102,6 +1346,9 @@ class StatsDataViewer(DataViewer):
 						self.componentTree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
 
 	def getCurrentCalculated(self):
+		'''
+		returns list of current calculated values in the current opened viewer
+		'''
 		currentCalculated = -1
 		if self.tabs.currentIndex() == 0:
 			currentCalculated = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
@@ -1146,7 +1393,11 @@ class StatsDataViewer(DataViewer):
 
 		return currentCalculated
 
+
 	def pressedEventExport(self):
+		'''
+		Exports the current calculated values of the tab that is open
+		'''
 		df = self.getCurrentCalculated()
 		file_name, fltr = compat.getsavefilename(caption="Choose an output filename")
 		try:
@@ -1213,6 +1464,9 @@ class StatsDataViewer(DataViewer):
 	def runDataStats (self, data_i, comp_i):
 		'''
 		Runs statistics for the component comp_i of data set data_i
+
+		@param data_i: data index from the tree
+		@param comp_i: component index from the tree
 		'''
 
 		subset_label = "--"
@@ -1268,6 +1522,12 @@ class StatsDataViewer(DataViewer):
 		return column_data
 
 	def newDataStats(self, data_i, comp_i):
+		'''
+		Runs statistics for the component comp_i of data set data_i
+
+		@param data_i: data index from the tree
+		@param comp_i: component index from the tree
+		'''
 		#print("newDataStats triggered")
 		# Generates new data for a dataset that has to be calculated
 
@@ -1295,6 +1555,11 @@ class StatsDataViewer(DataViewer):
 	def runSubsetStats (self, subset_i, data_i, comp_i):
 		'''
 		Runs statistics for the subset subset_i with respect to the component comp_i of data set data_i
+
+		@param subset_i: subset index from tree
+		@param data_i: data index from the tree
+		@param comp_i: component index from the tree
+
 		'''
 
 		subset_label = self.xc[data_i].subsets[subset_i].label
@@ -1334,6 +1599,15 @@ class StatsDataViewer(DataViewer):
 		return column_data
 
 	def newSubsetStats(self, subset_i, data_i, comp_i):
+
+		'''
+		Runs statistics for the subset subset_i with respect to the component comp_i of data set data_i
+
+		@param subset_i: subset index from tree
+		@param data_i: data index from the tree
+		@param comp_i: component index from the tree
+
+		'''
 		# Generates new data for a subset that needs to be calculated
 		subset_label = self.xc[data_i].subsets[subset_i].label
 		data_label = self.xc[data_i].label
@@ -1397,6 +1671,9 @@ class StatsDataViewer(DataViewer):
 
 
 	def generateSubsetView(self):
+		'''
+		Creates the subset view for the viewer
+		'''
 		#self.component_mode = False
 		self.model_subsets = QStandardItemModel()
 		self.model_subsets.setHorizontalHeaderLabels([''])
@@ -1509,6 +1786,9 @@ class StatsDataViewer(DataViewer):
 
 
 	def generateComponentView(self):
+		'''
+		Creates the component view for the viewer
+		'''
 		self.component_mode = True
 
 		for i in range(0,len(self.xc)):
