@@ -32,7 +32,7 @@ from glue.config import auto_refresh
 from PyQt5 import QtCore
 auto_refresh(True)
 
-from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO
+from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO
 
 @viewer_tool
 class Refresh(Tool):
