@@ -34,6 +34,24 @@ auto_refresh(True)
 
 from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO
 
+
+@viewer_tool
+class SelectDecimalPoints(SimpleToolMenu):
+
+	icon = SETTINGS_LOGO
+	tool_id = 'settings'
+	#action_text = 'Settings'
+
+	#def __init__(self,viewer):
+		#super(SelectDecimalPoints, self).__init__(viewer=viewer)
+	def menu_actions(self):
+		result = []
+		a = QtWidgets.QAction("Edit Decimal Points", None)
+		a.triggered.connect(self.viewer.showDecimalWindow)
+		result.append(a)
+		return result
+
+
 @viewer_tool
 class Refresh(Tool):
 	"""
@@ -423,7 +441,7 @@ class StatsDataViewer(DataViewer):
 
 
 	_toolbar_cls = BasicToolbar
-	tools = ['home_tool', 'refresh', 'sort_tool','notation_tool', 'export_tool', 'decimal_place'] #  'expand_tool'
+	tools = ['home_tool', 'refresh', 'sort_tool','notation_tool', 'export_tool', 'settings'] #  'expand_tool'
 
 	def __init__(self, *args, **kwargs):
 		'''
