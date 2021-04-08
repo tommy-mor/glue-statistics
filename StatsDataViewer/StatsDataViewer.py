@@ -2,7 +2,7 @@ import os
 import numpy as np
 import sys
 import pandas as pd
-from qtpy.QtWidgets import QWidget, QVBoxLayout, QCheckBox, QTreeWidget, QTreeWidgetItem, QAbstractItemView, QPushButton
+from qtpy.QtWidgets import QWidget, QHBoxLayout, QCheckBox, QTreeWidget, QTreeWidgetItem, QAbstractItemView, QPushButton, QSpinBox, QMainWindow, QLabel
 from glue.config import qt_client
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.data_factories import load_data
@@ -12,7 +12,7 @@ from glue.external.echo.qt import (connect_checkable_button,
 								   connect)
 from PyQt5.QtCore import QVariant, QItemSelectionModel, QAbstractItemModel, Qt
 from glue.config import viewer_tool
-from glue.viewers.common.qt.tool import CheckableTool, Tool
+from glue.viewers.common.qt.tool import CheckableTool, Tool, DropdownTool, SimpleToolMenu
 from glue.viewers.common.layer_artist import LayerArtist
 from glue.viewers.common.state import ViewerState, LayerState
 from glue.viewers.common.qt.data_viewer import DataViewer
@@ -29,6 +29,7 @@ from PyQt5.QtWidgets import QAction, QTabWidget
 from glue.icons.qt import helpers
 from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
+from PyQt5 import QtCore
 auto_refresh(True)
 
 from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO
