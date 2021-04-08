@@ -417,13 +417,12 @@ class StatsDataViewer(DataViewer):
 	----------
     """
 	LABEL = 'Statistics viewer'
-	_state_cls = StatsViewerState
+	#_state_cls = StatsViewerState
 	_options_cls = StatsViewerStateWidget
 
 
 	_toolbar_cls = BasicToolbar
-	tools = ['home_tool', 'refresh', 'calc_tool', 'sort_tool', 'notation_tool', 'export_tool'] #  'expand_tool'
-
+	tools = ['home_tool', 'refresh', 'sort_tool','notation_tool', 'export_tool', 'decimal_place'] #  'expand_tool'
 
 	def __init__(self, *args, **kwargs):
 		'''
@@ -433,8 +432,8 @@ class StatsDataViewer(DataViewer):
 
 		self.xc = self.session.data_collection # xc is dc, or the DataCollection DO NOT USE dc VARIABLE! It will mess up the IPython Terminal as it already uses a dc refrence
 		self.no_update = True
-		self.calculatedSubsetViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
-		self.calculatedComponentViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
+		#self.calculatedSubsetViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
+		#self.calculatedComponentViewList = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
 
 		self.headings = ('Name', 'Mean', 'Median', 'Minimum', 'Maximum', 'Sum')
 		# Set up dict for caching
@@ -454,7 +453,7 @@ class StatsDataViewer(DataViewer):
 		self.selected_indices = []
 
 		# Set up tree widget item for the view
-		self.subsetTree = QTreeWidget(self)
+		self.subsetTree = QTreeWidget()
 		self.subsetTree.setSelectionMode(QAbstractItemView.MultiSelection)
 		self.subsetTree.setColumnCount(6)
 		self.subsetTree.setColumnWidth(0, 300)
@@ -462,6 +461,8 @@ class StatsDataViewer(DataViewer):
 		QTreeWidget.setHeaderLabels(self.subsetTree, self.headings)
 		self.subsetTree.itemClicked.connect(self.check_status)
 		self.sortBySubsets()
+		self.subsetTree.expandToDepth(2)
+		#self.subsetTree.sortByColumn(0)
 
 		#component view tree Widget
 		self.componentTree = QTreeWidget()
@@ -471,6 +472,7 @@ class StatsDataViewer(DataViewer):
 		self.componentTree.header().setSortIndicator(1, 0)
 		QTreeWidget.setHeaderLabels(self.componentTree, self.headings)
 		self.sortByComponents()
+		self.componentTree.expandToDepth(1)
 
 		#set up the tabs for each of the two tree views
 		self.tabs = QTabWidget()
@@ -479,7 +481,6 @@ class StatsDataViewer(DataViewer):
 		self.tabs.addTab(self.tabs1,"Subset View")
 		self.tabs.addTab(self.tabs2,"Component View")
 		self.setCentralWidget(self.tabs)
-
 
 		# Set up dicts for row indices
 		self.subset_dict = dict()
@@ -499,6 +500,35 @@ class StatsDataViewer(DataViewer):
 
 		self.componentViewExportCache = set()
 		self.subsetViewExportCache = set()
+
+		self.decimalWindow = QMainWindow()
+		self.decimalWindow.resize(500,250)
+		self.decimalWindow.setWindowTitle("Modify Decimal Places")
+		self.decLayout = QHBoxLayout()
+		self.decButton = QPushButton()
+
+		self.siglabel = QLabel()
+		self.siglabel.setText('Number of decimals:')
+		self.decLayout.addWidget(self.siglabel)
+
+		self.sigfig = QSpinBox()
+		self.sigfig.setRange(1, 10)
+		self.sigfig.setValue(self.num_sigs)
+		self.sigfig.valueChanged.connect(self.sigchange)
+		self.decLayout.addWidget(self.sigfig)
+
+		widget = QWidget()
+		widget.setLayout(self.decLayout)
+		self.decimalWindow.setCentralWidget(widget)
+
+	def showDecimalWindow(self):
+		self.decimalWindow.show()
+
+	def sigchange(self, i):
+		self.num_sigs = i
+		if not self.isSci:
+			getcontext().prec = self.num_sigs
+			self.pressedEventCalculate()
 
 	def refresh(self):
 		'''
@@ -530,6 +560,11 @@ class StatsDataViewer(DataViewer):
 					self.subsetTree.itemFromIndex(list[index]).setForeground(0,QtGui.QBrush(Qt.black))
 					#self.subsetTree.itemFromIndex(list[index]).setData(0,0)
 					self.subsetTree.itemFromIndex(list[index]).setCheckState(0, 0)
+					self.subsetTree.itemFromIndex(list[index]).setExpanded(True)
+
+					self.subsetTree.itemFromIndex(list[index].parent()).setForeground(0,QtGui.QBrush(Qt.black))
+					self.subsetTree.itemFromIndex(list[index].parent()).setCheckState(0, 0)
+					self.subsetTree.itemFromIndex(list[index].parent()).setExpanded(True)
 				except:
 					pass
 
@@ -555,6 +590,7 @@ class StatsDataViewer(DataViewer):
 					self.componentTree.itemFromIndex(list[index]).setForeground(0,QtGui.QBrush(Qt.black))
 					#self.subsetTree.itemFromIndex(list[index]).setData(0,0)
 					self.componentTree.itemFromIndex(list[index]).setCheckState(0, 0)
+					self.componentTree.itemFromIndex(list[index]).setExpanded(True)
 				except:
 					pass
 
@@ -647,6 +683,7 @@ class StatsDataViewer(DataViewer):
 							self.cache_stash.pop(cache_key)
 							for col in range(1,6):
 								 self.componentTree.itemFromIndex(item).setData(col,0,None)
+			self.pressedEventCalculate()
 
 	def check_status(self, item , col):
 		'''
@@ -665,6 +702,8 @@ class StatsDataViewer(DataViewer):
 			# 0 means to uncheck NOTE: This is different then checkState. 0 for checkState means it is checked
 			self.check_status_helper(0, item)
 
+		self.pressedEventCalculate()
+
 	def check_status_helper(self, state, dataset):
 		'''
 		Helper method for check_status(self, item , col)
@@ -673,20 +712,47 @@ class StatsDataViewer(DataViewer):
 		@param dataset: QTreewidgetItem that has been checked/unchecked
 		'''
 		dataset_count = dataset.childCount()
+		if state == 2:
+			dataset.setExpanded(True)
+		if state == 0:
+			dataset.setExpanded(False)
 		for x in range(dataset_count):
 			attribute_count = dataset.child(x).childCount()
+			#If not grayed out, check box
 			if not dataset.child(x).foreground(0) == QtGui.QBrush(Qt.gray):
 				dataset.child(x).setCheckState(0,state)
-
+				#if checked, expand
+				if state ==2:
+					dataset.child(x).setExpanded(True)
+				else:
+					dataset.child(x).setExpanded(False)
 			for y in range(attribute_count):
 				sub_attribute_count = dataset.child(x).child(y).childCount()
 				if not dataset.child(x).child(y).foreground(0) == QtGui.QBrush(Qt.gray):
 					dataset.child(x).child(y).setCheckState(0,state)
-
+					if state ==2:
+						dataset.child(x).child(y).setExpanded(True)
+					else:
+						dataset.child(x).child(y).setExpanded(False)
 				#Only the subset section of the tree should be able to reach here
 				for z in range(sub_attribute_count):
 					if not dataset.child(x).child(y).child(z).foreground(0) == QtGui.QBrush(Qt.gray):
 						dataset.child(x).child(y).child(z).setCheckState(0,state)
+						if state ==2:
+							dataset.child(x).child(y).child(z).setExpanded(True)
+						else:
+							dataset.child(x).child(y).child(z).setExpanded(False)
+		#if self.tabs.currentIndex() == 0:
+
+		#elif self.tabs.currentIndex() == 1:
+		#	if state == 2:
+		#		self.componentTree.expandToDepth(3)
+		#	else:
+		#		self.componentTree.expandToDepth(0)
+    	#	if state == 2:
+	    #			dataset.setExpanded(True)
+	    #		if state == 0:
+	    #			dataset.setExpanded(False)
 
 	def subsetNames(self):
 		'''
@@ -952,7 +1018,7 @@ class StatsDataViewer(DataViewer):
 
 	def newDataAddedMessage(self, message):
 		'''
-		Adds a new dataset to the viewer
+		Adds a new dataset to the viewer when new dataset is imported
 
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
@@ -1017,10 +1083,12 @@ class StatsDataViewer(DataViewer):
 
 		self.dc_count += 1
 		self.data_names = self.xc.labels
+		self.subsetTree.expandToDepth(1)
+		self.componentTree.expandToDepth(1)
 
 	def subsetCreatedMessage(self, message):
 		'''
-		Adds a new subset to the viewer
+		Adds a new subset to the viewer when new subset is created
 
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
@@ -1043,6 +1111,7 @@ class StatsDataViewer(DataViewer):
 			grandparent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label))
 			grandparent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 			grandparent.setCheckState(0, 0)
+			grandparent.setExpanded(True)
 			count = 0
 			for i in range(0, len(self.xc)):
 				count = i+1
@@ -1050,7 +1119,7 @@ class StatsDataViewer(DataViewer):
 				parent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label) + ' (' + '{}'.format(self.xc[i].label) + ')')
 				parent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 				parent.setCheckState(0, 0)
-
+				parent.setExpanded(True)
 				disableSubset = False
 				temp = False
 				for k in range(0, len(self.xc[i].components)):
@@ -1058,7 +1127,7 @@ class StatsDataViewer(DataViewer):
 					child.setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
 					child.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 					child.setCheckState(0, 0)
-
+					child.setExpanded(True)
 					if (not disableSubset) and (not temp):
 						try:
 							 self.xc[i].compute_statistic('minimum', self.xc[i].subsets[j].components[k], subset_state=self.xc.subset_groups[j].subset_state)
@@ -1066,6 +1135,9 @@ class StatsDataViewer(DataViewer):
 							 temp = True
 						except:
 							#child.setData(0, Qt.CheckStateRole, QVariant())
+							parent.setData(0, Qt.CheckStateRole, QVariant())
+							parent.setForeground(0,QtGui.QBrush(Qt.gray))
+							parent.setExpanded(False)
 							disableSubset = True
 					if disableSubset:
 						child.setData(0, Qt.CheckStateRole, QVariant())
@@ -1105,12 +1177,6 @@ class StatsDataViewer(DataViewer):
 			self.subset_set.add(current_subset)
 			#self.subset_dict.update({current_subset : count})
 			self.subset_count += 1
-			#self.subset_dict.update({current_subset:self.dc_count})
-			#print("dict: "+ str(self.subset_dict.get(current_subset)))
-			#print("dc count:" + str(self.dc_count))
-
-			#if new sub-subset needs to be added
-
 
 	def dataDeleteMessage(self,message):
 		'''
@@ -1221,7 +1287,7 @@ class StatsDataViewer(DataViewer):
 		for qtwitem in item_List:
 			qtwitem.setExpanded(bool)
 
-	def pressedEventCalculate(self, sciFi):
+	def pressedEventCalculate(self):
 
 		'''
 		Calculates stats for the rows that are checked
@@ -1332,11 +1398,11 @@ class StatsDataViewer(DataViewer):
 				self.componentViewExportCache.add(cache_key)
 			if not temp == '':'''
 			for col_index in range (0, len(new_data)):
-				if not sciFi:
-					if self.tabs.currentIndex() == 0:
-						self.calculatedSubsetViewList = np.append(self.calculatedSubsetViewList, new_data[col_index])
-					elif self.tabs.currentIndex() == 1:
-						self.calculatedComponentViewList = np.append(self.calculatedComponentViewList, new_data[col_index])
+				#if not sciFi:
+					#if self.tabs.currentIndex() == 0:
+					#	self.calculatedSubsetViewList = np.append(self.calculatedSubsetViewList, new_data[col_index])
+					#elif self.tabs.currentIndex() == 1:
+					#	self.calculatedComponentViewList = np.append(self.calculatedComponentViewList, new_data[col_index])
 
 				if (col_index > 2):
 					#print(new_data[col_index])
@@ -1349,19 +1415,22 @@ class StatsDataViewer(DataViewer):
 		'''
 		returns list of current calculated values in the current opened viewer
 		'''
-		currentCalculated = -1
+		currentCalculated = []
+		#if the open tab is subset view
 		if self.tabs.currentIndex() == 0:
-			currentCalculated = np.array(["Subset,Dataset,Component,Mean,Median,Minimum,Maximum,Sum"])
 			#data
+			currentCalculated.append(['Subset','Dataset','Component','Mean','Median','Minimum','Maximum','Sum'])
 			st = self.subsetTree.invisibleRootItem().child(0)
 			for x in range(0,st.childCount()):
 				for y in range(0, st.child(x).childCount()):
 					item = self.subsetTree.indexFromItem(st.child(x).child(y))
 					if self.subsetTree.itemFromIndex(item).data(3,0) != None:
-						currentCalculated = np.append(currentCalculated, '--') # no subset
-						currentCalculated = np.append(currentCalculated, st.child(x).data(0,0)) # dataset
+						temp = []
+						temp.append('--') # no subset
+						temp.append(st.child(x).data(0,0)) # dataset
 						for t in range(0, 6):
-							currentCalculated = np.append(currentCalculated, self.subsetTree.itemFromIndex(item).data(t,0))
+							temp.append(self.subsetTree.itemFromIndex(item).data(t,0))
+						currentCalculated.append(temp)
 			#subset
 			st = self.subsetTree.invisibleRootItem().child(1)
 			for x in range(0,st.childCount()):
@@ -1369,39 +1438,45 @@ class StatsDataViewer(DataViewer):
 					for z in range(0,st.child(x).child(y).childCount()):
 						item = self.subsetTree.indexFromItem(st.child(x).child(y).child(z))
 						if self.subsetTree.itemFromIndex(item).data(3,0) != None:
-							currentCalculated = np.append(currentCalculated, st.child(x).child(y).data(0,0)) #subset(data) name
-							temp = str(st.child(x).child(y).data(0,0))
-							index1 = temp.index("(")+1
-							index2 = temp.index(")")
-							dataset_name = temp[index1:index2]
-							currentCalculated = np.append(currentCalculated, dataset_name) #dataset name
+							temp = []
+							temp.append(st.child(x).child(y).data(0,0)) #subset(data) name
+							tempStr = str(st.child(x).child(y).data(0,0))
+							index1 = tempStr.index("(")+1
+							index2 = tempStr.index(")")
+							dataset_name = tempStr[index1:index2]
+							temp.append(dataset_name) #dataset name
 							for t in range(0, 6):
-								currentCalculated = np.append(currentCalculated, self.subsetTree.itemFromIndex(item).data(t,0))
-
+								temp.append(self.subsetTree.itemFromIndex(item).data(t,0))
+							currentCalculated.append(temp)
+		#if component view is open
 		elif self.tabs.currentIndex() == 1:
-			currentCalculated = np.array(["Dataset,Component,Subset,Mean,Median,Minimum,Maximum,Sum"])
+			currentCalculated.append(['Dataset','Component','Subset','Mean','Median','Minimum','Maximum','Sum'])
 			ct = self.componentTree.invisibleRootItem()
-			for x in range(0,ct.childCount()):
+			for x in range(0, ct.childCount()):
 				for y in range(0, ct.child(x).childCount()):
 					for z in range(0,ct.child(x).child(y).childCount()):
 						item = self.componentTree.indexFromItem(ct.child(x).child(y).child(z))
 						if self.componentTree.itemFromIndex(item).data(3,0) != None:
-							currentCalculated = np.append(currentCalculated, ct.child(x).data(0,0)) #dataset
-							currentCalculated = np.append(currentCalculated, ct.child(x).child(y).data(0,0)) #component
+							temp = []
+							temp.append(ct.child(x).data(0,0)) #dataset
+							temp.append(ct.child(x).child(y).data(0,0)) #component
 							for t in range(0, 6):
-								currentCalculated = np.append(currentCalculated, self.componentTree.itemFromIndex(item).data(t,0))
+								temp.append(self.componentTree.itemFromIndex(item).data(t,0))
+							currentCalculated.append(temp)
 
 		return currentCalculated
-
 
 	def pressedEventExport(self):
 		'''
 		Exports the current calculated values of the tab that is open
 		'''
+		#get all values calculated in the open viewer
 		df = self.getCurrentCalculated()
+		#print(df)
 		file_name, fltr = compat.getsavefilename(caption="Choose an output filename")
 		try:
 			df = pd.DataFrame(df)
+			print(df)
 			df.to_csv(str(file_name), header=None ,index=None)
 		except:
 			print("Export failed ")
@@ -1414,52 +1489,7 @@ class StatsDataViewer(DataViewer):
 
 		# recalculate with new notation,
 		# data is cached already so it should be quick
-		self.pressedEventCalculate(True)
-
-	def decPlaces(self, intDecimal):
-		'''
-		Changes num_sigs to the given int and updates the tree appropriatelt
-		'''
-		item_List = self.itemMasterList()
-
-		# list of current checked items so that we can re'check' them later
-		checked_list = []
-
-		uncheck_list = []
-
-		for qtwitem in item_List:
-			# currentItem = self.nestedtree.itemFromIndex(qtwitem)
-
-			# if its checked
-			if qtwitem.checkState(0):
-				checked_list.append(qtwitem)
-
-			# if it has data, check it so it can be recalculated
-			if qtwitem.data(1, 0) is None:
-				qtwitem.setCheckState(0, 0)
-			else:
-				qtwitem.setCheckState(0, 2)
-				uncheck_list.append(qtwitem)
-
-		#print(checked_list)
-
-		self.num_sigs = intDecimal
-		#print("decimal changed")
-
-		# self.expandAll(True)
-		# print("expanded")
-
-		# recalculate with new notation,
-		# data is cached already so it should be quick
-		self.pressedEventCalculate(True)
-
-		# uncheck everything
-		for qtwitem in uncheck_list:
-			qtwitem.setCheckState(0, 0)
-
-		# recheck checked list items
-		for qtwitem in checked_list:
-			qtwitem.setCheckState(0, 2)
+		self.pressedEventCalculate()
 
 	def runDataStats (self, data_i, comp_i):
 		'''
@@ -1669,7 +1699,6 @@ class StatsDataViewer(DataViewer):
 		selection_model.selectionChanged.connect(self.myPressedEvent)
 		self.subsetTree.itemClicked.connect(self.check_status)
 
-
 	def generateSubsetView(self):
 		'''
 		Creates the subset view for the viewer
@@ -1756,7 +1785,6 @@ class StatsDataViewer(DataViewer):
 
 		self.subsetTree.setUniformRowHeights(True)
 
-
 	def sortByComponents(self):
 		'''
 		Sorts the treeview by components- Dataset then component then subsets
@@ -1783,7 +1811,6 @@ class StatsDataViewer(DataViewer):
 
 		self.componentTree.setUniformRowHeights(True)
 		self.componentTree.itemClicked.connect(self.check_status)
-
 
 	def generateComponentView(self):
 		'''
