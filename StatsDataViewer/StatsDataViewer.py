@@ -2,7 +2,7 @@ import os
 import numpy as np
 import sys
 import pandas as pd
-from qtpy.QtWidgets import QWidget, QHBoxLayout, QCheckBox, QTreeWidget, QTreeWidgetItem, QAbstractItemView, QPushButton, QSpinBox, QMainWindow, QLabel
+from qtpy.QtWidgets import QWidget, QHBoxLayout, QCheckBox, QTreeWidget, QTreeWidgetItem, QAbstractItemView, QPushButton, QSpinBox, QMainWindow, QLabel, QMessageBox, QRadioButton
 from glue.config import qt_client
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.data_factories import load_data
