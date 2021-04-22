@@ -695,10 +695,19 @@ class StatsDataViewer(DataViewer):
 			for subset_i in range (0, len(self.xc.subset_groups)):
 				for data_i in range (0, len(self.xc)):
 					for comp_i in range (0, len(self.xc[data_i].components)):
-						if subset_branch.child(subset_i).child(data_i).child(comp_i).foreground(0) == QtGui.QBrush(Qt.gray):
-							list.append(self.subsetTree.indexFromItem(subset_branch.child(subset_i).child(data_i).child(comp_i)))
-						else:
-							break # so it only checks one if comp isnt grayed out
+						#this try statement is for if a subset is created with 1 dataset, and then another dataset is added and a new subset is created.
+						#This will mean one subeset will only have child relating to 1 data set while the other has 2 children for both datasets.
+						#If you wish to fix this by updating each subset when a dataset is added so each subset has all the dataset values, this
+						#try statement is not necessary. However, this is unnecessarily complicated (for now), so this is the solution.
+						#This is not a complete fix, as if there are subsets that need to be shown after data insertion the only way to update is to close and reopen statsviewer.
+						try:
+							if subset_branch.child(subset_i).child(data_i).child(comp_i).foreground(0) == QtGui.QBrush(Qt.gray):
+								list.append(self.subsetTree.indexFromItem(subset_branch.child(subset_i).child(data_i).child(comp_i)))
+							else:
+								break # so it only checks one if comp isnt grayed out
+						except:
+							pass
+
 
 			#checks if any of the disabled components are now linkable and re-enables it
 			for index in range (0, len(list)):
