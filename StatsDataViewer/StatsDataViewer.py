@@ -33,6 +33,7 @@ from PyQt5 import QtCore
 auto_refresh(True)
 
 from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO
+showInstructions = True
 
 @viewer_tool
 class Settings(SimpleToolMenu):
