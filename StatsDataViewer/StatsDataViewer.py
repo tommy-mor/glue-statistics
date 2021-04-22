@@ -490,6 +490,76 @@ class StatsDataViewer(DataViewer):
 		self.componentViewExportCache = set()
 		self.subsetViewExportCache = set()
 
+
+		self.isCalcAutomatic = not self.hasLargeData()
+		self.confirmedCalc = False
+		self.alreadyChecked = []
+
+
+		#Creates the window used to edit decimal points shown on the stats viewer
+		self.createEditDecimalWindow()
+		#create the window used to toggle manual/automatic calculation
+		self.createManualCalcWindow()
+
+
+		#show instruction pop up message
+		global showInstructions
+		if showInstructions:
+			#instruction pop up message
+			self.cb = QCheckBox("Do not show again");
+			msgbox = QMessageBox()
+			msgbox.setWindowTitle("Statistics Viewer Instructions")
+			#Rich Text format for styling
+			msgbox.setTextFormat(1)
+			msgbox.setText("<h2 style=\"text-align: center;\"><img src=\"/Users/jk317/Glue/icons/glue_instructions.png\" width=\"46\" height=\"46\" />&nbsp;<strong>Instructions:</strong></h2> <ul><li>Check the rows to calculate basic statistics</li><li>Cycle between Subset and Component views with the tabs</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Home</em></strong></span> to collapse all rows</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Refresh</em></strong></span> after linking data to check for possible calculations</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Sort</em> </strong></span>to enable sorting, selecting a column will sort rows accordingly</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Convert</em></strong></span> to toggle scientific notation and decimal form</li><li>Press <strong><span style=\"color: #ff0000;\"><em>Export</em></span></strong> to export the current open tree view</li><li>Press <strong><span style=\"color: #ff0000;\"><em>Settings</em></span></strong> to change # of decimal points or to read more instructions</li></ul>")
+			#msgbox.setText("Instructions:\nCheck the rows to calculate basic statistics\nPress Home to collapse all rows\nPress Refresh after linking data to check for possible calculations\nPress Sort to enable sorting, selecting a column will sort rows accordingly\nPress Convert to toggle scientific notation and decimal form\nExport button exports the opened tree view\nPress Settings to change # of decimal points or to read instructions\nCycle between Subset and Component view with the tabs" )
+			#msgbox.setIcon(QMessageBox::Icon::Question);
+			msgbox.setStandardButtons(QMessageBox.Ok)
+			#msgbox.addButton(QMessageBox::Cancel);
+			#msgbox.setDefaultButton(QMessageBox::Cancel);
+			msgbox.setCheckBox(self.cb)
+			msgbox.buttonClicked.connect(self.showAgainUpdate)
+			msgbox.exec()
+
+		if not self.isCalcAutomatic:
+			self.showLargeDatasetWarning()
+
+	def closeAllWindows(self):
+		'''
+		Closes all open pop-up windows if open
+		'''
+		print("closed stats")
+		self.decimalWindow.destroy()
+		self.manualCalcWindow.destroy()
+		self.instructionWindow.destroy()
+		
+	def showLargeDatasetWarning(self):
+		'''
+		shows the QMessageBox popup warning if it has a large dataset
+		'''
+		manualWarning = QMessageBox() #.question(self,"Warning","Confirm multiple large dataset calculations", QMessageBox.Yes , QMessageBox.Cancel )
+		manualWarning.setText("There is a dataset with over 1 million values. Manual calculation has been turned on.")
+		manualWarning.setInformativeText("Turn off Manual Calculation in Settings")
+		manualWarning.setWindowTitle("Large Dataset Warning")
+		manualWarning.addButton(QMessageBox.Ok)
+		manualWarning.setDefaultButton(QMessageBox.Ok)
+		temp = manualWarning.exec()
+		self.isCalcAutomatic = False
+
+	def hasLargeData(self):
+		'''
+		returns true if there is a dataset with size > 1 million. Used to set the default mode for automatic/manual calculation (if large then manual, else automatic)
+		'''
+		for data in self.xc:
+			if data.size > 1000000:
+				return True #has large data
+		return False
+
+	def createEditDecimalWindow(self):
+		'''
+		Creates the window used to edit decimal points shown on the stats viewer
+
+		'''
 		self.decimalWindow = QMainWindow()
 		self.decimalWindow.resize(500,250)
 		self.decimalWindow.setWindowTitle("Modify Decimal Places")
@@ -510,14 +580,107 @@ class StatsDataViewer(DataViewer):
 		widget.setLayout(self.decLayout)
 		self.decimalWindow.setCentralWidget(widget)
 
+	def createManualCalcWindow(self):
+		'''
+		Shows the Manual Calculation toggle window from the settings menu
+
+		'''
+		#Instructions window in the settings menu, this can be more detailed about features since its not a pop up
+		self.manualCalcWindow = QMainWindow()
+		self.manualCalcWindow.resize(500,250)
+		self.manualCalcWindow.setWindowTitle("Toggle Manual Calculation")
+		self.hManualCalcLayout = QHBoxLayout()
+		self.vManualCalcLayout = QHBoxLayout()
+
+
+		manualCalcLabel = QLabel("Select Calculation Type:")
+		self.vManualCalcLayout.addWidget(manualCalcLabel)
+		self.vManualCalcLayout.addSpacing(15)
+
+		rb1 = QRadioButton("Automatic", self)
+		rb1.toggled.connect(self.updateToAuto)
+		rb2 = QRadioButton("Manual", self)
+		rb2.toggled.connect(self.updateToManual)
+		if self.isCalcAutomatic:
+			rb1.setChecked(True)
+		else:
+			rb2.setChecked(True)
+
+		self.hManualCalcLayout.addWidget(rb1)
+		self.hManualCalcLayout.addWidget(rb2)
+
+		self.vManualCalcLayout.addLayout(self.hManualCalcLayout)
+
+		widget = QWidget()
+		widget.setLayout(self.vManualCalcLayout)
+		self.manualCalcWindow.setCentralWidget(widget)
+
+	def updateToManual(self):
+		'''
+		Updates the calculation boolenan to manual
+
+		'''
+		self.isCalcAutomatic = False
+
+	def updateToAuto(self):
+		'''
+		Updates the calculation boolean to automatic
+
+		'''
+		self.isCalcAutomatic = True
+
+	def showManualCalc(self):
+		'''
+		Shows the Manual Calculation toggle window from the settings menu
+
+		'''
+		self.manualCalcWindow.show()
+
+	def showInstructions(self):
+		'''
+		Shows the instructions window from the settings menu
+
+		'''
+		#Instructions window in the settings menu, this can be more detailed about features since its not a pop up
+		self.instructionWindow = QMainWindow()
+		self.instructionWindow.resize(500,250)
+		self.instructionWindow.setWindowTitle("Instructions")
+		self.instructionLabel = QLabel()
+		self.instructionLabel.setTextFormat(1)
+		self.instructionLabel.setText("<h2 style=\"text-align: center;\"><img src=\"/Users/jk317/Glue/icons/glue_instructions.png\" width=\"46\" height=\"46\" />&nbsp;<strong>Instructions:</strong></h2> <ul><li>Check the rows to calculate basic statistics</li><li>Cycle between Subset and Component views with the tabs</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Home</em></strong></span> to collapse all rows</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Refresh</em></strong></span> after linking data to check for possible calculations</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Sort</em> </strong></span>to enable sorting, selecting a column will sort rows accordingly</li><li>Press <span style=\"color: #ff0000;\"><strong><em>Convert</em></strong></span> to toggle scientific notation and decimal form</li><li>Press <strong><span style=\"color: #ff0000;\"><em>Export</em></span></strong> to export the current open tree view</li><li>Press <strong><span style=\"color: #ff0000;\"><em>Settings</em></span></strong> to change # of decimal points or to read more instructions</li></ul>")
+		self.instructionWindow.setCentralWidget(self.instructionLabel)
+
+		self.instructionWindow.layout().setContentsMargins(10,10,20,20)
+		self.instructionWindow.setContentsMargins(10,10,20,20)
+		self.instructionWindow.show()
+
+	def showAgainUpdate(self, buttonInfo):
+		'''
+		Function for the "Do not show again" logic in the instructions pop up
+
+		@param buttonInfo: Button that triggered the function, in this case the only button (Ok button)
+		'''
+		global showInstructions
+		#if do not show again is checked
+		if self.cb.checkState() == 2:
+			showInstructions = False
+
 	def showDecimalWindow(self):
+		'''
+		Shows the decimal point changer window
+
+		'''
 		self.decimalWindow.show()
 
 	def sigchange(self, i):
+		'''
+		Function for the decimal places change logic
+
+		@param i: value of the integer in the QSpinBox determining decimal places
+		'''
 		self.num_sigs = i
-		if not self.isSci:
-			getcontext().prec = self.num_sigs
-			self.pressedEventCalculate()
+		getcontext().prec = self.num_sigs
+		self.pressedEventCalculate()
 
 	def refresh(self):
 		'''
@@ -681,17 +844,82 @@ class StatsDataViewer(DataViewer):
 		@param item: QTreewidgetItem that has been checked/unchecked
 		@param col: Column number of the action
 		'''
+		if self.isCalcAutomatic:
+			if item.checkState(0):
+				#print("checked")
+				#if the data branch is selected, check everything under data branch
+				self.check_status_helper(2, item)
+				self.pressedEventCalculate()
+			else:
+				#print("unchecked")
+				# 0 means to uncheck NOTE: This is different then checkState. 0 for checkState means it is checked
+				self.check_status_helper(0, item)
 
-		if item.checkState(0):
-			#print("checked")
-			#if the data branch is selected, check everything under data branch
-			self.check_status_helper(2, item)
+		#if calculation in in manual mode
 		else:
+			#if item.childCount() == 0 and
+
+			if item.checkState(0):
+				#if already checked then act like automatic
+				if item in self.alreadyChecked:
+					self.check_status_helper(2, item)
+					self.pressedEventCalculate()
+
+				#if not already checked, show warning
+				if not item in self.alreadyChecked:
+					self.showManualWarning()
+					#if the calc was confirmed by user
+					if self.confirmedCalc:
+						self.alreadyChecked.append(item)
+						self.check_status_helper(2, item)
+						self.pressedEventCalculate()
+					#calc was cancelled by user, undo check and return
+					else:
+						item.setCheckState(0,0)
+						return
+			#if being unchecked
+			if not item.checkState(0):
+				self.check_status_helper(0, item)
+		'''
+		if not item in self.alreadyChecked and not item.checkState(0):
 			#print("unchecked")
 			# 0 means to uncheck NOTE: This is different then checkState. 0 for checkState means it is checked
 			self.check_status_helper(0, item)
 
+		if not self.isCalcAutomatic and item.childCount() > 0 and not item in self.alreadyChecked:
+			#if calculation is manual mode and has multiple branches, prompt user to confirm before calculation, return if calc is canceled
+			#if it doesn't have a child, no need to prompt as it is only calculating a single component, regardless of toggle
+			#if a box is being unchecked, there is no need to confirm or unconfirm anything
+			self.showManualWarning()
+			if not self.confirmedCalc:
+				if item.checkState(0):
+					item.setCheckState(0,2)
+					self.alreadyChecked.append(item)
+					return #return if not confirmed, else continue code like normal
+
 		self.pressedEventCalculate()
+		self.confirmedCalc = False
+		'''
+
+	def showManualWarning(self):
+		'''
+		Shows the Manual Calculation confirmation
+
+		'''
+		manualWarning = QMessageBox() #.question(self,"Warning","Confirm multiple large dataset calculations", QMessageBox.Yes , QMessageBox.Cancel )
+		manualWarning.setText("Confirm Calculation of multiple large datasets")
+		manualWarning.setInformativeText("Turn off Manual Calculation in Settings")
+		manualWarning.setStandardButtons(QMessageBox.Cancel)
+		manualWarning.addButton(QMessageBox.Ok)
+		manualWarning.setDefaultButton(QMessageBox.Cancel)
+		temp = manualWarning.exec()
+		#print(temp)
+		if temp == QMessageBox.Ok:
+			print("ok")
+			self.confirmedCalc = True
+		if temp == QMessageBox.Cancel:
+			print("cancel")
+			self.confirmedCalc = False
 
 	def check_status_helper(self, state, dataset):
 		'''
@@ -712,6 +940,8 @@ class StatsDataViewer(DataViewer):
 				dataset.child(x).setCheckState(0,state)
 				#if checked, expand
 				if state ==2:
+					if not dataset.child(x) in self.alreadyChecked:
+						self.alreadyChecked.append(dataset.child(x))
 					dataset.child(x).setExpanded(True)
 				else:
 					dataset.child(x).setExpanded(False)
@@ -720,6 +950,8 @@ class StatsDataViewer(DataViewer):
 				if not dataset.child(x).child(y).foreground(0) == QtGui.QBrush(Qt.gray):
 					dataset.child(x).child(y).setCheckState(0,state)
 					if state ==2:
+						if not dataset.child(x).child(y) in self.alreadyChecked:
+							self.alreadyChecked.append(dataset.child(x).child(y))
 						dataset.child(x).child(y).setExpanded(True)
 					else:
 						dataset.child(x).child(y).setExpanded(False)
@@ -728,20 +960,11 @@ class StatsDataViewer(DataViewer):
 					if not dataset.child(x).child(y).child(z).foreground(0) == QtGui.QBrush(Qt.gray):
 						dataset.child(x).child(y).child(z).setCheckState(0,state)
 						if state ==2:
+							if not dataset.child(x).child(y).child(z) in self.alreadyChecked:
+								self.alreadyChecked.append(dataset.child(x).child(y).child(z))
 							dataset.child(x).child(y).child(z).setExpanded(True)
 						else:
 							dataset.child(x).child(y).child(z).setExpanded(False)
-		#if self.tabs.currentIndex() == 0:
-
-		#elif self.tabs.currentIndex() == 1:
-		#	if state == 2:
-		#		self.componentTree.expandToDepth(3)
-		#	else:
-		#		self.componentTree.expandToDepth(0)
-    	#	if state == 2:
-	    #			dataset.setExpanded(True)
-	    #		if state == 0:
-	    #			dataset.setExpanded(False)
 
 	def subsetNames(self):
 		'''
@@ -1075,6 +1298,9 @@ class StatsDataViewer(DataViewer):
 		self.subsetTree.expandToDepth(1)
 		self.componentTree.expandToDepth(1)
 
+		if self.xc[i].size > 1000000 :
+			self.showLargeDatasetWarning()
+
 	def subsetCreatedMessage(self, message):
 		'''
 		Adds a new subset to the viewer when new subset is created
@@ -1269,13 +1495,6 @@ class StatsDataViewer(DataViewer):
 	def myPressedEvent(self, currentQModelIndex):
 		pass
 
-	def expandAll(self, bool):
-
-		item_List = self.past_itemMasterList
-
-		for qtwitem in item_List:
-			qtwitem.setExpanded(bool)
-
 	def pressedEventCalculate(self):
 
 		'''
@@ -1291,18 +1510,19 @@ class StatsDataViewer(DataViewer):
 
 
 		# create list of rows to calculate
+		# calculate for subset view
 		if self.tabs.currentIndex() == 0 :
+
+			#get the checked items in the data branch
 			data_branch = self.subsetTree.invisibleRootItem().child(0)
 			for data_i in range (0, len(self.xc)):
-
 				for comp_i in range (0, len(self.xc[data_i].components)):
-
 					# if checked, add to selected list
-					if data_branch.child(data_i).child(comp_i).checkState(0): #or self.nestedtree.invisibleRootItem().child(0).child(data_i).checkState(0) or self.nestedtree.invisibleRootItem().child(0).checkState(0):
+					if data_branch.child(data_i).child(comp_i).checkState(0):
 						self.selected_indices.append(
 							self.subsetTree.indexFromItem(data_branch.child(data_i).child(comp_i)))
-					else:
-						pass
+
+			#get the checked items in the subset branch
 			subset_branch = self.subsetTree.invisibleRootItem().child(1)
 			for subset_i in range (0, len(self.xc.subset_groups)):
 				#print("subset: "+ str(subset_i))
@@ -1310,15 +1530,46 @@ class StatsDataViewer(DataViewer):
 					#print("dataset: "+ str(data_i))
 					for comp_i in range (0, len(self.xc[data_i].components)):
 						#print("component: "+ str(comp_i))
+
+						#try statement here for subsets that are not added(happens when subsets are calculated first and a new dataset is added)
 						try:
-							if subset_branch.child(subset_i).child(data_i).child(comp_i).checkState(0):# or self.nestedtree.invisibleRootItem().child(1).child(subset_i).child(data_i).checkState(0) or self.nestedtree.invisibleRootItem().child(1).child(subset_i).checkState(0) or self.nestedtree.invisibleRootItem().child(1).checkState(0):
-								#print("lalalal")
+							if subset_branch.child(subset_i).child(data_i).child(comp_i).checkState(0):
 								self.selected_indices.append(
 									self.subsetTree.indexFromItem(subset_branch.child(subset_i).child(data_i).child(comp_i)))
 						except:
 							pass
 
-		else:
+			newly_selected = np.setdiff1d(self.selected_indices, self.past_selected)
+
+			for index in range (0, len(newly_selected)):
+
+				# Check which view mode the tree is in to get the correct indices
+				data_i = newly_selected[index].parent().row()
+				comp_i = newly_selected[index].row()
+
+				if newly_selected[index].parent().parent().parent().row() == -1:
+					# Whole data sets
+					subset_i = -1
+				else:
+					# Subsets
+					subset_i = newly_selected[index].parent().parent().row()
+
+				is_subset = (subset_i != -1)
+
+				# Check if its a subset and if so run subset stats
+				if is_subset:
+					new_data = self.runSubsetStats(subset_i, data_i, comp_i)
+				else:
+					# Run standard data stats
+					new_data = self.runDataStats(data_i, comp_i)
+
+				#populate the subsetTree viewer
+				for col_index in range (3, len(new_data)):
+					self.subsetTree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
+
+
+		#if calculating component view
+		elif self.tabs.currentIndex() == 1:
 			for data_i in range(0,len(self.xc)):
 
 				# subset_i and comp_i are switched by accident
@@ -1326,79 +1577,44 @@ class StatsDataViewer(DataViewer):
 
 					for comp_i in range(0, len(self.xc.subset_groups) + 1):
 
-						if self.componentTree.invisibleRootItem().child(data_i).child(subset_i).child(comp_i).checkState(0): # or self.nestedtree.invisibleRootItem().child(data_i).child(subset_i).checkState(0) or self.nestedtree.invisibleRootItem().child(data_i).checkState(0):
+						if self.componentTree.invisibleRootItem().child(data_i).child(subset_i).child(comp_i).checkState(0):
 							self.selected_indices.append(
 								self.componentTree.indexFromItem(self.componentTree.invisibleRootItem().child(data_i).child(subset_i).child(comp_i)))
-						else :
-							pass
 
-		newly_selected = np.setdiff1d(self.selected_indices, self.past_selected)
-		#print(self.selected_indices)
-		#print("xaxaxaxa")
-		#print(self.selected_indices[0])
-		for index in range (0, len(newly_selected)):
+			newly_selected = np.setdiff1d(self.selected_indices, self.past_selected)
+			#print(self.selected_indices)
+			#print("xaxaxaxa")
+			#print(self.selected_indices[0])
+			for index in range (0, len(newly_selected)):
 
-			# Check which view mode the tree is in to get the correct indices
-			#if the current tab is in subset view
-			if self.tabs.currentIndex() == 0:
-
-				if newly_selected[index].parent().parent().parent().row() == -1:
-					# Whole data sets
-					data_i = newly_selected[index].parent().row()
-					comp_i = newly_selected[index].row()
-					subset_i = -1
-				else:
-					# Subsets
-					data_i = newly_selected[index].parent().row()
-					comp_i = newly_selected[index].row()
-					subset_i = newly_selected[index].parent().parent().row()
-			#if the current tab is in component view
-			else:
+				# Check which view mode the tree is in to get the correct indices
 				data_i = newly_selected[index].parent().parent().row()
 				comp_i = newly_selected[index].parent().row()
 				subset_i = newly_selected[index].row() - 1
 
-			is_subset = (subset_i != -1)
+				is_subset = (subset_i != -1)
 
-			# Check if its a subset and if so run subset stats
-			if is_subset:
-				new_data = self.runSubsetStats(subset_i, data_i, comp_i)
+				# Check if its a subset and if so run subset stats
+				if is_subset:
+					new_data = self.runSubsetStats(subset_i, data_i, comp_i)
 
-			else:
-				# Run standard data stats
-				new_data = self.runDataStats(data_i, comp_i)
+				else:
+					# Run standard data stats
+					new_data = self.runDataStats(data_i, comp_i)
 
-			#print(new_data)
-			#print("xoxoxo")
-			#print(newly_selected[index].row())
-			#print("newly selected item ^")
-			#print(self.nestedtree.itemFromIndex(newly_selected[index]))
-			#print(new_data[0])
-			#print(new_data[1])
-			#print(new_data[2])
-			# self.nestedtree.itemFromIndex(newly_selected[0]).setData(0, 0, new_data[0][0])
-			'''cache_key = new_data[0] + new_data[1] + new_data[2]
-			temp = ''
-			if self.tabs.currentIndex() == 0 and not cache_key in self.subsetViewExportCache:
-				temp = 'subset'
-				self.subsetViewExportCache.add(cache_key)
-			elif self.tabs.currentIndex() == 1 and not cache_key in self.componentViewExportCache:
-				temp = 'component'
-				self.componentViewExportCache.add(cache_key)
-			if not temp == '':'''
-			for col_index in range (0, len(new_data)):
-				#if not sciFi:
-					#if self.tabs.currentIndex() == 0:
-					#	self.calculatedSubsetViewList = np.append(self.calculatedSubsetViewList, new_data[col_index])
-					#elif self.tabs.currentIndex() == 1:
-					#	self.calculatedComponentViewList = np.append(self.calculatedComponentViewList, new_data[col_index])
+				#print(new_data)
+				#print("xoxoxo")
+				#print(newly_selected[index].row())
+				#print("newly selected item ^")
+				#print(self.nestedtree.itemFromIndex(newly_selected[index]))
+				#print(new_data[0])
+				#print(new_data[1])
+				#print(new_data[2])
+				# self.nestedtree.itemFromIndex(newly_selected[0]).setData(0, 0, new_data[0][0])
 
-				if (col_index > 2):
-					#print(new_data[col_index])
-					if self.tabs.currentIndex() == 0:
-						self.subsetTree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
-					elif self.tabs.currentIndex() == 1:
-						self.componentTree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
+				#populate the Component Tree
+				for col_index in range (3, len(new_data)):
+					self.componentTree.itemFromIndex(newly_selected[index]).setData(col_index-2, 0, new_data[col_index])
 
 	def getCurrentCalculated(self):
 		'''
@@ -1498,15 +1714,19 @@ class StatsDataViewer(DataViewer):
 		# Build the cache key
 		cache_key = subset_label + data_label + comp_label
 
-		#print(cache_key)
-		# See if the values have already been cached
-		if True: # self.noupdate
-			try:
-				column_data = self.cache_stash[cache_key]
-			except:
-				column_data = self.newDataStats(data_i, comp_i)
+		if cache_key in self.cache_stash:
+			column_data = self.cache_stash[cache_key]
 		else:
 			column_data = self.newDataStats(data_i, comp_i)
+		#print(cache_key)
+		# See if the values have already been cached
+		#if True:
+		#	try:
+		#		column_data = self.cache_stash[cache_key]
+		#	except:
+		#		column_data = self.newDataStats(data_i, comp_i)
+		#else:
+		#	column_data = self.newDataStats(data_i, comp_i)
 		#print(column_data)
 		# Save the accurate data in self.data_accurate
 		# column_df = pd.DataFrame(column_data, columns=self.headings)
@@ -1590,13 +1810,20 @@ class StatsDataViewer(DataViewer):
 
 		# See if the statistics are already in the cache if nothing needs to be updated
 
-		if True:
-			try:
-				column_data = self.cache_stash[cache_key]
-			except:
-				column_data = self.newSubsetStats(subset_i, data_i, comp_i)
+
+		if cache_key in self.cache_stash:
+			column_data = self.cache_stash[cache_key]
 		else:
 			column_data = self.newSubsetStats(subset_i, data_i, comp_i)
+
+		#if True:
+			#THIS IS KILLING PERFORMANCE FIX THIS ISSUE GET RID OF TRY EXCEPT
+			#try:
+			#	column_data = self.cache_stash[cache_key]
+			#except:
+			#	column_data = self.newSubsetStats(subset_i, data_i, comp_i)
+		#else:
+		#	column_data = self.newSubsetStats(subset_i, data_i, comp_i)
 
 		if self.isSci:
 			# Format in scientific notation
