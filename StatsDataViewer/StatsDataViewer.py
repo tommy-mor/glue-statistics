@@ -34,9 +34,8 @@ auto_refresh(True)
 
 from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO
 
-
 @viewer_tool
-class SelectDecimalPoints(SimpleToolMenu):
+class Settings(SimpleToolMenu):
 
 	icon = SETTINGS_LOGO
 	tool_id = 'settings'
@@ -46,10 +45,22 @@ class SelectDecimalPoints(SimpleToolMenu):
 		#super(SelectDecimalPoints, self).__init__(viewer=viewer)
 	def menu_actions(self):
 		result = []
-		a = QtWidgets.QAction("Edit Decimal Points", None)
-		a.triggered.connect(self.viewer.showDecimalWindow)
-		result.append(a)
+		#Action for editing decimal points
+		action = QtWidgets.QAction("Edit Decimal Points", None)
+		action.triggered.connect(self.viewer.showDecimalWindow)
+		result.append(action)
+		#Action for showing instructions
+		action = QtWidgets.QAction("Instructions", None)
+		action.triggered.connect(self.viewer.showInstructions)
+		result.append(action)
+		#Action for toggling automatic calculation
+		action = QtWidgets.QAction("Toggle Manual Calculation", None)
+		action.triggered.connect(self.viewer.showManualCalc)
+		result.append(action)
 		return result
+
+	def close(self):
+		self.viewer.closeAllWindows
 
 
 @viewer_tool
@@ -82,28 +93,6 @@ class Refresh(Tool):
 	def activate(self):
 		self.viewer.refresh()
 
-@viewer_tool
-class SelectDecimalPoints(Tool):
-	#icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
-	tool_id = 'decimal_place'
-	action_text = 'Convert'
-
-	def __init__(self,viewer):
-		self.viewer = viewer
-
-	def menu_actions(self):
-		result = []
-		a = QtWidgets.QAction("Decimal Points", None)
-		a.triggered.connect(self.test)
-		result.append(a)
-		a = QtWidgets.QAction("Points", None)
-		a.triggered.connect(self.test)
-		result.append(a)
-		return result
-	def test(self):
-		print("test")
-#	def activate(self):
-	#	self.viewer.test2()
 
 @viewer_tool
 class ConvertNotation(Tool):
@@ -245,25 +234,6 @@ class HomeButton(Tool):
 	def close(self):
 		pass
 
-@viewer_tool
-class TreeButton(Tool):
-
-	#icon = '/Users/jk317/Glue/icons/glue_hierarchy.png'
-	tool_id = 'move_tool'
-	action_text = 'switch view'
-	tool_tip = 'toggle view'
-	status_tip = 'toggle view'
-	shortcut = 'M'
-
-	def __init__(self, viewer):
-		self.viewer = viewer
-
-	def activate(self):
-		self.viewer.sortByComponents()
-		self.viewer.component_mode = True
-
-	def close(self):
-		pass
 
 @viewer_tool
 class ExpandButton(Tool):
