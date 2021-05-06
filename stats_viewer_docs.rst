@@ -39,171 +39,30 @@ Contents
     
 ``this is highlighted text``
 
+sub section
+-----------------
+
+Heading Level 4
+^^^^^^^^^^^^^^^
+
+Heading Level 5
+"""""""""""""""
+
+links : `TryPyramid <https://trypyramid.com>`_
+
 
 How to Use the Statistics Viewer
 ============================
 
-Each page should contain in order the following.
-
-#.  The main heading. This will be visible in the table of contents.
-
-    .. code-block:: rst
-
-        ================
-        The main heading
-        ================
-
-#.  Meta tag information.
-    The "meta" directive is used to specify HTML metadata stored in HTML META tags.
-    Metadata is used to describe and classify web pages in the World Wide Web in a form that is easy for search engines to extract and collate.
-
-    .. code-block:: rst
-
-        .. meta::
-           :description: This chapter describes how to edit, update, and build the Pyramid documentation.
-           :keywords: Pyramid, Style Guide
-
-    The above code renders as follows.
-
-    .. code-block:: xml
-
-        <meta content="This chapter describes how to edit, update, and build the Pyramid documentation." name="description" />
-        <meta content="Pyramid, Style Guide" name="keywords" />
-
-#.  Introduction paragraph.
-
-    .. code-block:: rst
-
-        Introduction
-        ------------
-
-        This chapter is an introduction.
-
-#.  Finally the content of the document page, consisting of reST elements such as headings, paragraphs, tables, and so on.
-
-
-.. _dsg-documentation-content:
 
 Making the Data Viewer Skeleton
 ==========================
 
 
-Table of contents
------------------
 
-``toctree`` entries should exclude the file extension.
-For example:
+Modifying the Toolbar
+=======================
 
-.. code-block:: rst
-
-    .. toctree::
-        :maxdepth: 2
-
-        narr/introduction
-        narr/install
-        narr/firstapp
-
-
-.. _dsg-headings:
-
-Headings
---------
-
-Chapter titles, sections, sub-sections, sub-sub-sections, and sub-sub-sub-sections within a chapter (usually a single reST file) are indicated with markup and are displayed as headings at various levels.
-Conventions are adopted from `Documenting Python, Sections <https://devguide.python.org/documenting/#sections>`_.
-
-Headings are rendered in HTML as follows:
-
-====================  ============================  ========
-   Heading Level      underline/overline character    HTML
-====================  ============================  ========
-Title                 ``*``                         ``<h1>``
-Sections              ``=``                         ``<h2>``
-Sub-sections          ``-``                         ``<h3>``
-Sub-sub-sections      ``^``                         ``<h4>``
-Sub-sub-sub-sections  ``"``                         ``<h5>``
-====================  ============================  ========
-
-The chapter title of this document, *Documentation Style Guide*, has the following reST code.
-
-.. code-block:: rst
-
-    *************************
-    Documentation Style Guide
-    *************************
-
-Chapter titles should be over- and underlined with asterisks (``*``).
-
-The heading for this section, *Documentation content*, has the following reST code:
-
-.. code-block:: rst
-
-    Documentation content
-    =====================
-
-The heading for this sub-section, *Headings*, has the following reST code:
-
-.. code-block:: rst
-
-    Headings
-    --------
-
-Sub-sub-section, and sub-sub-sub-section headings are shown as follows.
-
-Heading Level 4
-^^^^^^^^^^^^^^^
-
-This is a sub-sub-section.
-
-.. code-block:: rst
-
-    Heading Level 4
-    ^^^^^^^^^^^^^^^
-
-Heading Level 5
-"""""""""""""""
-
-This is a sub-sub-sub-section.
-
-.. code-block:: rst
-
-    Heading Level 5
-    """""""""""""""
-
-
-.. _dsg-paragraphs:
-
-Paragraphs
-----------
-
-A paragraph of text looks exactly like this paragraph.
-Paragraphs must be separated by two line feeds.
-
-
-.. _dsg-links:
-
-Links to websites
------------------
-
-It is recommended to use inline links to keep together the context or link label with the URL.
-Avoid the use of targets and links at the end of the page, because the separation makes it difficult to update and translate.
-Here is an example of inline links, our preferred method.
-
-.. code-block:: rst
-
-    `TryPyramid <https://trypyramid.com>`_
-
-The above code renders as follows.
-
-`TryPyramid <https://trypyramid.com>`_
-
-.. seealso:: See also :ref:`dsg-cross-reference-links` for generating links throughout the entire documentation.
-
-
-.. _dsg-cross-reference-links:
-
-Cross-reference links
----------------------
 
 To create cross-references to a document, arbitrary location, object, or other items, use variations of the following syntax.
 
