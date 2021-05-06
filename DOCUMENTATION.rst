@@ -66,6 +66,9 @@ Plot Layers
 =======================
 Qt Design
 =======================
+
+Pop-up messages
+-----------------
 Creating the Plugin (and how to update it easily)
 =======================
 Common bugs and how to fix them
