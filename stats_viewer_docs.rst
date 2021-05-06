@@ -4,46 +4,15 @@
 Glue Statistics Viewer Documentation
 ****************************************
 
-.. meta::
-    :description: This documentation details the funtionality and methods used to create the Stats Viewer. Hopefully this is helpful to future glue developers making new viewrs.
     :keywords: Tutorial, Documentation
 
-
-.. _dsg-introduction:
+Author: Juna Kim
 
 Introduction
 ============
 
-This document is aimed at authors of and contributors to documentation for projects under the Pylons Project.
-This document describes style and reStructuredText syntax used in project documentation.
-We provide examples, including reStructuredText code and its rendered output, for both visual and technical reference.
+This documentation details the funtionality and methods used to create Glue's Statistics Viewer. This documentation is also meant to help new Glue developers become aquainted with creating a new viewer and hope to be a resource for kickstarting their own code. 
 
-The source code of this guide is located in its `project repository on GitHub <https://github.com/Pylons/docs-style-guide>`_.
-
-For Python coding style guidelines, see `Coding Style <https://pylonsproject.org/community-coding-style-standards.html#coding-style>`_.
-
-We have adopted the convention from :RFC:`2119` for key words.
-
-    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be interpreted as described in :RFC:`2119`.
-
-Other conventions throughout this guide are adopted and adapted from `Documenting Python <https://devguide.python.org/documenting/>`_, `Plone Documentation Style Guide <https://docs.plone.org/about/contributing/documentation_styleguide.html>`_, and `Write The Docs <http://www.writethedocs.org/>`_.
-
-
-.. _dsg-contributing:
-
-Contributing to a project's documentation
------------------------------------------
-
-All projects under the Pylons Projects follow the guidelines established at `How to Contribute <https://pylonsproject.org/community-how-to-contribute.html>`_.
-
-When submitting a pull request for the first time in a project, sign its ``CONTRIBUTORS.txt`` and commit it along with your pull request.
-
-Contributors to documentation should be familiar with `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ (reST) for writing documentation.
-Most projects use `Sphinx <http://www.sphinx-doc.org/en/master/>`_ to build documentation from reST source files, and `Read The Docs <https://readthedocs.org/>`_ (RTD) for publishing them on the web.
-Experience with Sphinx and RTD may be helpful, but not required.
-
-
-.. _dsg_testing-documentation:
 
 Testing Documentation
 ---------------------
