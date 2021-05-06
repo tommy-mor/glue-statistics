@@ -11,244 +11,32 @@ Author: Juna Kim
 Introduction
 ============
 
-This documentation details the funtionality and methods used to create Glue's Statistics Viewer. This documentation is also meant to help new Glue developers become aquainted with creating a new viewer and hope to be a resource for kickstarting their own code. 
+This documentation details the funtionality and methods used to create Glue's Statistics Viewer. This documentation is also meant to help new Glue developers become aquainted with creating a new viewer and hope to be a resource for kickstarting their own code. Most of the information on this document can be found on the official Glue documentation page, and additional information may be found there. However, this file will be more streamlined to help developers create viewers compared to the original documentation.
 
-
-Testing Documentation
----------------------
-
-Before submitting a pull request, documentation should be tested locally.
-Ultimately testing of documentation must be done before merging a pull request.
-This is typically done through a project's integration with Travis CI or Appveyor.
-
-*   Use Sphinx's ``make html`` command to build the HTML output of the documentation without errors or warnings.
-    Some projects use ``tox -e docs`` or just ``tox`` to invoke Sphinx's ``make html``.
-    Most other build utilities like `restview <https://pypi.org/project/restview/>`_ and `readme_renderer <https://pypi.org/project/readme_renderer/>`_ test only a single file and do not support cross-references between files.
-*   If documentation has doctests and uses :ref:`dsg-sphinx-extension-doctest`, then run Sphinx's ``make doctest`` command.
-*   Optionally use Sphinx's ``make linkcheck`` command to verify that links are valid and to avoid bit rot.
-    It is acceptable to ignore broken links in a project's change log and history.
-    Narrative and API documentation should occasionally have its links checked.
-*   Optionally use Sphinx's ``make epub`` and ``make latexpdf`` or ``make xelatex`` commands to build epub or PDF output of the documentation.
-
-This project's `repository <https://github.com/Pylons/docs-style-guide>`_ has an example of how to configure Sphinx, tox, and Travis to build documentation.
-
-
-.. _dsg-documentation-structure:
 
 Documentation structure
 =======================
 
 This section describes the structure of documentation and its files.
 
-
-.. _dsg-location:
-
-Location
+Contents
 --------
 
-Documentation source files should be contained in a folder named ``docs`` located at the root of the project.
-Images and other static assets should be located in ``docs/_static``.
+* How to use the Statistics Viewer
+* Making the Data Viewer Skeleton
+* Modifying the Toolbar
+* Accessing the Data Collection
+* Listening for Changes with Messages
+* Plot Layers
+* Qt Design
+* Creating the Plugin (and how to update it easily)
 
-reST directives must refer to files either relative to the source file or absolute from the top source directory.
-For example, in ``docs/narr/source.rst``, you could refer to a file in a different directory as either:
 
 .. code-block:: rst
 
-    .. include:: ../diff-dir/diff-source.rst
+    this is a code block
 
-or:
 
-.. code-block:: rst
-
-    .. include:: /diff-dir/diff-source.rst.
-
-
-.. _dsg-file-naming:
-
-File naming
------------
-
-reST source files and static assets should have names that consist only of lowercase letters (``a-z``), numbers (``0-9``), periods (``.``), and hyphens (``-``) instead of underscores (``_``).
-Files must start a letter.
-reST source files should have the extension of ``.rst``.
-
-Image files may be any format, but must have standard file extensions that consist of three letters (``.gif``, ``.jpg``, ``.png``, ``.svg``).
-``.gif`` and ``.svg`` are not currently supported by PDF builders in Sphinx.
-However you can use an asterisk (``*``) as a :index:`wildcard extension` instead of the actual file extension.
-This allows the Sphinx builder to automatically select the correct image format for the desired output.
-For example:
-
-    .. code-block:: rst
-
-        .. image:: ../_static/pyramid_request_processing.*
-
-will select the image ``pyramid_request_processing.svg`` for the HTML documentation builder, and ``pyramid_request_processing.png`` for the PDF builder.
-See the related `Stack Overflow post <https://stackoverflow.com/questions/6473660/using-sphinx-docs-how-can-i-specify-png-image-formats-for-html-builds-and-pdf-im/6486713#6486713>`_.
-
-
-.. _dsg-index:
-
-Index
------
-
-Documentation must have an index file whose purpose is to serve as a home page for the documentation, including references to all other pages in the documentation.
-The index file should be named ``index.rst``.
-Each section, or a subdirectory of reST files such as a tutorial, must contain an ``index.rst`` file.
-
-The index should contain at least a :ref:`dsg-table-of-contents` through the :ref:`toctree <sphinx:toctree-directive>` directive.
-
-The index should include a reference to both a search page and a general index page, which are automatically generated by Sphinx.
-See below for an example.
-
-.. code-block:: rst
-
-    * :ref:`genindex`
-    * :ref:`search`
-
-* :ref:`genindex`
-* :ref:`search`
-
-
-.. _dsg-glossary:
-
-Glossary
---------
-
-Documentation may have a glossary file.
-If present, it must be named ``glossary.rst``.
-
-This file defines terms used throughout the documentation.
-Its content must begin with the directive ``glossary``.
-An optional ``sorted`` argument should be used to sort the terms alphabetically when rendered, making it easier for the user to find a given term.
-Without the argument ``sorted``, terms will appear in the order of the ``glossary`` source file.
-
-Example:
-
-.. code-block:: rst
-
-    .. glossary::
-        :sorted:
-
-        voom
-            Theoretically, the sound a parrot makes when four-thousand volts of electricity pass through it.
-
-        pining
-            What the Norwegien Blue does when it misses its homeland, for example, pining for the fjords.
-
-The above code renders as follows.
-
-    .. rst-class:: glossary simple
-
-    pining
-        What the Norwegian Blue does when it misses its homeland, for example, pining for the fjords.
-
-    voom
-        Theoretically, the sound a parrot makes when four-thousand volts of electricity pass through it.
-
-
-References to glossary terms appear as follows.
-
-.. code-block:: rst
-
-    :term:`voom`
-
-:term:`voom`
-
-Note it is hyperlinked, and when clicked it will take the user to the term in the Glossary and highlight the term.
-
-
-.. _dsg-change-history:
-
-Change history
---------------
-
-Either a reference to a change history log file in the project or its inclusion in the documentation should be present.
-Change history should include feature additions, deprecations, bug fixes, release dates and versions, and other significant changes to the project.
-
-
-.. _dsg-file-encoding:
-
-File encoding
--------------
-
-All documentation source files must be in UTF-8 encoding to allow special characters, including em-dash (``—``) and tree diagram characters.
-
-
-.. _dsg-general-guidance:
-
-General guidance
-================
-
-This section describes the general voice, tone, and style that documentation should follow.
-It also includes things for authors to consider when writing to your audience.
-
-
-Accessibility
--------------
-
-Consider that your audience includes people who fall into the following groups:
-
-- People who do not use English as their first language (English language rules are insanely complex).  According to our web statistics for docs.pylonsproject.org, about 36% of all readers of documentation under the Pylons Project do not use English as their first language.  And only about 32% of all visitors are from the United States, United Kingdom, Canada, Australia, New Zealand, and Ireland.
-- Visually impaired readers (a comma makes a huge difference to a screen reader, adding a "breath", much like a musical breath symbol).
-- Readers who don't have college-level reading comprehension.
-- Folks with reading disabilities.
-
-
-Voice
------
-
-It is acceptable to address the reader as "you".
-This helps make documentation, especially tutorials, more approachable.
-"You" is also less formal than "the user".
-
-
-Avoid sentence run-ons
-----------------------
-
-Instead of using long sentences, consider breaking them into multiple shorter sentences.
-Long complicated sentences are more difficult to understand than shorter, clearer sentences.
-Consider that your audience is not familiar with your content.
-That is why they are reading your documentation.
-
-
-Gender
-------
-
-Except for speaking for oneself, the author should avoid using pronouns that identify a specific gender.
-Neutral gender pronouns "they", "them", "their", "theirs", "it", and "its" are preferred.
-Never use the hideous and clumsy "he/she".
-
-
-Style
------
-
-Avoid hype and marketing.
-
-Avoid words that can frustrate or discourage the reader if they are not able to complete or understand a concept.
-Such words include "simple", "just", "very", "easy", and their derivations.
-For example, "Simply run the command ``foo bar``, and you're up and running!" will frustrate a user who has neither installed the requirements for ``foo`` nor configured it to execute ``bar``.
-
-
-English Syntax
---------------
-
-Use proper spelling, grammar, and punctuation.
-`English Language & Usage <https://english.stackexchange.com/>`_ is a good resource.
-
-Never use "and/or".
-If you cannot figure out whether you should use "and" or "or", and are tempted to use the lazy "and/or", then write the sentence so it is clear.
-
-Avoid abbreviations.
-Spell out words.
-
-Avoid "etc.", "e.g.", and "i.e.".
-They do not translate well or read well by screen readers for the visually impaired.
-It is lazy, and sounds pretentious.
-Writers seldom get the usage or punctuation right.
-Instead spell it out to their meanings of "and so on", "for example", and "in other words".
-
-
-.. _dsg-page-structure:
 
 Documentation page structure
 ============================
