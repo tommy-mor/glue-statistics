@@ -1,4 +1,4 @@
-.. _index:
+
 
 ****************************************
 Glue Statistics Viewer Documentation
