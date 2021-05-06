@@ -1,5 +1,4 @@
 
-
 ****************************************
 Glue Statistics Viewer Documentation
 ****************************************
@@ -39,14 +38,6 @@ Contents
     
 ``this is highlighted text``
 
-sub section
------------------
-
-Heading Level 4
-^^^^^^^^^^^^^^^
-
-Heading Level 5
-"""""""""""""""
 
 links : `TryPyramid <https://trypyramid.com>`_
 
