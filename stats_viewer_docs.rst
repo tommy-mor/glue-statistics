@@ -36,6 +36,8 @@ Contents
 .. code-block:: rst
 
     this is a code block
+    
+``this is highlighted text``
 
 
 How to Use the Statistics Viewer
