@@ -22,14 +22,15 @@ This section describes the structure of documentation and its files.
 Contents
 --------
 
-* How to use the Statistics Viewer
-* Making the Data Viewer Skeleton
-* Modifying the Toolbar
-* Accessing the Data Collection
-* Listening for Changes with Messages
-* Plot Layers
-* Qt Design
-* Creating the Plugin (and how to update it easily)
+#. How to Use the Statistics Viewer
+#. Making the Data Viewer Skeleton
+#. Modifying the Toolbar
+#. Accessing the Data Collection
+#. Listening for Changes with Messages
+#. Plot Layers
+#. Qt Design
+#. Creating the Plugin (and how to update it easily)
+#. Common bugs and how to fix them
 
 
 .. code-block:: rst
@@ -37,8 +38,7 @@ Contents
     this is a code block
 
 
-
-Documentation page structure
+How to Use the Statistics Viewer
 ============================
 
 Each page should contain in order the following.
@@ -82,52 +82,9 @@ Each page should contain in order the following.
 
 .. _dsg-documentation-content:
 
-Documentation page content
+Making the Data Viewer Skeleton
 ==========================
 
-This section describes the content of documentation source files.
-
-
-.. _dsg-use-of-whitespace:
-
-Use of whitespace
------------------
-
-Narrative documentation is not code, and should therefore not adhere to :pep:`8` standards or other line length conventions.
-There is no maximum line length.
-Lines should be the length of one sentence, without hard wraps.
-Lines should not end with white space.
-
-When a paragraph contains more than one sentence, its sentences should be written one per line.
-This makes it easier to edit and find differences when updating documentation.
-
-For example:
-
-.. code-block:: rst
-
-    This is the first sentence in a paragraph.
-    This is the second sentence in a paragraph.
-
-    This is a new paragraph.
-
-Which renders as follows.
-
-    This is the first sentence in a paragraph.
-    This is the second sentence in a paragraph.
-
-    This is a new paragraph.
-
-All indentation should be 4 spaces.
-Do not use tabs to indent.
-
-Each section should have two trailing blank lines to separate it from the previous section. A section heading should have a blank line following its underline and before its content.
-
-A line feed or carriage return should be used at the end of a file.
-
-All other whitespace is defined by reST syntax.
-
-
-.. _dsg-table-of-contents:
 
 Table of contents
 -----------------
