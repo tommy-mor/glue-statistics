@@ -47,7 +47,7 @@ Toolbar
 ============================
    
 .. image:: icons/glue_filesave.png
-   :width: 100
+   :width: 20
   
 Save
 -----------------
