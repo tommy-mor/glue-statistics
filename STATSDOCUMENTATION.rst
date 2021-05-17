@@ -45,8 +45,8 @@ links : `TryPyramid <https://trypyramid.com>`_
 
 Toolbar
 ============================
-
-Save .. image::icons/glue_save.png
+.. image:: icons/glue_save.png
+Save 
 -----------------
 This button is used to export your work done on the Statistics Viewer. The current open tree viewer will be exported (Subset/Component Tree View) will all the calculated values. The file type most people want from the data viewer is .csv, so make sure to put the .csv when saving to do so (you can also export as a different file type if desired). The data format is also machine-readable.
 
