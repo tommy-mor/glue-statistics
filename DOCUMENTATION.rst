@@ -17,7 +17,6 @@ Contents
 
 This section describes the structure of documentation and its files.
 
-#. How to Use the Statistics Viewer
 #. Making the Data Viewer Skeleton
 #. Modifying the Toolbar
 #. Accessing the Data Collection
@@ -56,12 +55,34 @@ Making the Data Viewer Skeleton
 
 Modifying the Toolbar
 =======================
-See link `Toolbar <http://docs.glueviz.org/en/stable/customizing_guide/toolbar.html>`_
+See link `Toolbar <http://docs.glueviz.org/en/stable/customizing_guide/toolbar.html>`_ for more official documentation
 
 Accessing the Data Collection
 =======================
 Listening for Changes with Messages
 =======================
+A data viewer must be able to be responsive to changes in the glue environment. For example, if a dataset is added/removed from glue, the data viewer may need to update its visual accordingly when it is done so. 
+
+.. code-block::
+    def register_to_hub(self, hub):
+            '''
+            connects the StatsDataViewer to Messages that listen for changes to
+            the viewer
+
+            @param hub: takes in a HubListener object that can be connected with a Message for listening for changes
+            '''
+            super(StatsDataViewer, self).register_to_hub(hub)
+            hub.subscribe(self, ExternallyDerivableComponentsChangedMessage, handler = self.refresh)
+            hub.subscribe(self, DataCollectionDeleteMessage, handler = self.dataDeleteMessage)
+            #hub.subscribe(self, SubsetCreateMessage, handler = self.subsetCreatedMessage)
+            hub.subscribe(self, SubsetDeleteMessage, handler = self.subsetDeleteMessage)
+            hub.subscribe(self, DataUpdateMessage, handler = self.dataUpdateMessage)
+            hub.subscribe(self, SubsetUpdateMessage, handler = self.subsetUpdateMessage)
+            hub.subscribe(self, EditSubsetMessage, handler = self.editSubsetMessage)
+            hub.subscribe(self, LayerArtistVisibilityMessage, handler = self.layerArtistVisibilityMessage)
+            #hub.subscribe(self, DataCollectionAddMessage, handler = self.newDataAddedMessage)
+
+
 Plot Layers
 =======================
 Qt Design
