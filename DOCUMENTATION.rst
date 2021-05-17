@@ -75,9 +75,11 @@ Listening for Changes with Messages
 =======================
 A data viewer must be able to be responsive to changes in the glue environment. For example, if a dataset is added to glue, the data viewer may need to update its visual accordingly to add the newly added dataset. A viewer may also need to be updated if a dataset is delted, modified, etc. The action (dataset added, removed, modified, etc) that Glue listens for is called a ``Message``. If the a particulat action is performed, the corresponding Message is activated. With this activation, you can add more functionality to your viewer so it can update accordingly. 
 
-link: `Full List of Messages<http://docs.glueviz.org/en/stable/_modules/glue/core/message.html#Message>`_
+link: `Full List of Messages <http://docs.glueviz.org/en/stable/_modules/glue/core/message.html#Message>`_
 
 Messages:
+"""""""""
+
 
 
 To connect a Message to a method, add the following method into the DataViewer class:
