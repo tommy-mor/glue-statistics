@@ -206,7 +206,7 @@ Open your anaconda command prompt and pip install the plugin using:
 	@viewer_tool
 	class ButtonOnToolbar(Tool):
 
-		**icon = EXAMPLE_LOGO**
+		icon = EXAMPLE_LOGO  #USED THE VARIABLE
 		tool_id = 'Example'
 		action_text = 'Example'
 		tool_tip = 'Click to see Instructions'
