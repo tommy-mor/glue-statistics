@@ -149,8 +149,33 @@ The method that is connected to the plot layers will need to intake a callback l
 Qt Design
 =======================
 
+Qt is a huge Python library allowing users to design UI. There are many widgets and views that Qt offers, such as QTreeView, QTabWidget, QTableWidget, and many more. In order to add a widget to your Data Viewer, initialize the widget of your choice and make it the central widget in the __init__() function:
+
+.. code-block:: python
+	self.tree = QTreeView()
+	self.setCentralWidget(self.tree)
+
+Obviously, you need to do more custimization than just declaring it before you add the widget to the viewer. One of the more helpful ways to get familiar with Qt is to go to Qt's official documentation site and browsing the methods of each class to unlock features you need displayed in the viewer. 
+
 Pop-up messages
 -----------------
+Pop-up messages can be useful in issuing warnings or for information. As a resource, a quick example template is shown below:
+
+.. code-block:: python
+	def showManualCalc(self):
+		self.instructionWindow = QMainWindow()
+		self.instructionWindow.resize(500,250)
+		self.instructionWindow.setWindowTitle("Instructions")
+		self.instructionLabel = QLabel()
+		self.instructionLabel.setTextFormat(1) #set Format to 1 for HTML , else no need to do this
+		self.instructionLabel.setText("Text or HTML here")
+		self.instructionWindow.setCentralWidget(self.instructionLabel)
+		self.instructionWindow.layout().setContentsMargins(10,10,20,20)
+		self.instructionWindow.setContentsMargins(10,10,20,20)
+		self.instructionWindow.show()
+		
+Usually, the pop-up messages will seem incredibly dull and boring without using HTML. So it is strongly recommended that the text format is set to 1, and use the website https://html5-editor.net/ to design your pop-up window and paste the HTML code into .setText()
+
 
 Creating the Plugin (and how to update it easily)
 =======================
@@ -230,9 +255,13 @@ Open your anaconda command prompt and pip install the plugin using:
 
 You can also use the pip install -e command to install the plugin in development mode to avoid reinstalling the plugin everytime you need to make an update. 
 
-	
-	
 
+To uninstall: 
+.. code-block:: pip
+
+	pip uninstall YOURDATAVIEWER
+
+For Anaconda users, the plugin is located in anaconda(version#)/Lib/site-packages/YOURDATAVIEWER
 
 Common bugs and how to fix them
 =======================
