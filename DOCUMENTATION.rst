@@ -265,6 +265,7 @@ You can also use the pip install -e command to install the plugin in development
 
 
 To uninstall: 
+
 .. code-block:: pip
 
 	pip uninstall YOURDATAVIEWER
