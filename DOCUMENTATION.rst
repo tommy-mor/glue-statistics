@@ -1,6 +1,6 @@
 
 ****************************************
-Glue Statistics Viewer Documentation
+Data Viewer Tutorial
 ****************************************
 
     :keywords: Tutorial, Documentation
