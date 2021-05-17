@@ -119,10 +119,11 @@ Replace the 'MESSAGE TO LISTEN FOR' and the 'METHOD TO ACTIVATE WHEN MESSAGE IS 
 
 Plot Layers
 =======================
-The plot layer is the left middle panel on Glue. Here, 
+The plot layer is the left middle panel on Glue. Here, the user can toggle which data or subsets are visible, drag them around for reordering, as well as change other attributes of the particular data. In order to make the plot layer interactive with your viewer, you must connect a method (adding a callback) that activates everytime the plot layer changes. This can be done in the following line of code that goes in the __init__ method of the DataViewer.
+
 .. code-block:: python
 
-    self.state.add_callback('layers', self.layerChange)
+    self.state.add_callback('layers', "YOUR METHOD HERE")
     
     
     
