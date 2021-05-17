@@ -67,23 +67,10 @@ A data viewer must be able to be responsive to changes in the glue environment. 
 
 
     def register_to_hub(self, hub):
-        '''
-        connects the StatsDataViewer to Messages that listen for changes to
-        the viewer
-
-        @param hub: takes in a HubListener object that can be connected with a Message for listening for changes
-        '''
         super(StatsDataViewer, self).register_to_hub(hub)
-        hub.subscribe(self, ExternallyDerivableComponentsChangedMessage, handler = self.refresh)
-        hub.subscribe(self, DataCollectionDeleteMessage, handler = self.dataDeleteMessage)
-        #hub.subscribe(self, SubsetCreateMessage, handler = self.subsetCreatedMessage)
-        hub.subscribe(self, SubsetDeleteMessage, handler = self.subsetDeleteMessage)
-        hub.subscribe(self, DataUpdateMessage, handler = self.dataUpdateMessage)
-        hub.subscribe(self, SubsetUpdateMessage, handler = self.subsetUpdateMessage)
-        hub.subscribe(self, EditSubsetMessage, handler = self.editSubsetMessage)
-        hub.subscribe(self, LayerArtistVisibilityMessage, handler = self.layerArtistVisibilityMessage)
-        #hub.subscribe(self, DataCollectionAddMessage, handler = self.newDataAddedMessage)
-
+        
+        hub.subscribe(self, #MESSAGE TO LISTEN FOR#, handler = #METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED#)
+           
 
 Plot Layers
 =======================
