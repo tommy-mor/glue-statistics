@@ -91,6 +91,8 @@ Most common:
 * **SubsetUpdateMessage**: Activates when a subset is finished updating
 * **ExternallyDerivableComponentsChangedMessage**: Activates when any datasets are linked
 
+Updates/Edits to a Dataset/Subset include the name, color, and size as well!
+
 Other Messages:
 
 * **DataCollectionMessage**: Activates when any change to DataCollection made(add/delete/modified)
