@@ -186,7 +186,7 @@ In order to transform your config.py file into a Glue plugin, follow the instruc
 
 Your repository should have:
 
-* A folder name YOURDATAVIEWER
+* A folder named YOURDATAVIEWER
 	* The config.py file renamed as YOURDATAVIEWER.py
 	* __init__.py
 	* version.py
