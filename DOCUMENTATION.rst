@@ -140,6 +140,8 @@ The plot layer is the left middle panel on Glue. Here, the user can toggle which
     self.state.add_callback('layers', self.exampleCallbackMethod)
     
     
+The method that is connected to the plot layers will need to intake a callback list. A call back list is simply a list that has a method connected to it. **what is that method**
+
 
 
 
