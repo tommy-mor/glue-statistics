@@ -59,10 +59,12 @@ See link `Toolbar <http://docs.glueviz.org/en/stable/customizing_guide/toolbar.h
 
 Accessing the Data Collection
 =======================
-To access the data collection of the current glue session, call the following variable: .. code-block:: self.session.data_collection
+To access the data collection of the current glue session, call the following variable:  
+.. code-block:: self.session.data_collection
 This will allow you to directly access the data that is in Glue (the top left panel is a visual of what the data collection is).
 
-WARNING: Do not use the variable "dc" in any of your code for the data viewer. The variable "dc" is already being used in the IPython Terminal as a default variable name for the data collection. As a result, it is advised that you use a different variable name to assign the data collection. e.g code-block:: self.data_c = self.session.data_collection
+WARNING: Do not use the variable "dc" in any of your code for the data viewer. The variable "dc" is already being used in the IPython Terminal as a default variable name for the data collection. As a result, it is advised that you use a different variable name to assign the data collection. e.g 
+.. code-block:: self.data_c = self.session.data_collection
 
 
 Listening for Changes with Messages
