@@ -149,14 +149,20 @@ The method that is connected to the plot layers will need to intake a callback l
 Qt Design
 =======================
 
-Qt is a huge Python library allowing users to design UI. There are many widgets and views that Qt offers, such as QTreeView, QTabWidget, QTableWidget, and many more. In order to add a widget to your Data Viewer, initialize the widget of your choice and make it the central widget in the __init__() function:
+Qt is a huge Python library allowing users to design UI. There are many widgets and views that Qt offers, such as QTreeView, QTabWidget, QTableWidget, and many more. In order to add a widget to your Data Viewer, initialize the widget of your choice and make it the central widget in the __init__ function:
 
 .. code-block:: python
+	def __init__(self, *args, **kwargs):
+		
+		...
+		
+		self.tree = QTreeView()
+		self.setCentralWidget(self.tree)
+		
+		...
 
-	self.tree = QTreeView()
-	self.setCentralWidget(self.tree)
 
-Obviously, you need to do more custimization than just declaring it before you add the widget to the viewer. One of the more helpful ways to get familiar with Qt is to go to Qt's official documentation site and browsing the methods of each class to unlock features you need displayed in the viewer. 
+Obviously, you should do more customization than just declaring a widget before you add the widget to the viewer. One of the more helpful ways to get familiar with Qt is to go to Qt's official documentation site and browsing the methods of each class to unlock features you need displayed in the viewer. 
 
 Pop-up messages
 -----------------
@@ -264,6 +270,11 @@ To uninstall:
 	pip uninstall YOURDATAVIEWER
 
 For Anaconda users, the plugin is located in anaconda(version#)/Lib/site-packages/YOURDATAVIEWER
+
+
+Updating the Plugin
+-------------------
+To update the plugin, you can simply update the github repository and remove and reinstall the plugin (or use pip install -e for developing mode) to see your changes. It might be easier to make changes to the config.py file in the working directory while still in development and update the github once significant progress has been made. 
 
 Common bugs and how to fix them
 =======================
