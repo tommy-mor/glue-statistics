@@ -207,7 +207,7 @@ Your repository should have:
 
 Don't forget that you need to upload the .ui file as well as any pictures/images you used in your data viewer if it is not part of glue's icons/pictures in the folder.
 
-The setup.cfg file is needed to allow these additional files to be downloaded as part of the plugin. See this `setup.cfg <https://github.com/jk31768/glue-statistics>`_ file on how it is written and add any additional file types as necessary.
+The setup.cfg file is needed to allow these additional files to be downloaded as part of the plugin. See this `setup.cfg <https://github.com/jk31768/glue-statistics/blob/master/setup.cfg>`_ file on how it is written and add any additional file types as necessary.
 
 If you are confused on what your repository should look like or what code needs to go in the setup.py or additional files, see the `Glue Statistics Viewer Repository <https://github.com/jk31768/glue-statistics>`_ for inspiration.
 
