@@ -72,6 +72,7 @@ Listening for Changes with Messages
 A data viewer must be able to be responsive to changes in the glue environment. For example, if a dataset is added/removed from glue, the data viewer may need to update its visual accordingly when it is done so. 
 
 To connect a Message to a method, add the following method into the DataViewer class:
+
 .. code-block:: python
 
     def register_to_hub(self, hub):
