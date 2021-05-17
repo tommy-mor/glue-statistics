@@ -134,7 +134,11 @@ The plot layer is the left middle panel on Glue. Here, the user can toggle which
     
 The method that is connected to the plot layers will need to intake a callback list. A call back list is simply a list that has a method connected to it. **what is that method**
 
+In order to access the data in the plot layers, you can use the following to get a list of properties in the plot layers:
 
+.. code-block:: python
+
+	self.state.layers
 
 
 Qt Design
