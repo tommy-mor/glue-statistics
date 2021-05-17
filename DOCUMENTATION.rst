@@ -65,7 +65,6 @@ A data viewer must be able to be responsive to changes in the glue environment. 
 
 .. code-block::    
 
-{
 
     def register_to_hub(self, hub):
         '''
@@ -85,7 +84,6 @@ A data viewer must be able to be responsive to changes in the glue environment. 
         hub.subscribe(self, LayerArtistVisibilityMessage, handler = self.layerArtistVisibilityMessage)
         #hub.subscribe(self, DataCollectionAddMessage, handler = self.newDataAddedMessage)
 
-}
 
 Plot Layers
 =======================
