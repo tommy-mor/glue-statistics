@@ -164,19 +164,19 @@ Pop-up messages can be useful in issuing warnings or for information. As a resou
 
 .. code-block:: python
 
-	def showManualCalc(self):
-		self.instructionWindow = QMainWindow()
-		self.instructionWindow.resize(500,250)
-		self.instructionWindow.setWindowTitle("Instructions")
-		self.instructionLabel = QLabel()
-		self.instructionLabel.setTextFormat(1) #set Format to 1 for HTML , else no need to do this
-		self.instructionLabel.setText("Text or HTML here")
-		self.instructionWindow.setCentralWidget(self.instructionLabel)
-		self.instructionWindow.layout().setContentsMargins(10,10,20,20)
-		self.instructionWindow.setContentsMargins(10,10,20,20)
-		self.instructionWindow.show()
+	def showPopUp(self):
+		self.popupWindow = QMainWindow()
+		self.popupWindow.resize(500,250)
+		self.popupWindow.setWindowTitle("Popup")
+		self.popupLabel = QLabel()
+		self.popupLabel.setTextFormat(1) #set Format to 1 for HTML , else no need to do this
+		self.popupLabel.setText("Text or HTML here")
+		self.popupWindow.setCentralWidget(self.popupLabel)
+		self.popupWindow.layout().setContentsMargins(10,10,20,20)
+		self.popupWindow.setContentsMargins(10,10,20,20)
+		self.popupWindow.show()
 		
-Usually, the pop-up messages will seem incredibly dull and boring without using HTML. So it is strongly recommended that the text format is set to 1, and use the website https://html5-editor.net/ to design your pop-up window and paste the HTML code into .setText()
+Usually, the pop-up messages will seem incredibly dull and boring without using HTML. So it is strongly recommended that the text format is set to 1, and use the website https://html5-editor.net/ to design your pop-up window and paste the HTML code into .setText(). 
 
 
 Creating the Plugin (and how to update it easily)
