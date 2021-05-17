@@ -65,7 +65,7 @@ A data viewer must be able to be responsive to changes in the glue environment. 
 
 To connect a Message to an method, add the following method into the DataViewer class:
 
-
+.. code-block::
     def register_to_hub(self, hub):
         super(StatsDataViewer, self).register_to_hub(hub)
         
