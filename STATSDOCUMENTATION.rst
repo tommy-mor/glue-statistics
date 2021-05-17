@@ -46,6 +46,7 @@ Toolbar
 ============================
 
 
+
 Subset and Component Views
 ==========================
 
@@ -53,6 +54,8 @@ Subset and Component Views
 Calculations
 =======================
 
+Heading Level 4
+^^^^^^^^^^^^^^^
 
 Warnings and Potential Issues
 =======================
