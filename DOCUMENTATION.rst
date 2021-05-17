@@ -157,7 +157,14 @@ Creating the Plugin (and how to update it easily)
 
 `See info in official documentation <http://docs.glueviz.org/en/stable/customizing_guide/writing_plugin.html>`_
 
-Up until now, the code was written in a file named config.py, which could simply be placed in the working directory. In order to transform your config.py file into a Glue plugin, follow the instructions from the official `documentation <http://docs.glueviz.org/en/stable/customizing_guide/writing_plugin.html>`_ and template on the https://github.com/glue-viz/glue-plugin-template to create a new github repository for your viewer. 
+Up until now, the code was written in a file named config.py, which could simply be placed in the working directory. Before you begin converting the config.py file to a plugin, make sure to get RID of the code 
+.. code-block:: python
+	qt_client.add(YOURDATAVIEWER)
+	
+from the config.py file.
+
+
+In order to transform your config.py file into a Glue plugin, follow the instructions from the official `documentation <http://docs.glueviz.org/en/stable/customizing_guide/writing_plugin.html>`_ and template on the https://github.com/glue-viz/glue-plugin-template to create a new github repository for your viewer. 
 
 Your repository should have:
 
@@ -171,14 +178,58 @@ Your repository should have:
 * setup.cfg
 * README or other instructional files
 
-If you are confused on what your repository should look like or what code needs to go in the setup.py or additional files, see the `Glue Statistics Viewer Repository <https://github.com/jk31768/glue-statistics>`_ for inspiration
+Don't forget that you need to upload the .ui file as well as any pictures/images you used in your data viewer if it is not part of glue's icons/pictures in the folder.
+
+The setup.cfg file is needed to allow these additional files to be downloaded as part of the plugin. See this `setup.cfg <https://github.com/jk31768/glue-statistics>`_ file on how it is written and add any additional file types as necessary.
+
+If you are confused on what your repository should look like or what code needs to go in the setup.py or additional files, see the `Glue Statistics Viewer Repository <https://github.com/jk31768/glue-statistics>`_ for inspiration.
+
+
+Accessing pictures and additional files
+----------------------------------------
+In order to allow the plugin to access the pictures in the repository, create instance variable of each picture in the __init__.py file like so:
+
+.. code-block:: python
+	EXAMPLE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'MYEXAMPLELOGO.png'))
+	
+Then you can import the logo by adding the following line to the top of YOURDATAVIEWER.py(previously the config.py):
+
+.. code-block:: python
+	from YOURDATAVIEWER import EXAMPLE_LOGO
+	
+Now you can use the variable EXAMPLE_LOGO whenever you need to put a image link. For example, if this logo was to be used in the toolbar, this could simple be done by:
+
 
 If you have followed all the steps, you should be able to test if you are able to download the plugin straight from github. 
-Open your anaconda command prompt and pip install the plugin using 
+Open your anaconda command prompt and pip install the plugin using:
+.. code-block:: python
+	@viewer_tool
+	class ButtonOnToolbar(Tool):
+
+		**icon = EXAMPLE_LOGO**
+		tool_id = 'Example'
+		action_text = 'Example'
+		tool_tip = 'Click to see Instructions'
+		status_tip = 'Click to see Instructions'
+		shortcut = 'I'
+
+		def __init__(self,viewer):
+			self.viewer = viewer
+
+		def activate(self):
+			self.viewer.exampleActivate()
+
+		def close(self):
+			pass
 
 .. code-block:: pip
 
-	pip install git+ link_to_your_github_repository
+	pip install git + link_to_your_github_repository
+
+You can also use the pip install -e command to install the plugin in development mode to avoid reinstalling the plugin everytime you need to make an update. 
+
+	
+	
 
 
 Common bugs and how to fix them
