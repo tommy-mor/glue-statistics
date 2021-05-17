@@ -169,10 +169,16 @@ Your repository should have:
 	
 * setup.py
 * setup.cfg
+* README or other instructional files
 
-If you are confused on what your repository should look like, see the `Glue Statistics Viewer Repository <https://github.com/jk31768/glue-statistics>`_ for inspiration
+If you are confused on what your repository should look like or what code needs to go in the setup.py or additional files, see the `Glue Statistics Viewer Repository <https://github.com/jk31768/glue-statistics>`_ for inspiration
 
+If you have followed all the steps, you should be able to test if you are able to download the plugin straight from github. 
+Open your anaconda command prompt and pip install the plugin using 
 
+.. code-block:: pip
+
+	pip install git+ link_to_your_github_repository
 
 
 Common bugs and how to fix them
