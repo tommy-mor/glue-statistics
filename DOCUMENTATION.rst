@@ -64,7 +64,7 @@ To access the data collection of the current glue session, call the following va
 
 This will allow you to directly access the data that is in Glue (the top left panel is a visual of what the data collection is).
 
-WARNING: Do not use the variable "dc" in any of your code for the data viewer. The variable "dc" is already being used in the IPython Terminal as a default variable name for the data collection. If you use the variable "dc", then the IPython Terminal will break and not be able to call "dc". As a result, use a different variable name to assign the data collection. e.g
+**WARNING**: Do not use the variable "dc" in any of your code for the data viewer. The variable "dc" is already being used in the IPython Terminal as a default variable name for the data collection. If you use the variable "dc", then the IPython Terminal will break and not be able to call "dc". As a result, use a different variable name to assign the data collection. e.g
 
 .. code-block:: python
     
@@ -84,10 +84,11 @@ Most common:
 
 * **DataCollectionAddMessage**: Activates when a new dataset is added
 * **DataCollectionDeleteMessage**: Activates when a dataset is deleted
+* **DataUpdateMessage**: Activates when a dataset is finished updating
 * **SubsetCreateMessage**: Activates when a new subset is created
 * **SubsetDeleteMessage**: Activates when a new subset is deleted
-* **SubsetUpdateMessage**: Activates when a new subset is finished in its update
-* **EditSubsetMessage**: Activates when a new subset is being edited
+* **EditSubsetMessage**: Activates when a new subset is being edited 
+* **SubsetUpdateMessage**: Activates when a subset is finished updating
 * **ExternallyDerivableComponentsChangedMessage**: Activates when any datasets are linked
 
 Other Messages:
@@ -116,6 +117,13 @@ Replace the 'MESSAGE TO LISTEN FOR' and the 'METHOD TO ACTIVATE WHEN MESSAGE IS 
 
 Plot Layers
 =======================
+The plot layer is the left middle panel on Glue. Here, 
+.. code-block:: python
+
+    self.state.add_callback('layers', self.layerChange)
+    
+    
+    
 
 
 Qt Design
