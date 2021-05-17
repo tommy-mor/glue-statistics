@@ -152,6 +152,7 @@ Qt Design
 Qt is a huge Python library allowing users to design UI. There are many widgets and views that Qt offers, such as QTreeView, QTabWidget, QTableWidget, and many more. In order to add a widget to your Data Viewer, initialize the widget of your choice and make it the central widget in the __init__() function:
 
 .. code-block:: python
+
 	self.tree = QTreeView()
 	self.setCentralWidget(self.tree)
 
@@ -162,6 +163,7 @@ Pop-up messages
 Pop-up messages can be useful in issuing warnings or for information. As a resource, a quick example template is shown below:
 
 .. code-block:: python
+
 	def showManualCalc(self):
 		self.instructionWindow = QMainWindow()
 		self.instructionWindow.resize(500,250)
