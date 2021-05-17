@@ -220,14 +220,16 @@ If you are confused on what your repository should look like or what code needs 
 
 Accessing pictures and additional files
 ----------------------------------------
-In order to allow the plugin to access the pictures in the repository, create instance variable of each picture in the __init__.py file like so:
+In order to allow the plugin to access the pictures in the repository, create instance variable of each picture in the __init__.py file:
 
 .. code-block:: python
+
 	EXAMPLE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'MYEXAMPLELOGO.png'))
 	
 Then you can import the logo by adding the following line to the top of YOURDATAVIEWER.py(previously the config.py):
 
 .. code-block:: python
+
 	from YOURDATAVIEWER import EXAMPLE_LOGO
 	
 Now you can use the variable EXAMPLE_LOGO whenever you need to put a image link. For example, if this logo was to be used in the toolbar, this could simple be done by:
