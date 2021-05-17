@@ -49,6 +49,7 @@ links : `TryPyramid <https://trypyramid.com>`_
 Making the Data Viewer Skeleton
 ==========================
 
+In order to create a viewer, you will need to override the DataViewer class
 
 Modifying the Toolbar
 =======================
@@ -150,10 +151,18 @@ Qt Design
 
 Pop-up messages
 -----------------
+
 Creating the Plugin (and how to update it easily)
 =======================
 
-In order to transform your config.py file into a Glue plugin, follow the template on the 
+`See info in official documentation <http://docs.glueviz.org/en/stable/customizing_guide/writing_plugin.html>`_
+
+Up until now, the code was written in a file named config.py, which could simply be placed in the working directory. In order to transform your config.py file into a Glue plugin, follow the instructions from the official `documentation <http://docs.glueviz.org/en/stable/customizing_guide/writing_plugin.html>`_ and template on the https://github.com/glue-viz/glue-plugin-template to create a new github repository for your viewer. 
+
+
+
+
+
 
 Common bugs and how to fix them
 =======================
