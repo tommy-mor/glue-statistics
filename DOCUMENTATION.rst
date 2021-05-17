@@ -126,7 +126,7 @@ When a Message is sent to the method you "subscribed"/connected it to, the funct
 		print(message)
 		index1 = str(message).index("(label: ") + len("(label: ")
 		index2 = str(message).index(")")
-		newDataSetName = str(message)[index1:index2]
+		newDatasetName = str(message)[index1:index2]
         
         #Now you know the new dataset name, add more code as necessary to update your viewer or get more info out of the message string
                  
