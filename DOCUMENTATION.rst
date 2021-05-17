@@ -56,7 +56,7 @@ Making the Data Viewer Skeleton
 
 Modifying the Toolbar
 =======================
-See link links : Toolbar <http://docs.glueviz.org/en/stable/customizing_guide/toolbar.html>
+See link `Toolbar <http://docs.glueviz.org/en/stable/customizing_guide/toolbar.html>`_
 
 Accessing the Data Collection
 =======================
