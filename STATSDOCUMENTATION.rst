@@ -46,8 +46,9 @@ links : `TryPyramid <https://trypyramid.com>`_
 Toolbar
 ============================
 .. image:: icons/glue_filesave.png
-          :width: 50px
-          :alt: Save
+   :target: https://github.com/jk31768/glue-statistics/blob/master/icons/glue_filesave.png
+   :width: 50px
+   :alt: Save
   
 Save
 -----------------
