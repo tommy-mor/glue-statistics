@@ -79,6 +79,7 @@ link: `Full List of Messages <http://docs.glueviz.org/en/stable/_modules/glue/co
 
 Messages:
 -----------------
+
 Most common:
 
 * **DataCollectionAddMessage**: Activates when a new dataset is added
@@ -90,6 +91,7 @@ Most common:
 * **ExternallyDerivableComponentsChangedMessage**: Activates when any datasets are linked
 
 Other Messages:
+
 * **DataCollectionMessage**: Activates when any change to DataCollection made(add/delete/modified)
 * **DataAddComponentMessage**: Activates when a component is added to the data
 * **DataRemoveComponentMessage**: Activates when a component is deleted from the data
