@@ -81,7 +81,6 @@ Most common:
 * **SubsetDeleteMessage**: Activates when a new subset is deleted
 * **EditSubsetMessage**: Activates when a new subset is being edited 
 * **SubsetUpdateMessage**: Activates when a subset is finished updating
-* **ExternallyDerivableComponentsChangedMessage**: Activates when any datasets are linked
 
 Updates/Edits to a Dataset/Subset include the name, color, and size as well!
 
