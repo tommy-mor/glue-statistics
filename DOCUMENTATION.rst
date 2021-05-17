@@ -45,9 +45,6 @@ Heading Level 5
 links : `TryPyramid <https://trypyramid.com>`_
 
 
-How to Use the Statistics Viewer
-============================
-
 
 Making the Data Viewer Skeleton
 ==========================
@@ -76,7 +73,12 @@ WARNING: Do not use the variable "dc" in any of your code for the data viewer. T
 
 Listening for Changes with Messages
 =======================
-A data viewer must be able to be responsive to changes in the glue environment. For example, if a dataset is added/removed from glue, the data viewer may need to update its visual accordingly when it is done so. 
+A data viewer must be able to be responsive to changes in the glue environment. For example, if a dataset is added to glue, the data viewer may need to update its visual accordingly to add the newly added dataset. A viewer may also need to be updated if a dataset is delted, modified, etc. The action (dataset added, removed, modified, etc) that Glue listens for is called a ``Message``. If the a particulat action is performed, the corresponding Message is activated. With this activation, you can add more functionality to your viewer so it can update accordingly. 
+
+link: `Full List of Messages<http://docs.glueviz.org/en/stable/_modules/glue/core/message.html#Message>`_
+
+Messages:
+
 
 To connect a Message to a method, add the following method into the DataViewer class:
 
@@ -90,8 +92,11 @@ To connect a Message to a method, add the following method into the DataViewer c
         #hub.subscribe(self, DataCollectionAddMessage, handler = self.newDataAddedMessage)
 
 Replace the 'MESSAGE TO LISTEN FOR' and the 'METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED' with Messages and methods of your own as done in the example comment below. In the example, the method self.newDataAddedMessage is a method that the user has created, and not a built-in function. This method should update your viewer depending on how the viewer works. 
+
 Plot Layers
 =======================
+
+
 Qt Design
 =======================
 
@@ -99,6 +104,9 @@ Pop-up messages
 -----------------
 Creating the Plugin (and how to update it easily)
 =======================
+
+In order to transform your config.py file into a Glue plugin, follow the template on the 
+
 Common bugs and how to fix them
 =======================
 
