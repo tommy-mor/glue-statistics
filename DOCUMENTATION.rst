@@ -159,6 +159,16 @@ Creating the Plugin (and how to update it easily)
 
 Up until now, the code was written in a file named config.py, which could simply be placed in the working directory. In order to transform your config.py file into a Glue plugin, follow the instructions from the official `documentation <http://docs.glueviz.org/en/stable/customizing_guide/writing_plugin.html>`_ and template on the https://github.com/glue-viz/glue-plugin-template to create a new github repository for your viewer. 
 
+Your repository should have:
+* A folder name YOURDATAVIEWER
+	* The config.py file renamed as YOURDATAVIEWER.py
+	* __init__.py
+	* version.py
+	* Any additional files you might need(.pngs, .ui , etc)
+	
+* setup.py
+* setup.cfg
+
 
 
 
