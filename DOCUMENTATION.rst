@@ -170,7 +170,7 @@ Your repository should have:
 * setup.py
 * setup.cfg
 
-
+If you are confused on what your repository should look like, see the `Glue Statistics Viewer Repository <https://github.com/jk31768/glue-statistics>`_ for inspiration
 
 
 
