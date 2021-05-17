@@ -31,7 +31,16 @@ This section describes the structure of documentation and its files.
 Making the Data Viewer Skeleton
 ==========================
 
-In order to create a viewer, you will need to override the DataViewer class
+When starting to learn how to use Glue, the many technical terms might seem confusing. 
+
+DataViewer -  The default class used in making a Data Viewer (2d plot, Histogram, TableViewer, etc)
+LayerArtist - 
+ViewerState - 
+LayerState - 
+
+
+When creating a new data viewer, this template file can help: 
+
 
 Modifying the Toolbar
 =======================
