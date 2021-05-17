@@ -46,8 +46,7 @@ links : `TryPyramid <https://trypyramid.com>`_
 Toolbar
 ============================
 .. image:: icons/glue_filesave.png
-          :height: 500
-          :width: 400
+          :width: 50px
           :alt: Save
   
 Save
