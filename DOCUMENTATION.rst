@@ -27,24 +27,6 @@ This section describes the structure of documentation and its files.
 #. Common bugs and how to fix them
 
 
-.. code-block:: rst
-
-    this is a code block
-    
-``this is highlighted text``
-
-sub section
------------------
-
-Heading Level 4
-^^^^^^^^^^^^^^^
-
-Heading Level 5
-"""""""""""""""
-
-links : `TryPyramid <https://trypyramid.com>`_
-
-
 
 Making the Data Viewer Skeleton
 ==========================
