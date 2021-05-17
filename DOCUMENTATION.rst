@@ -80,21 +80,21 @@ link: `Full List of Messages <http://docs.glueviz.org/en/stable/_modules/glue/co
 Messages:
 -----------------
 Most common:
-DataCollectionAddMessage: Activates when a new dataset is added
-DataCollectionDeleteMessage: Activates when a dataset is deleted
-SubsetCreateMessage: Activates when a new subset is created
-SubsetDeleteMessage: Activates when a new subset is deleted
-SubsetUpdateMessage: Activates when a new subset is finished in its update
-EditSubsetMessage: Activates when a new subset is being edited
-ExternallyDerivableComponentsChangedMessage: Activates when any datasets are linked
+*DataCollectionAddMessage: Activates when a new dataset is added
+*DataCollectionDeleteMessage: Activates when a dataset is deleted
+*SubsetCreateMessage: Activates when a new subset is created
+*SubsetDeleteMessage: Activates when a new subset is deleted
+*SubsetUpdateMessage: Activates when a new subset is finished in its update
+*EditSubsetMessage: Activates when a new subset is being edited
+*ExternallyDerivableComponentsChangedMessage: Activates when any datasets are linked
 
 Other Messages:
-DataCollectionMessage: Activates when any change to DataCollection made(add/delete/modified)
-DataAddComponentMessage: Activates when a component is added to the data
-DataRemoveComponentMessage: Activates when a component is deleted from the data
-LayerArtistVisibilityMessage: Activates when a plot layer check is turned on/off (see middle left panel) 
-LayerArtistUpdatedMessage: Activates when any part of the LayerArtist changes (creating a new viewer, new subset, new data)
-ExternallyDerivableComponentsChangedMessage: Activates when any datasets are linked
+*DataCollectionMessage: Activates when any change to DataCollection made(add/delete/modified)
+*DataAddComponentMessage: Activates when a component is added to the data
+*DataRemoveComponentMessage: Activates when a component is deleted from the data
+*LayerArtistVisibilityMessage: Activates when a plot layer check is turned on/off (see middle left panel) 
+*LayerArtistUpdatedMessage: Activates when any part of the LayerArtist changes (creating a new viewer, new subset, new data)
+*ExternallyDerivableComponentsChangedMessage: Activates when any datasets are linked
 
 See the full list of `Messages <http://docs.glueviz.org/en/stable/_modules/glue/core/message.html#Message>`_
 
