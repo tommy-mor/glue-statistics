@@ -78,7 +78,7 @@ A data viewer must be able to be responsive to changes in the glue environment. 
 link: `Full List of Messages <http://docs.glueviz.org/en/stable/_modules/glue/core/message.html#Message>`_
 
 Messages:
-"""""""""
+"""""""""""""""
 
 
 
