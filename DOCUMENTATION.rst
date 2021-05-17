@@ -134,6 +134,7 @@ Qt Design
 Qt is a huge Python library allowing users to design UI. There are many widgets and views that Qt offers, such as QTreeView, QTabWidget, QTableWidget, and many more. In order to add a widget to your Data Viewer, initialize the widget of your choice and make it the central widget in the __init__ function:
 
 .. code-block:: python
+
 	def __init__(self, *args, **kwargs):
 		
 		...
@@ -173,7 +174,9 @@ Creating the Plugin (and how to update it easily)
 `See info in official documentation <http://docs.glueviz.org/en/stable/customizing_guide/writing_plugin.html>`_
 
 Up until now, the code was written in a file named config.py, which could simply be placed in the working directory. Before you begin converting the config.py file to a plugin, make sure to get RID of the code 
+
 .. code-block:: python
+
 	qt_client.add(YOURDATAVIEWER)
 	
 from the config.py file.
