@@ -111,11 +111,25 @@ To connect a Message to a method, add the following method into the DataViewer c
     def register_to_hub(self, hub):
         super(StatsDataViewer, self).register_to_hub(hub)
         
-        hub.subscribe(self, "MESSAGE TO LISTEN FOR', handler = 'METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED')
+        #hub.subscribe(self, "MESSAGE TO LISTEN FOR', handler = 'METHOD TO ACTIVATE WHEN MESSAGE IS ACTIVATED')
         #EXAMPLE:
-        #hub.subscribe(self, DataCollectionAddMessage, handler = self.newDataAddedMessage)
+        hub.subscribe(self, DataCollectionAddMessage, handler = self.newDataAddedMessage)
 
-Replace the 'MESSAGE TO LISTEN FOR' and the 'METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED' with Messages and methods of your own as done in the example comment below. In the example, the method self.newDataAddedMessage is a method that the user has created, and not a built-in function. This method should update your viewer depending on how the viewer works. 
+Replace the 'MESSAGE TO LISTEN FOR' and the 'METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED' with Messages and methods of your own as done in the example comment below. In the example, the method self.newDataAddedMessage is a method that the user has created, and not a built-in function. This method should update your viewer depending on how the viewer works. In the above example, the method newDataAddedMessage() will be activated when a new dataset is imported into Glue.
+
+When a Message is sent to the method you "subscribed"/connected it to, the function intakes a String Message as a parameter. It is with this String Message you can determine which data/subset sent the message as well as its new values. A good starting point to gather more information about the Message is to take apart or print the String Message as done in the example:
+
+.. code-block:: python
+    
+    def newDataAddedMessage(self, message):
+		print(message)
+		index1 = str(message).index("(label: ") + len("(label: ")
+		index2 = str(message).index(")")
+		newDataSetName = str(message)[index1:index2]
+        
+        #Now you know the new dataset name, add more code as necessary to update your viewer or get more info out of the message string
+                 
+It is important to note that each Messages can send unique Message String formats, so make sure that when you splice the string you are doing it properly for each message.
 
 Plot Layers
 =======================
@@ -123,10 +137,10 @@ The plot layer is the left middle panel on Glue. Here, the user can toggle which
 
 .. code-block:: python
 
-    self.state.add_callback('layers', "YOUR METHOD HERE")
+    self.state.add_callback('layers', self.exampleCallbackMethod)
     
     
-    
+
 
 
 Qt Design
