@@ -60,11 +60,17 @@ See link `Toolbar <http://docs.glueviz.org/en/stable/customizing_guide/toolbar.h
 Accessing the Data Collection
 =======================
 To access the data collection of the current glue session, call the following variable:  
-.. code-block:: self.session.data_collection
+
+.. code-block:: python
+
+    self.session.data_collection
+
 This will allow you to directly access the data that is in Glue (the top left panel is a visual of what the data collection is).
 
 WARNING: Do not use the variable "dc" in any of your code for the data viewer. The variable "dc" is already being used in the IPython Terminal as a default variable name for the data collection. As a result, it is advised that you use a different variable name to assign the data collection. e.g 
-.. code-block:: self.data_c = self.session.data_collection
+.. code-block:: python
+
+    self.data_c = self.session.data_collection
 
 
 Listening for Changes with Messages
@@ -78,11 +84,11 @@ To connect a Message to a method, add the following method into the DataViewer c
     def register_to_hub(self, hub):
         super(StatsDataViewer, self).register_to_hub(hub)
         
-        hub.subscribe(self, #MESSAGE TO LISTEN FOR#, handler = #METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED#)
+        hub.subscribe(self, "MESSAGE TO LISTEN FOR', handler = 'METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED')
         #EXAMPLE:
         #hub.subscribe(self, DataCollectionAddMessage, handler = self.newDataAddedMessage)
 
-Replace the #MESSAGE TO LISTEN FOR# and the #METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED# with Messages and methods of your own as done in the example comment below. In the example, the method self.newDataAddedMessage is a method that the user has created, and not a built-in function. This method should update your viewer depending on how the viewer works. 
+Replace the 'MESSAGE TO LISTEN FOR' and the 'METHOD TO ACTIVATE WHEN MESSAGE IS RECEIVED' with Messages and methods of your own as done in the example comment below. In the example, the method self.newDataAddedMessage is a method that the user has created, and not a built-in function. This method should update your viewer depending on how the viewer works. 
 Plot Layers
 =======================
 Qt Design
