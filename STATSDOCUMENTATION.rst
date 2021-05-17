@@ -48,7 +48,6 @@ Toolbar
 .. image:: icons/glue_filesave.png
   :height: 10px
   :width: 10px 
-  :scale: 30
   :alt: Save
   
 Save
