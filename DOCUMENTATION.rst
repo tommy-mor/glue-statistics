@@ -202,11 +202,13 @@ Now you can use the variable EXAMPLE_LOGO whenever you need to put a image link.
 
 If you have followed all the steps, you should be able to test if you are able to download the plugin straight from github. 
 Open your anaconda command prompt and pip install the plugin using:
+
 .. code-block:: python
+
 	@viewer_tool
 	class ButtonOnToolbar(Tool):
 
-		icon = EXAMPLE_LOGO  #USED THE VARIABLE
+		**icon = EXAMPLE_LOGO**  #USED THE VARIABLE
 		tool_id = 'Example'
 		action_text = 'Example'
 		tool_tip = 'Click to see Instructions'
