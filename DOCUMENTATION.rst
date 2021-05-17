@@ -234,10 +234,6 @@ Then you can import the logo by adding the following line to the top of YOURDATA
 	
 Now you can use the variable EXAMPLE_LOGO whenever you need to put a image link. For example, if this logo was to be used in the toolbar, this could simple be done by:
 
-
-If you have followed all the steps, you should be able to test if you are able to download the plugin straight from github. 
-Open your anaconda command prompt and pip install the plugin using:
-
 .. code-block:: python
 
 	@viewer_tool
@@ -258,6 +254,10 @@ Open your anaconda command prompt and pip install the plugin using:
 
 		def close(self):
 			pass
+
+
+If you have followed all the steps, you should be able to test if you are able to download the plugin straight from github. 
+Open your anaconda command prompt and pip install the plugin using:
 
 .. code-block:: pip
 
