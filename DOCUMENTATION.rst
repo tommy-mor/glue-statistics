@@ -279,4 +279,7 @@ To update the plugin, you can simply update the github repository and remove and
 Common bugs and how to fix them
 =======================
 
+The IPython Terminal does not work - Make sure you are not using any variable named "dc" as part of the DataViewer Class
+Nothing shows up - Make sure that you are not accidently overriding any methods you aren't supposed to in the parent class
+Glue Freezes up while running data viewer - Make sure there are no infinite loops, but Glue often freezes if your code throws an error. Fix your code and try restarting your Glue session.
 
