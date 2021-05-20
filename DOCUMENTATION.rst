@@ -86,11 +86,11 @@ Updates/Edits to a Dataset/Subset include the name, color, and size as well!
 
 Other Messages:
 
-* **DataCollectionMessage**: Activates when any change to DataCollection made(add/delete/modified)
-* **DataAddComponentMessage**: Activates when a component is added to the data
+* **DataCollectionMessage**: Activates when any change to DataCollection made (add/delete/modified)
+* **DataAddComponentMessage**: Activates when a component is added to the data (e.g Arithmetic Attribute button on top can add Components to data)
 * **DataRemoveComponentMessage**: Activates when a component is deleted from the data
 * **LayerArtistVisibilityMessage**: Activates when a plot layer check is turned on/off (see middle left panel) 
-* **LayerArtistUpdatedMessage**: Activates when any part of the LayerArtist changes (creating a new viewer, new subset, new data)
+* **LayerArtistUpdatedMessage**: Activates when any part of the LayerArtist changes (creating a new viewer, new subset, new data, etc)
 * **ExternallyDerivableComponentsChangedMessage**: Activates when any datasets are linked 
 
 See the full list of `Messages <http://docs.glueviz.org/en/stable/_modules/glue/core/message.html#Message>`_
