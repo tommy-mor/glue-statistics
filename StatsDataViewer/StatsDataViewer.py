@@ -228,10 +228,7 @@ class HomeButton(Tool):
 		self.viewer = viewer
 
 	def activate(self):
-		if self.viewer.tabs.currentIndex() == 0:
-			self.viewer.subsetTree.collapseAll()
-		elif self.viewer.tabs.currentIndex() == 1:
-			self.viewer.componentTree.collapseAll()
+		self.viewer.homeButtonEvent()
 
 	def close(self):
 		pass
