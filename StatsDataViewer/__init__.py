@@ -6,6 +6,7 @@ EXPORT_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_expo
 CALCULATE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_calculate.png'))
 SORT_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_sort.png'))
 SETTINGS_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_settings.png'))
+INSTRUCTIONS_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_instructions.png'))
 
 def setup():
     from .StatsDataViewer import StatsDataViewer
