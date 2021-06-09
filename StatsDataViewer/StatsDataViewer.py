@@ -33,7 +33,7 @@ from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 from PyQt5 import QtCore
 
-from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO
+from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO, INSTRUCTIONS_LOGO
 showInstructions = True
 
 @viewer_tool
@@ -64,7 +64,7 @@ class Instructions(Tool):
 		action performed when tool is activated
 
     """
-	icon = '/Users/jk317/Glue/icons/glue_instructions.png'
+	icon = INSTRUCTIONS_LOGO
 	tool_id = 'instructions'
 	action_text = 'Instructions'
 	tool_tip = 'Click to see Instructions'
