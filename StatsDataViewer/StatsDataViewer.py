@@ -2,6 +2,7 @@ import os
 import numpy as np
 import sys
 import pandas as pd
+import math
 from qtpy.QtWidgets import QWidget, QHBoxLayout, QCheckBox, QTreeWidget, QTreeWidgetItem, QAbstractItemView, QPushButton, QSpinBox, QMainWindow, QLabel, QMessageBox, QRadioButton
 from glue.config import qt_client
 from glue.core.data_combo_helper import ComponentIDComboHelper
@@ -10,7 +11,7 @@ from glue.external.echo import CallbackProperty, SelectionCallbackProperty
 from glue.external.echo.qt import (connect_checkable_button,
 								   autoconnect_callbacks_to_qt,
 								   connect)
-from PyQt5.QtCore import QVariant, QItemSelectionModel, QAbstractItemModel, Qt
+from PyQt5.QtCore import QVariant, QItemSelectionModel, QAbstractItemModel, Qt, QModelIndex
 from glue.config import viewer_tool
 from glue.viewers.common.qt.tool import CheckableTool, Tool, DropdownTool, SimpleToolMenu
 from glue.viewers.common.layer_artist import LayerArtist
@@ -21,16 +22,16 @@ from glue.utils.qt import load_ui
 from decimal import getcontext, Decimal
 from glue.core import DataCollection, Hub, HubListener, Data, coordinates
 from glue.core.message import  DataMessage, DataCollectionMessage, SubsetMessage, SubsetCreateMessage, SubsetUpdateMessage, \
-	LayerArtistUpdatedMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage, DataRemoveComponentMessage, DataCollectionDeleteMessage,\
-	SubsetDeleteMessage, EditSubsetMessage, DataCollectionActiveChange
-from PyQt5.QtGui import QStandardItemModel
+	LayerArtistEnabledMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage, DataRemoveComponentMessage, DataCollectionAddMessage, DataCollectionDeleteMessage,\
+	SubsetDeleteMessage, EditSubsetMessage, DataCollectionActiveChange, LayerArtistVisibilityMessage, LayerArtistDisabledMessage, LayerArtistUpdatedMessage, ComputationMessage, \
+	ExternallyDerivableComponentsChangedMessage, DataRenameComponentMessage
+from PyQt5.QtGui import QStandardItemModel, QMouseEvent
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QAction, QTabWidget
 from glue.icons.qt import helpers
 from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 from PyQt5 import QtCore
-auto_refresh(True)
 
 from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO
 showInstructions = True
