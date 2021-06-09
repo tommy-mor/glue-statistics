@@ -37,6 +37,53 @@ from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_
 showInstructions = True
 
 @viewer_tool
+class Instructions(Tool):
+	"""
+    A class used to show the instructions for the Statsviewer in a popup window
+    ----------
+    Attributes
+    ----------
+    icon : str
+        a formatted string that points to the icon png file location
+    tool_id : str
+        the id of the refresh tool used to add to toolbar
+    action_text : str
+        brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+    Methods
+    -------
+     __init__(self,viewer):
+	 	connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
+
+    """
+	icon = '/Users/jk317/Glue/icons/glue_instructions.png'
+	tool_id = 'instructions'
+	action_text = 'Instructions'
+	tool_tip = 'Click to see Instructions'
+	status_tip = 'Click to see Instructions'
+	shortcut = 'I'
+
+	def __init__(self,viewer):
+		self.viewer = viewer
+
+	def activate(self):
+		#self.icon = '/Users/jk317/Glue/icons/glue_scientific_notation.png'
+		#print("Convert button activate")
+		self.viewer.showInstructions()
+
+	def close(self):
+		pass
+
+
+@viewer_tool
 class Settings(SimpleToolMenu):
 
 	icon = SETTINGS_LOGO
