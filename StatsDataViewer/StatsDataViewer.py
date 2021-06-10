@@ -418,7 +418,7 @@ class StatsViewerState(ViewerState):
 	def change_notation(self):
 		self.numNotation = not self.numNotation
 
-
+'''
 class StatsViewerStateWidget(QWidget):
 
 	def __init__(self, viewer_state=None, session=None):
@@ -430,7 +430,7 @@ class StatsViewerStateWidget(QWidget):
 
 		self.viewer_state = viewer_state
 		self._connections = autoconnect_callbacks_to_qt(self.viewer_state, self.ui)
-
+'''
 class StatsDataViewer(DataViewer): 
 	"""
     A class used to display and make the StatsDataViewer functional
