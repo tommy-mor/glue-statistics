@@ -604,6 +604,7 @@ class StatsDataViewer(DataViewer):
 		self.ctCalculatedItems = []
 
 		self.component_names = self.componentNames()
+		self.notYetManualWarned = True
 
 
 	def plotLayerNames(self):
@@ -1633,20 +1634,22 @@ class StatsDataViewer(DataViewer):
 		Shows the Manual Calculation confirmation
 
 		'''
-		manualWarning = QMessageBox() #.question(self,"Warning","Confirm multiple large dataset calculations", QMessageBox.Yes , QMessageBox.Cancel )
-		manualWarning.setText("Confirm Calculation of multiple large datasets")
-		manualWarning.setInformativeText("Turn off Manual Calculation in Settings")
-		manualWarning.setStandardButtons(QMessageBox.Cancel)
-		manualWarning.addButton(QMessageBox.Ok)
-		manualWarning.setDefaultButton(QMessageBox.Cancel)
-		temp = manualWarning.exec()
-		#print(temp)
-		if temp == QMessageBox.Ok:
-			#print("ok")
-			self.confirmedCalc = True
-		if temp == QMessageBox.Cancel:
-			#print("cancel")
-			self.confirmedCalc = False
+		if self.notYetManualWarned:
+			manualWarning = QMessageBox() #.question(self,"Warning","Confirm multiple large dataset calculations", QMessageBox.Yes , QMessageBox.Cancel )
+			manualWarning.setText("Confirm Calculation of multiple large datasets")
+			manualWarning.setInformativeText("Turn off Manual Calculation in Settings")
+			manualWarning.setStandardButtons(QMessageBox.Cancel)
+			manualWarning.addButton(QMessageBox.Ok)
+			manualWarning.setDefaultButton(QMessageBox.Cancel)
+			temp = manualWarning.exec()
+			#print(temp)
+			if temp == QMessageBox.Ok:
+				#print("ok")
+				self.confirmedCalc = True
+			if temp == QMessageBox.Cancel:
+				#print("cancel")
+				self.confirmedCalc = False
+			self.notYetManualWarned = False
 
 	def subsetNames(self):
 		'''
