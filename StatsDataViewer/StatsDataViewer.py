@@ -22,9 +22,9 @@ from glue.utils.qt import load_ui
 from decimal import getcontext, Decimal
 from glue.core import DataCollection, Hub, HubListener, Data, coordinates
 from glue.core.message import  DataMessage, DataCollectionMessage, SubsetMessage, SubsetCreateMessage, SubsetUpdateMessage, \
-	LayerArtistEnabledMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage, DataRemoveComponentMessage, DataCollectionAddMessage, DataCollectionDeleteMessage,\
-	SubsetDeleteMessage, EditSubsetMessage, DataCollectionActiveChange, LayerArtistVisibilityMessage, LayerArtistDisabledMessage, LayerArtistUpdatedMessage, ComputationMessage, \
-	ExternallyDerivableComponentsChangedMessage, DataRenameComponentMessage
+LayerArtistEnabledMessage, NumericalDataChangedMessage, DataUpdateMessage, DataAddComponentMessage, DataRemoveComponentMessage, DataCollectionAddMessage, DataCollectionDeleteMessage,\
+SubsetDeleteMessage, EditSubsetMessage, DataCollectionActiveChange, LayerArtistVisibilityMessage, LayerArtistDisabledMessage, LayerArtistUpdatedMessage, ComputationMessage, \
+ExternallyDerivableComponentsChangedMessage, DataRenameComponentMessage
 from PyQt5.QtGui import QStandardItemModel, QMouseEvent
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QAction, QTabWidget
