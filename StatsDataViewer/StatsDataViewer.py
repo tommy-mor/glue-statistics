@@ -455,7 +455,7 @@ class StatsDataViewer(DataViewer):
     """
 	LABEL = 'Statistics viewer'
 	#_state_cls = StatsViewerState
-	_options_cls = StatsViewerStateWidget
+	#_options_cls = StatsViewerStateWidget
 	inherit_tools = False
 
 	_toolbar_cls = BasicToolbar
