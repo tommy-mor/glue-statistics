@@ -537,7 +537,7 @@ class StatsDataViewer(DataViewer):
 	inherit_tools = False
 
 	_toolbar_cls = BasicToolbar
-	tools = ['export_tool', 'home_tool','notation_tool', 'sort_tool', 'instructions','settings'] #  'expand_tool'
+	tools = ['export_tool', 'home_tool','calc_tool','collapse','expand_tool','notation_tool', 'sort_tool', 'instructions','settings'] #  'expand_tool'
 
 	def __init__(self, *args, **kwargs):
 		'''
@@ -684,6 +684,27 @@ class StatsDataViewer(DataViewer):
 		self.component_names = self.componentNames()
 		self.notYetManualWarned = True
 
+	def calculateAll(self):
+		if self.tabs.currentIndex() == 0:
+			#self.subsetTree.selectAll()
+			data_branch = self.subsetTree.invisibleRootItem().child(0)
+			for data_i in range(0, data_branch.childCount()):
+				for comp_i in range(0,data_branch.child(data_i).childCount()):
+					data_branch.child(data_i).child(comp_i).setCheckState(0,2)
+			subset_branch = self.subsetTree.invisibleRootItem().child(1)
+			for subset_i in range(0, subset_branch.childCount()):
+				for data_i in range(0,subset_branch.child(subset_i).childCount()):
+					for comp_i in range(0,subset_branch.child(subset_i).child(data_i).childCount()):
+						subset_branch.child(subset_i).child(data_i).child(comp_i).setCheckState(0,2)
+
+		elif self.tabs.currentIndex() ==1:
+			cTree = self.componentTree.invisibleRootItem()
+			for data_i in range(0, cTree.childCount()):
+				for comp_i in range(0,cTree.child(data_i).childCount()):
+					for subset_i in range(0, cTree.child(data_i).child(comp_i).childCount()):
+						cTree.child(data_i).child(comp_i).child(subset_i).setCheckState(0,2)
+		
+		self.pressedEventCalculate()
 
 	def plotLayerNames(self):
 		'''
@@ -769,7 +790,6 @@ class StatsDataViewer(DataViewer):
 	def _on_layers_changed(self, callbacklist):
 		'''
 		Method called whenever a plot layer (the side panel that controls what shows up on the viewer) is changed
-
 		@callbacklist - the callback list that contains the plotlayers (this method doesn't use this instead calls self.state to access plot layers)
 		'''
 		
@@ -1092,7 +1112,6 @@ class StatsDataViewer(DataViewer):
 	def createEditDecimalWindow(self):
 		'''
 		Creates the window used to edit decimal points shown on the stats viewer
-
 		'''
 		self.decimalWindow = QMainWindow()
 		self.decimalWindow.resize(500,250)
@@ -1117,7 +1136,6 @@ class StatsDataViewer(DataViewer):
 	def createManualCalcWindow(self):
 		'''
 		Shows the Manual Calculation toggle window from the settings menu
-
 		'''
 		#Instructions window in the settings menu, this can be more detailed about features since its not a pop up
 		self.manualCalcWindow = QMainWindow()
@@ -1152,28 +1170,24 @@ class StatsDataViewer(DataViewer):
 	def updateToManual(self):
 		'''
 		Updates the calculation boolean to manual
-
 		'''
 		self.isCalcAutomatic = False
 
 	def updateToAuto(self):
 		'''
 		Updates the calculation boolean to automatic
-
 		'''
 		self.isCalcAutomatic = True
 
 	def showManualCalc(self):
 		'''
 		Shows the Manual Calculation toggle window from the settings menu
-
 		'''
 		self.manualCalcWindow.show()
 
 	def showInstructions(self):
 		'''
 		Shows the instructions window from the settings menu
-
 		'''
 		#Instructions window in the settings menu, this can be more detailed about features since its not a pop up
 		self.instructionWindow = QMainWindow()
@@ -1194,7 +1208,6 @@ class StatsDataViewer(DataViewer):
 	def showNANPopup(self):
 		'''
 		Shows the NAN warning - subset was too small/did not intersect valid points , so there is no data to calculate. It is still technically "calculable" but no data to do so.
-
 		'''
 		#Instructions window in the settings menu, this can be more detailed about features since its not a pop up
 		self.showNANWindow = QMainWindow()
@@ -1212,7 +1225,6 @@ class StatsDataViewer(DataViewer):
 	def showAgainUpdate(self, buttonInfo):
 		'''
 		Function for the "Do not show again" logic in the instructions pop up
-
 		@param buttonInfo: Button that triggered the function, in this case the only button (Ok button)
 		'''
 		global showInstructions
@@ -1223,14 +1235,12 @@ class StatsDataViewer(DataViewer):
 	def showDecimalWindow(self):
 		'''
 		Shows the decimal point changer window
-
 		'''
 		self.decimalWindow.show()
 
 	def sigchange(self, i):
 		'''
 		Function for the decimal places change logic
-
 		@param i: value of the integer in the QSpinBox determining decimal places
 		'''
 		self.num_sigs = i
@@ -1314,7 +1324,6 @@ class StatsDataViewer(DataViewer):
 		'''
 		connects the StatsDataViewer to Messages that listen for changes to
 		the viewer
-
 		@param hub: takes in a HubListener object that can be connected with a Message for listening for changes
 		'''
 		super(StatsDataViewer, self).register_to_hub(hub)
@@ -1338,7 +1347,6 @@ class StatsDataViewer(DataViewer):
 	def dataRemoveComponentMessage(self, message):
 		'''
 		Removes the data component from the stats viewer if applicable
-
 		@param message: the message sent from the dataRemoveComponentMessage
 		'''
 		#print("data component removed")
@@ -1445,7 +1453,6 @@ class StatsDataViewer(DataViewer):
 
 		'''
 		Updates the stats viewer if a component is added to a data set in the viewer. 
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 
@@ -1541,7 +1548,6 @@ class StatsDataViewer(DataViewer):
 		'''
 		Clears calculated subsets of edited subsets in the viewer so they
 		can be recalculated
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		#print("edit detected")
@@ -1615,7 +1621,6 @@ class StatsDataViewer(DataViewer):
 	def check_status(self, item , col):
 		'''
 		Enables hierachial box checks and unchecks
-
 		@param item: QTreewidgetItem that has been checked/unchecked
 		@param col: Column number of the action
 		'''
@@ -1665,7 +1670,6 @@ class StatsDataViewer(DataViewer):
 	def check_status_helper(self, state, dataset):
 		'''
 		Helper method for check_status(self, item , col)
-
 		@param state: Number representing whether the action was check/uncheck
 		@param dataset: QTreewidgetItem that has been checked/unchecked
 		'''
@@ -1710,7 +1714,6 @@ class StatsDataViewer(DataViewer):
 	def showManualWarning(self):
 		'''
 		Shows the Manual Calculation confirmation
-
 		'''
 		if self.notYetManualWarned:
 			manualWarning = QMessageBox() #.question(self,"Warning","Confirm multiple large dataset calculations", QMessageBox.Yes , QMessageBox.Cancel )
@@ -1741,7 +1744,6 @@ class StatsDataViewer(DataViewer):
 	def subsetUpdateMessage(self, message):
 		'''
 		Updates the attributes of the edited subset (glue's left side panel info - names and color)
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		#print(message)
@@ -1766,7 +1768,6 @@ class StatsDataViewer(DataViewer):
 	def componentViewSubsetUpdateHelper(self, viewType, old_name, new_name,data_name):
 		'''
 		Updates the component view if a subset atrribute is changed
-
 		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
 		@param old_name: old name of the edited subset
 		@param new_name: new name of the edited subset
@@ -1814,7 +1815,6 @@ class StatsDataViewer(DataViewer):
 	def subsetViewSubsetUpdateHelper(self, viewType, old_name, new_name, data_name):
 		'''
 		Updates the subset view if a subset atrribute is changed
-
 		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
 		@param old_name: old name of the edited subset
 		@param new_name: new name of the edited subset
@@ -1866,7 +1866,6 @@ class StatsDataViewer(DataViewer):
 	def dataUpdateMessage(self, message):
 		'''
 		Updates the attributes of the edited dataset (glue's left side panel info - names and color), size doesnt matter for this viewer
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		#print(message)
@@ -1892,7 +1891,6 @@ class StatsDataViewer(DataViewer):
 	def subsetViewDataUpdateHelper(self, viewType, old_name, new_name):
 		'''
 		Updates the subset view if a data atrribute is changed
-
 		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
 		@param old_name: old name of the edited subset
 		@param new_name: new name of the edited subset
@@ -1951,7 +1949,6 @@ class StatsDataViewer(DataViewer):
 	def componentViewDataUpdateHelper(self, viewType, old_name, new_name):
 		'''
 		Updates the component view if a data atrribute is changed
-
 		@param viewType: the QTreeWidget Tree that is being modified (subsetTree,componentTree)
 		@param old_name: old name of the edited subset
 		@param new_name: new name of the edited subset
@@ -2028,7 +2025,6 @@ class StatsDataViewer(DataViewer):
 	def newDataAddedMessage(self, message):
 		'''
 		Adds a new dataset to the viewer when new dataset is dragged onto the viewer
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		#print(message)
@@ -2083,7 +2079,6 @@ class StatsDataViewer(DataViewer):
 				# child.setEditable(False)
 				childtwo.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 				childtwo.setCheckState(0, 0)
-
 				if (not disableSubset) and (not temp):
 					try:
 						 self.xc[i].compute_statistic('minimum', self.xc[i].subsets[j].components[k], subset_state=self.xc.subset_groups[j].subset_state)
@@ -2108,7 +2103,6 @@ class StatsDataViewer(DataViewer):
 	def subsetCreatedMessage(self, message):
 		'''
 		Adds a new subset to the viewer when new subset is created
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		
@@ -2288,7 +2282,6 @@ class StatsDataViewer(DataViewer):
 	def dataDeleteMessage(self,message):
 		'''
 		Removes deleted dataset from the viewer
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		print("detected data removal")
@@ -2299,7 +2292,6 @@ class StatsDataViewer(DataViewer):
 	def subsetDeleteMessage(self, message):
 		'''
 		Removes deleted subset from the viewer
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		#print("detected subset deletion")
@@ -2309,7 +2301,6 @@ class StatsDataViewer(DataViewer):
 	def deleteHelper(self, deletedType):
 		'''
 		Helper method for dataDeleteMessage(self,message) and subsetDeleteMessage(self, message)
-
 		@param message: Message given by the event, contains details about how it was triggered
 		'''
 		#print(deletedType)
@@ -2522,7 +2513,6 @@ class StatsDataViewer(DataViewer):
 	def findIndexInDc(self, subsetName, dataName, compName):	
 		'''
 		Finds the index of the subset, data, and component in the data collection that corresponds to the item in the viewer.
-
 		@param subsetName: name of subset "All data" if n/a because it is calculating all data
 		@param dataName: name of the dataset 
 		@param compName: name of the component
@@ -2633,7 +2623,10 @@ class StatsDataViewer(DataViewer):
 							temp.append(ct.child(x).data(0,0)) #dataset
 							temp.append(ct.child(x).child(y).data(0,0)) #component
 							for t in range(0, 6):
-								temp.append(self.componentTree.itemFromIndex(item).data(t,0))
+								if t == 0 and (not self.componentTree.itemFromIndex(item).data(0,0) == "All data ("+ ct.child(x).data(0,0)+ ")"):
+									temp.append(self.componentTree.itemFromIndex(item).data(t,0) + " ("+ ct.child(x).data(0,0)+ ")")
+								else:
+									temp.append(self.componentTree.itemFromIndex(item).data(t,0))
 							currentCalculated.append(temp)
 
 		return currentCalculated
@@ -2705,7 +2698,6 @@ class StatsDataViewer(DataViewer):
 	def runDataStats (self, data_i, comp_i):
 		'''
 		Runs statistics for the component comp_i of data set data_i
-
 		@param data_i: data index from the tree
 		@param comp_i: component index from the tree
 		'''
@@ -2769,7 +2761,6 @@ class StatsDataViewer(DataViewer):
 	def newDataStats(self, data_i, comp_i):
 		'''
 		Runs statistics for the component comp_i of data set data_i
-
 		@param data_i: data index from the tree
 		@param comp_i: component index from the tree
 		'''
@@ -2800,11 +2791,9 @@ class StatsDataViewer(DataViewer):
 	def runSubsetStats (self, subset_i, data_i, comp_i):
 		'''
 		Runs statistics for the subset subset_i with respect to the component comp_i of data set data_i
-
 		@param subset_i: subset index from tree
 		@param data_i: data index from the tree
 		@param comp_i: component index from the tree
-
 		'''
 
 		subset_label = self.xc[data_i].subsets[subset_i].label
@@ -2854,11 +2843,9 @@ class StatsDataViewer(DataViewer):
 
 		'''
 		Runs statistics for the subset subset_i with respect to the component comp_i of data set data_i
-
 		@param subset_i: subset index from tree
 		@param data_i: data index from the tree
 		@param comp_i: component index from the tree
-
 		'''
 		# Generates new data for a subset that needs to be calculated
 		subset_label = self.xc[data_i].subsets[subset_i].label
@@ -2936,24 +2923,18 @@ class StatsDataViewer(DataViewer):
 
 		'''
 		for i in range(0, len(self.xc)):
-
 			parentItem = QTreeWidgetItem(self.dataItem)
 			parentItem.setCheckState(0, 0)
 			parentItem.setData(0, 0, '{}'.format(self.xc.labels[i]))
 			parentItem.setIcon(0, helpers.layer_icon(self.xc[i]))
-
 			# Make all the data components be children, nested under their parent
 			for j in range(0,len(self.xc[i].components)):
-
 				childItem = QTreeWidgetItem(parentItem)
 				childItem.setCheckState(0, 0)
 				childItem.setData(0, 0, '{}'.format(str(self.xc[i].components[j])))
 				childItem.setIcon(0, helpers.layer_icon(self.xc[i]))
-
 				# Add to the subset_dict
 				key = self.xc[i].label + self.xc[i].components[j].label + "All data" + self.xc[i].label
-
-
 				self.num_rows = self.num_rows + 1
 		'''
 
@@ -2963,31 +2944,23 @@ class StatsDataViewer(DataViewer):
 		self.subsetItem.setCheckState(0, 0)
 		'''
 		for j in range(0, len(self.xc.subset_groups)):
-
 			grandparent = QTreeWidgetItem(self.subsetItem)
 			grandparent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label))
 			grandparent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 			grandparent.setCheckState(0, 0)
-
 			for i in range(0, len(self.xc)):
-
 				parent = QTreeWidgetItem(grandparent)
 				parent.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label) + ' (' + '{}'.format(self.xc[i].label) + ')')
-
 				parent.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 				parent.setCheckState(0, 0)
-
 				disableSubset = False
 				temp = False
-
 				for k in range(0, len(self.xc[i].components)):
-
 					child = QTreeWidgetItem(parent)
 					child.setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
 					#child.setEditable(False)
 					child.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 					child.setCheckState(0, 0)
-
 					if (not disableSubset) and (not temp):
 						try:
 							 self.xc[i].compute_statistic('minimum', self.xc[i].subsets[j].components[k], subset_state=self.xc.subset_groups[j].subset_state)
@@ -3002,8 +2975,6 @@ class StatsDataViewer(DataViewer):
 					if disableSubset:
 						child.setData(0, Qt.CheckStateRole, QVariant())
 						child.setForeground(0,QtGui.QBrush(Qt.gray))
-
-
 					self.num_rows = self.num_rows + 1
 		'''
 
@@ -3044,33 +3015,27 @@ class StatsDataViewer(DataViewer):
 		self.component_mode = True
 		'''
 		for i in range(0,len(self.xc)):
-
 			grandparent = QTreeWidgetItem(self.componentTree)
 			grandparent.setData(0, 0, '{}'.format(self.xc.labels[i]))
 			grandparent.setIcon(0, helpers.layer_icon(self.xc[i]))
 			grandparent.setCheckState(0, 0)
-
 			for k in range(0,len(self.xc[i].components)):
 				parent = QTreeWidgetItem(grandparent)
 				parent.setData(0, 0, '{}'.format(str(self.xc[i].components[k])))
 				parent.setCheckState(0, 0)
-
 				child = QTreeWidgetItem(parent)
 				child.setData(0, 0, '{}'.format('All data (' + self.xc.labels[i] + ')'))
 				child.setIcon(0, helpers.layer_icon(self.xc[i]))
 				child.setCheckState(0, 0)
-
 				self.num_rows = self.num_rows + 1
 				disableSubset = False
 				temp = False
-
 				for j in range(0, len(self.xc.subset_groups)):
 					childtwo = QTreeWidgetItem(parent)
 					childtwo.setData(0, 0, '{}'.format(self.xc.subset_groups[j].label))
 					# child.setEditable(False)
 					childtwo.setIcon(0, helpers.layer_icon(self.xc.subset_groups[j]))
 					childtwo.setCheckState(0, 0)
-
 					if (not disableSubset) and (not temp):
 						try:
 							 self.xc[i].compute_statistic('minimum', self.xc[i].subsets[j].components[k], subset_state=self.xc.subset_groups[j].subset_state)
@@ -3082,8 +3047,6 @@ class StatsDataViewer(DataViewer):
 					if disableSubset:
 						childtwo.setData(0, Qt.CheckStateRole, QVariant())
 						childtwo.setForeground(0,QtGui.QBrush(Qt.gray))
-
-
 					self.num_rows = self.num_rows + 1
 		'''
 	
@@ -3149,3 +3112,4 @@ class ModifiedTreeWidget(QTreeWidget):
 			
 
 		QTreeWidget.dropEvent(self, dropEvent)
+
