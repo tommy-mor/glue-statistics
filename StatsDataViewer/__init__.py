@@ -8,6 +8,11 @@ SORT_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_sort.p
 SETTINGS_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_settings.png'))
 INSTRUCTIONS_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_instructions.png'))
 
+HOME_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_home.png'))
+SAVE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_save.png'))
+EXPAND_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_expand.png'))
+COLLAPSE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_collapse.png'))
+
 def setup():
     from .StatsDataViewer import StatsDataViewer
     from glue.config import qt_client
