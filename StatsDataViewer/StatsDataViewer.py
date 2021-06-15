@@ -33,8 +33,57 @@ from qtpy import compat, QtWidgets
 from glue.config import auto_refresh
 from PyQt5 import QtCore
 
-from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO, INSTRUCTIONS_LOGO
+from StatsDataViewer import REFRESH_LOGO, NOTATION_LOGO, EXPORT_LOGO, CALCULATE_LOGO, SORT_LOGO, SETTINGS_LOGO, INSTRUCTIONS_LOGO, HOME_LOGO, SAVE_LOGO, EXPAND_LOGO
 showInstructions = True
+
+@viewer_tool
+class CollapseButton(Tool):
+	"""
+    A class used to collapse all item in the current tree view
+    ----------
+    Attributes
+    ----------
+    icon : str
+        a formatted string that points to the icon png file location
+    tool_id : str
+        the id of the refresh tool used to add to toolbar
+    action_text : str
+        brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+    Methods
+    -------
+     __init__(self,viewer):
+	 	connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
+
+    """
+	
+	icon = COLLAPSE_LOGO
+	tool_id = 'collapse'
+	action_text = 'Collapse All'
+	tool_tip = 'Collapse All'
+	status_tip = 'Collapse All'
+	shortcut = 'x'
+
+	def __init__(self, viewer):
+		self.viewer = viewer
+		
+	def close(self):
+		pass
+	
+	def activate(self):
+		if self.viewer.tabs.currentIndex() == 0:
+			self.viewer.subsetTree.collapseAll()
+		elif self.viewer.tabs.currentIndex() == 1:
+			self.viewer.componentTree.collapseAll()
+
 
 @viewer_tool
 class Instructions(Tool):
@@ -218,7 +267,7 @@ class ExportButton(Tool):
 		action performed when tool is activated
 
 	"""
-	icon = EXPORT_LOGO
+	icon = SAVE_LOGO
 	tool_id = 'export_tool'
 	action_text = 'Export'
 	tool_tip = 'Click icon to export'
@@ -239,7 +288,7 @@ class ExportButton(Tool):
 @viewer_tool
 class HomeButton(Tool):
 	"""
-	A class used to shrink every tree item of the active viewer
+	A class used to restore the viewer to its default state
 	----------
 	Attributes
 	----------
@@ -264,7 +313,7 @@ class HomeButton(Tool):
 		action performed when tool is activated
 
 	"""
-	icon = 'glue_home'
+	icon = HOME_LOGO
 	tool_id = 'home_tool'
 	action_text = 'Home'
 	tool_tip = 'Click to return to home'
@@ -283,8 +332,33 @@ class HomeButton(Tool):
 
 @viewer_tool
 class ExpandButton(Tool):
+	"""
+    A class used to expand all items in the viewer
+    ----------
+    Attributes
+    ----------
+    icon : str
+        a formatted string that points to the icon png file location
+    tool_id : str
+        the id of the refresh tool used to add to toolbar
+    action_text : str
+        brief description of the tool's function
+	tool_tip: str
+		detailed tip about the tool's function
+	status_tip: str
+		message about tool's status
+	shortcut: char
+		character that can toggle the tool from keyboard
+	-------
+    Methods
+    -------
+     __init__(self,viewer):
+	 	connects the StatsDataViewerviewer to the tool
+	activate(self):
+		action performed when tool is activated
 
-	#icon = '/Users/jk317/Glue/icons/glue_expand.png'
+    """
+	icon = EXPAND_LOGO
 	tool_id = 'expand_tool'
 	action_text = 'expand'
 	tool_tip = 'Click to expand all data and subsets'
@@ -296,8 +370,12 @@ class ExpandButton(Tool):
 		self.toExpand = True
 
 	def activate(self):
-		self.viewer.expandAll(self.toExpand)
-		self.toExpand = not self.toExpand
+		if self.viewer.tabs.currentIndex() == 0:
+			self.viewer.subsetTree.expandAll()
+		elif self.viewer.tabs.currentIndex() == 1:
+			self.viewer.componentTree.expandAll()
+		#self.viewer.expandAll(self.toExpand)
+		#self.toExpand = not self.toExpand
 
 	def close(self):
 		pass
