@@ -12,7 +12,6 @@ HOME_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_home.p
 SAVE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_filesave.png'))
 EXPAND_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_expand.png'))
 COLLAPSE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_collapse.png'))
-MINIMIZE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_minimize.png'))
 
 def setup():
     from .StatsDataViewer import StatsDataViewer
