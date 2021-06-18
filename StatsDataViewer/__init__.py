@@ -9,7 +9,7 @@ SETTINGS_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_se
 INSTRUCTIONS_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_instructions.png'))
 
 HOME_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_home.png'))
-SAVE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_save.png'))
+SAVE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_filesave.png'))
 EXPAND_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_expand.png'))
 COLLAPSE_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), 'glue_collapse.png'))
 
