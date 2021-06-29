@@ -98,7 +98,8 @@ See the full list of `Messages <http://docs.glueviz.org/en/stable/_modules/glue/
 To connect a Message to a method, add the following method into the DataViewer class:
 
 .. code-block:: python
-
+    from glue.core.message import LayerArtistUpdatedMessage
+    
     def register_to_hub(self, hub):
         super(StatsDataViewer, self).register_to_hub(hub)
         
